@@ -2,25 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Open+Sans:wght@400;600&display=swap');
 
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    @apply font-fontPrimary;
+@layer base {
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-fontPrimary;
+    }
+
+    h1 { @apply text-h1; }
+    h2 { @apply text-h2; }
+    h3 { @apply text-h3; }
+    h4 { @apply text-h4; }
+    h5 { @apply text-h5; }
+    h6 { @apply text-h6; }
+
+    body {
+        @apply bg-primary;
+        @apply font-fontSecondary;
+    }
 }
 
-
-p,
-li {
-    @apply font-fontSecondary;
-}
-
-body {
-    @apply bg-primary;
+@layer utilities {
+    .btn-hundido {
+        @apply shadow-[0_4px_0_#FFFFFF] transition-all duration-300 
+               hover:translate-y-1 hover:shadow-[0_1px_0_#FFFFFF] 
+               active:translate-y-2 active:shadow-none;
+    }
 }
