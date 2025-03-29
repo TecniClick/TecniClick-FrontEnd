@@ -1,8 +1,8 @@
 const Footer = () => {
     return (
-        <div className="text-secondary mx-36">
-            <div className="flex flex-row justify-between my-8">
-                <ul className="text-left gap-4 grid grid-cols-2 ">
+        <div className="text-secondary bg-primary w-full px-[2%] md:px-[8%] xl:px-[16%] py-8">
+            <div className="flex flex-row justify-between">
+                <ul className="text-left gap-4 grid grid-cols-2">
                     <li>🏠 Inicio</li>
                     <li>🔍 Buscar Servicios</li>
                     <li>👷‍♂️ Registrarse</li>
@@ -20,7 +20,7 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
-            <h6 className="text-center justify-center">© 2025 TecniClick. Todos los derechos reservados.</h6>
+            <h6 className="text-center justify-center mt-8">© 2025 TecniClick. Todos los derechos reservados.</h6>
         </div>
     );
 };
