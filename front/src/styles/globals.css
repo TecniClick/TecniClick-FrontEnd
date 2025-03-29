@@ -18,8 +18,11 @@
     h6 { @apply text-h6; }
 
     body {
-        @apply bg-primary;
-        @apply font-fontSecondary;
+        @apply bg-secondary text-primary font-fontSecondary;
+    }
+
+    .dark body {
+        @apply bg-primary text-secondary;
     }
 }
 

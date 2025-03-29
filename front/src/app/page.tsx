@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <div className="bg-gradient-banner">
-        <main className="text-white text-center py-10 px-4 mx-36">
+        <main className="text-white text-center py-10 px-4 mx-[2%] lg:mx-[8%] 2xl:mx-[12%]">
           <h1 className="font-bold">
             Encontra a los mejores Servicios Profesionales del Hogar en un solo lugar
           </h1>
@@ -26,7 +26,7 @@ export default function Home() {
       </div>
 
       <section className="bg-secondary text-tertiary p-8">
-        <div className='mx-36'>
+        <div className='mx-[5%] lg:mx-[12%] 2xl:mx-[20%]'>
           <h2 className="font-bold">Nuestra Misión</h2>
           <div className='flex flex-row gap-8 items-stretch'>
             <p className="mt-4 text-justify justify-start flex-1">
@@ -41,8 +41,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="text-white p-8 text-center">
-        <div className='mx-36'>
+      <section className="bg-primary text-white p-8 text-center">
+        <div className='mx-[2%] lg:mx-[8%] 2xl:mx-[12%]'>
           <h2 className="font-bold">¿Por qué elegirnos?</h2>
           <ul className="my-8 text-left mx-auto grid grid-cols-2 gap-16">
             <li>

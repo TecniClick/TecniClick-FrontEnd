@@ -27,7 +27,7 @@ const RotatingText = () => {
                     exit={{ opacity: 0 }}
                     key={professions[index]}
                     transition={{ duration: 0.6 }}
-                    className="text-4xl font-bold"
+                    className="text-3xl font-bold"
                 >
                     {professions[index]}
                 </motion.div>
