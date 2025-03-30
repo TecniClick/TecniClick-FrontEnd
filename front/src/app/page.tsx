@@ -1,50 +1,48 @@
 import Image from 'next/image';
-import logoContraste from '../../public/logoContraste.png'
+import logoContraste from '../../public/logoContraste.png';
 import RotatingText from '@/components/RotatingText/RotatingText';
-import click from '../../public/click.png'
+import click from '../../public/click.png';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <div>
       <div className="bg-gradient-banner">
-        <main className="text-white text-center py-10 px-4 mx-[2%] lg:mx-[8%] 2xl:mx-[12%]">
-          <h1 className="font-bold">
-            Encontra a los mejores Servicios Profesionales del Hogar en un solo lugar
+        <main className="text-white text-center py-10 px-4 mx-[2%] md:mx-[8%] 2xl:mx-[12%]">
+          <h1 className="font-bold text-lg sm:text-xl md:text-2xl">
+            Encuentra a los mejores Servicios Profesionales del Hogar en un solo lugar
           </h1>
-          <div className='flex flex-row items-center justify-center'>
-            <h3 className="italic mt-2">Y al alcance de un <span className="font-bold">Click!</span></h3>
-            <Image
-              src={click}
-              alt='click'
-              className='w-16' />
+          <div className="flex flex-col sm:flex-row items-center justify-center mt-4">
+            <h3 className="italic">Y al alcance de un <span className="font-bold">Click!</span></h3>
+            <Image src={click} alt='click' className="w-10 sm:w-16 ml-2" />
           </div>
           <RotatingText />
-          <button className="border text-white px-6 py-3 rounded-lg mt-6 text-lg font-extrabold hover:bg-quaternary">
-            Registrarse gratis
+          <button className="border text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg mt-6 text-base sm:text-lg font-extrabold hover:bg-quaternary">
+            <Link href="/register">
+              Registrarse gratis
+            </Link>
           </button>
         </main>
       </div>
 
-      <section className="bg-secondary text-tertiary p-8">
-        <div className='mx-[5%] lg:mx-[12%] 2xl:mx-[20%]'>
-          <h2 className="font-bold">Nuestra Misión</h2>
-          <div className='flex flex-row gap-8 items-stretch'>
-            <p className="mt-4 text-justify justify-start flex-1">
-              Desde 2025, nuestra misión es ayudar a las personas a encontrar servicios técnicos y de mantenimiento confiables para satisfacer las necesidades de su hogar o espacio. Creemos que la tranquilidad y seguridad de nuestros usuarios comienzan con profesionales capacitados, eficientes y responsables.
-              Asimismo, también buscamos apoyar a los profesionales del sector, ofreciéndoles una plataforma donde puedan mostrar sus habilidades, conectar con más clientes y hacer crecer su negocio. <br /> Facilitamos la comunicación, la confianza y la transparencia entre quienes necesitan un servicio y quienes lo ofrecen.
-              Nos esforzamos por crear un ecosistema donde la calidad, la rapidez y la confianza sean los pilares de cada conexión entre clientes y trabajadores.
+      <section className="bg-secondary text-tertiary p-6 sm:p-8">
+        <div className="mx-[5%] lg:mx-[12%] 2xl:mx-[20%]">
+          <h2 className="font-bold text-lg sm:text-xl">Nuestra Misión</h2>
+          <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-stretch">
+            <p className="text-justify flex-1 text-sm sm:text-base">
+              Desde 2025, nuestra misión es ayudar a las personas a encontrar servicios técnicos y de mantenimiento confiables para satisfacer las necesidades de su hogar o espacio. Creemos que la tranquilidad y seguridad de nuestros usuarios comienzan con profesionales capacitados, eficientes y responsables. Asimismo, también buscamos apoyar a los profesionales del sector, ofreciéndoles una plataforma donde puedan mostrar sus habilidades, conectar con más clientes y hacer crecer su negocio. Facilitamos la comunicación, la confianza y la transparencia entre quienes necesitan un servicio y quienes lo ofrecen. Nos esforzamos por crear un ecosistema donde la calidad, la rapidez y la confianza sean los pilares de cada conexión entre clientes y trabajadores.
             </p>
-            <div className="mt-6 flex justify-center items-center flex-1">
-              <img src="/oficios.jpg" alt="Trabajador 1" className="rounded-lg h-full object-cover w-80" />
+            <div className="flex justify-center flex-1">
+              <img src="/oficios.jpg" alt="Trabajador 1" className="rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md h-auto" />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-primary text-white p-8 text-center">
-        <div className='mx-[2%] lg:mx-[8%] 2xl:mx-[12%]'>
-          <h2 className="font-bold">¿Por qué elegirnos?</h2>
-          <ul className="my-8 text-left mx-auto grid grid-cols-2 gap-16">
+      <section className="bg-primary text-white p-6 sm:p-8 text-center">
+        <div className="mx-[2%] lg:mx-[8%] 2xl:mx-[12%]">
+          <h2 className="font-bold text-lg sm:text-xl">¿Por qué elegirnos?</h2>
+          <ul className="my-6 sm:my-8 text-left grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-16">
             <li>
               <h5 className='font-semibold'>✅ Profesionales Verificados</h5>
               <p className='text-justify'>Cada trabajador en nuestra plataforma pasa por un proceso de validación para garantizar seguridad y confianza.</p>
@@ -70,29 +68,23 @@ export default function Home() {
               <p className='text-justify'>Opciones de pago en línea con garantía de seguridad y transparencia.</p>
             </li>
           </ul>
-          <p className="mt-10 font-bold">😉Encuentra el mejor servicio o da a conocer tus habilidades, todo en un solo lugar.</p>
+          <p className="mt-6 sm:mt-10 font-bold">😉Encuentra el mejor servicio o da a conocer tus habilidades, todo en un solo lugar.</p>
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-center bg-secondary my-8">
-        <div className='mx-36 my-8 text-center'>
-          <div className='flex justify-center mb-8'>
-            <Image
-              src={logoContraste}
-              alt="logo"
-              className='w-64 mx-auto'
-            />
+      <section className="flex flex-col items-center bg-secondary my-6 sm:my-8">
+        <div className="mx-4 sm:mx-36 my-6 sm:my-8 text-center">
+          <div className="flex justify-center mb-6 sm:mb-8">
+            <Image src={logoContraste} alt="logo" className="w-48 sm:w-64" />
           </div>
-          <div>
-          <p className='font-semibold mb-8'>Nuestros usuarios encuentran 10 veces más profesionales  que en cualquier otro lugar.</p>
-          </div>
-          <div className='flex flex-col items-center mb-8'>
-            <button className="bg-primary text-secondary font-bold px-6 py-3 rounded-lg mt-4 w-11/12 hover:bg-quaternary">
-              <h3>Buscar Servicio...</h3>
-            </button>
-          </div>
+          <p className="font-semibold mb-6 sm:mb-8">Nuestros usuarios encuentran 10 veces más profesionales que en cualquier otro lugar.</p>
+          <button className="bg-primary text-secondary font-bold px-4 py-2 sm:px-6 sm:py-3 rounded-lg mt-4 w-10/12 hover:bg-quaternary">
+            <Link href="/services">
+              Buscar Servicio...
+            </Link>
+          </button>
         </div>
-      </ section>
+      </section>
     </div>
   );
 }

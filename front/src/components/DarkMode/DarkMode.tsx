@@ -1,5 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import light from "../../../public/light.png";
+import dark from "../../../public/dark.png";
+import auto from "../../../public/auto.png";
 
 const DarkMode = () => {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
@@ -21,7 +25,6 @@ const DarkMode = () => {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
     } else {
-      // Si el tema es "system", seguir el modo del sistema
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.classList.toggle("dark", prefersDark);
       localStorage.setItem("theme", "system");
@@ -29,24 +32,36 @@ const DarkMode = () => {
   }, [theme]);
 
   return (
-    <div className="flex gap-2">
+    <div className="flex justify-end gap-2 w-36">
       <button
         onClick={() => setTheme("light")}
-        className={`px-4 py-2 rounded ${theme === "light" ? "bg-quaternary text-white" : "bg-gray-200 dark:bg-tertiary dark:text-white"}`}
+        className={`px-4 py-2 rounded btn-hundido ${theme === "light" ? "bg-primary border border-secondary" : "bg-gray-200 dark:bg-secondary dark:text-white"}`}
       >
-        Claro
+        <Image
+          src={light}
+          alt="light"
+          className="w-4"
+        />
       </button>
       <button
         onClick={() => setTheme("dark")}
-        className={`px-4 py-2 rounded ${theme === "dark" ? "bg-quaternary text-white" : "bg-gray-200 dark:bg-tertiary dark:text-white"}`}
+        className={`px-4 py-2 rounded btn-hundido ${theme === "dark" ? "bg-primary border border-secondary" : "bg-gray-200 dark:bg-secondary dark:text-white"}`}
       >
-        Oscuro
+        <Image
+          src={dark}
+          alt="dark"
+          className="w-4"
+        />
       </button>
       <button
         onClick={() => setTheme("system")}
-        className={`px-4 py-2 rounded ${theme === "system" ? "bg-quaternary text-white" : "bg-gray-200 dark:bg-tertiary dark:text-white"}`}
+        className={`px-4 py-2 rounded btn-hundido ${theme === "system" ? "bg-primary border border-secondary" : "bg-gray-200 dark:bg-secondary dark:text-white"}`}
       >
-        Automático
+        <Image
+          src={auto}
+          alt="auto"
+          className="w-4"
+        />
       </button>
     </div>
   );
