@@ -7,7 +7,7 @@ const Footer = () => {
                 <ul className="text-left grid grid-cols-2 gap-4 underline">
                     <li><Link href="/">🏠 Inicio</Link></li>
                     <li><Link href="/services">🔍 Buscar Servicios</Link></li>
-                    <li><Link href="/register">👤 Registrarse</Link></li>
+                    <li><Link href="/register">🧑‍💻 Registrarse</Link></li>
                     <li><Link href="/ingresar">🙎🏻‍♂️ Iniciar Sesión</Link></li>
                     <li><Link href="/contact">📩 Contacto</Link></li>
                     <li><Link href="/terms">📄 Términos y Condiciones</Link></li>

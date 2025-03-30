@@ -6,7 +6,7 @@ import DarkMode from "../DarkMode/DarkMode";
 const NavBar = () => {
     return (
         <>
-            <nav className="hidden md:flex mx-36">
+            <nav className="hidden md:flex mx-6 lg:mx-36">
                 <ul className="flex flex-row justify-between items-center text-secondary font-semibold w-full">
                     <div>
                         <Link href="/">
