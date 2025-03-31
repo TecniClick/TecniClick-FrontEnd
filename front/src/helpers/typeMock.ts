@@ -33,7 +33,7 @@ export type UserType = {
     role: UserRole;
     interests: string[];
     imgUrl: string;
-    services: ServiceProfileType[];
+    services: ServiceProfileType;
     appointments: AppointmentType[];
     reviews: ReviewType[];
     orders: OrderType[];

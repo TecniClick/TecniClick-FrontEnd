@@ -167,7 +167,7 @@ export const usersMock: UserType[] = [
         role: UserRole.provider,
         interests: ["Plomería", "Electricidad", "Carpintería"],
         imgUrl: "https://example.com/profile1.jpg",
-        services: [servicesMock[0], servicesMock[3]], 
+        services: servicesMock[0], 
         appointments: [], 
         reviews: [], 
         orders: [], 
@@ -185,7 +185,7 @@ export const usersMock: UserType[] = [
         role: UserRole.provider,
         interests: ["Electricidad", "Carpintería", "Pintura"],
         imgUrl: "https://example.com/profile2.jpg",
-        services: [servicesMock[1], servicesMock[4]], 
+        services: servicesMock[1], 
         appointments: [], 
         reviews: [], 
         orders: [], 
@@ -203,7 +203,7 @@ export const usersMock: UserType[] = [
         role: UserRole.provider,
         interests: ["Carpintería", "Jardinería", "Pintura"],
         imgUrl: "https://example.com/profile3.jpg",
-        services: [servicesMock[2]], 
+        services: servicesMock[2], 
         appointments: [], 
         reviews: [], 
         orders: [], 
@@ -221,7 +221,7 @@ export const usersMock: UserType[] = [
         role: UserRole.customer,
         interests: ["Jardinería", "Pintura", "Plomería"],
         imgUrl: "https://example.com/profile4.jpg",
-        services: [], 
+        services: servicesMock[3], 
         appointments: [], 
         reviews: [], 
         orders: [], 
@@ -239,7 +239,7 @@ export const usersMock: UserType[] = [
         role: UserRole.customer,
         interests: ["Pintura", "Plomería", "Electricidad"],
         imgUrl: "https://example.com/profile5.jpg",
-        services: [], 
+        services: servicesMock[4], 
         appointments: [], 
         reviews: [], 
         orders: [], 
@@ -439,37 +439,3 @@ export const ordersMock: OrderType[] = [
         createdAt: new Date(2025, 3, 5)
     }
 ];
-
-// Actualizar las relaciones
-// Asignar usuarios a servicios y actualizar los arrays de servicios
-servicesMock.forEach((service, index) => {
-    if (index <= 2) {
-        service.user = usersMock[index];
-        service.appointments = appointmentsMock.filter(a => a.service.id === service.id);
-        service.reviews = reviewsMock.filter(r => r.service.id === service.id);
-        service.orders = ordersMock.filter(o => o.service.id === service.id);
-        service.subscription = subscriptionsMock[index % 2];
-    } else {
-        service.user = usersMock[index % 3];
-        service.appointments = appointmentsMock.filter(a => a.service.id === service.id);
-        service.reviews = reviewsMock.filter(r => r.service.id === service.id);
-        service.orders = ordersMock.filter(o => o.service.id === service.id);
-        service.subscription = subscriptionsMock[index % 2];
-    }
-});
-
-// Actualizar los arrays de usuarios
-usersMock.forEach(user => {
-    if (user.role === UserRole.provider) {
-        user.services = servicesMock.filter(s => s.user?.id === user.id);
-    }
-    user.appointments = appointmentsMock.filter(a => a.user.id === user.id);
-    user.reviews = reviewsMock.filter(r => r.user.id === user.id);
-    user.orders = ordersMock.filter(o => o.service.user?.id === user.id);
-});
-
-// Actualizar las categorías
-categoriesMock.forEach((category, index) => {
-    category.services = servicesMock.filter(s => s.category.id === category.id);
-    category.user = category.services.map(s => s.user).filter(u => u !== null);
-});
