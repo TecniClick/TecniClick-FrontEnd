@@ -3,6 +3,7 @@ import logoContraste from "../../public/logoContraste.png";
 import RotatingText from "@/components/RotatingText/RotatingText";
 import click from "../../public/click.png";
 import Link from "next/link";
+import SearchBar from "@/components/SearchBar/SearchBar";
 
 export default function Home() {
   return (
@@ -43,7 +44,6 @@ export default function Home() {
             </p>
             <div className="w-full sm:w-1/2 flex items-center justify-center">
               <div className="h-64 sm:h-auto sm:w-full aspect-[5/4] relative">
-                {/* <img src="/oficios.jpg" alt="Trabajador 1" className="rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md h-auto" /> */}
                 <Image
                   src="/oficios.jpg"
                   alt="Trabajador 1"
@@ -116,9 +116,9 @@ export default function Home() {
           <p className="font-semibold mb-6 sm:mb-8">
             Nuestros usuarios encuentran 10 veces más profesionales que en cualquier otro lugar.
           </p>
-          <button className="bg-primary text-secondary font-bold px-4 py-2 sm:px-6 sm:py-3 rounded-lg mt-4 w-10/12 hover:bg-quaternary">
-            <Link href="/services">Buscar Servicio...</Link>
-          </button>
+          <div className="flex items-center justify-center w-full">
+            <SearchBar redirectToServices={true} />
+          </div>
         </div>
       </section>
     </div>
