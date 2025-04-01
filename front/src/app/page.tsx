@@ -11,7 +11,7 @@ export default function Home() {
       <div className="bg-gradient-banner">
         <main className="text-white text-center py-10 px-4 mx-[2%] md:mx-[8%] 2xl:mx-[12%]">
           <h1 className="font-bold text-lg sm:text-xl md:text-2xl">
-            Encuentra a los mejores Servicios Profesionales del Hogar en un solo lugar
+            Encuentra a los mejores servicios profesionales del Hogar en un solo lugar
           </h1>
           <div className="flex flex-col sm:flex-row items-center justify-center mt-4">
             <h3 className="italic">

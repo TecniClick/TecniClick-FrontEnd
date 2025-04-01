@@ -4,14 +4,16 @@ import { servicesMock } from "@/helpers/dataMock";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const MODE = process.env.NEXT_PUBLIC_MODE;
 
-export const getServiceProfile = async () : Promise<ServiceProfileType[]> => {
+export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
+    console.log("ENV VARIABLES:", process.env);
+
     // TODO: Implementar la lógica para obtener todos los servicios
 
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return servicesMock;
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services`, { cache: "no-cache" });
             return await response.json() || [];
         }
@@ -23,14 +25,14 @@ export const getServiceProfile = async () : Promise<ServiceProfileType[]> => {
     return [];
 }
 
-export const getServiceProfileById = async (id: string) : Promise<ServiceProfileType | null> => {
+export const getServiceProfileById = async (id: string): Promise<ServiceProfileType | null> => {
     // TODO: Implementar la lógica para obtener el perfil del servicio por id
-    
+
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return servicesMock.find((service) => service.id === id) || null;
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services/${id}`, { cache: "no-cache" });
             return await response.json() || null;
         }
@@ -42,14 +44,14 @@ export const getServiceProfileById = async (id: string) : Promise<ServiceProfile
     return null;
 }
 
-export const getServiceProfileByCategory = async (id: string) : Promise<ServiceProfileType[] | null> => {
+export const getServiceProfileByCategory = async (id: string): Promise<ServiceProfileType[] | null> => {
     // TODO: Implementar la lógica para obtener el perfil del servicio por categoría
-    
+
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return servicesMock.filter((service) => service.category.id === id) || null;
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services?category=${id}`, { cache: "no-cache" });
             return await response.json() || null;
         }
@@ -61,14 +63,14 @@ export const getServiceProfileByCategory = async (id: string) : Promise<ServiceP
     return null;
 }
 
-export const updateServiceProfile = async (service: ServiceProfileType) : Promise<ServiceProfileType | null> => {
+export const updateServiceProfile = async (service: ServiceProfileType): Promise<ServiceProfileType | null> => {
     // TODO: Implementar la lógica para actualizar el perfil del servicio
-    
+
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return servicesMock.find((service) => service.id === service.id) || null;
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services/${service.id}`, {
                 method: "PUT",
                 headers: {
@@ -86,14 +88,14 @@ export const updateServiceProfile = async (service: ServiceProfileType) : Promis
     return null;
 }
 
-export const deleteServiceProfile = async (id: string) : Promise<boolean> => {
+export const deleteServiceProfile = async (id: string): Promise<boolean> => {
     // TODO: Implementar la lógica para eliminar el perfil del servicio
-    
+
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return servicesMock.some((service) => service.id === id);
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services/${id}`, {
                 method: "DELETE",
             });
@@ -106,3 +108,31 @@ export const deleteServiceProfile = async (id: string) : Promise<boolean> => {
 
     return false;
 }
+
+export const getFilteredServices = async (query: string): Promise<ServiceProfileType[]> => {
+    const normalizeString = (str: string) => {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    };
+
+    try {
+        if (MODE === "developer") {
+            return servicesMock.filter(service =>
+                normalizeString(service.name).includes(normalizeString(query))
+            );
+        } else if (MODE === "production") {
+            const response = await fetch(`${API_URL}/services?search=${query}`, { cache: "no-cache" });
+            const data = await response.json();
+
+
+            return data.filter((service: ServiceProfileType) =>
+                normalizeString(service.name).includes(normalizeString(query))
+            ) || [];
+        }
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+
+    return [];
+};
+

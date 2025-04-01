@@ -1,15 +1,15 @@
-import SearchBar from "@/components/SearchBar/SearchBar";
+import ServicesPage from "@/components/ServicesPage/ServicesPage";
 
 export default function Services() {
     return (
-        <div className="mx-[12%]">
+        <div>
             <div>
                 <h2 className="font-semibold text-center py-2">Servicios</h2>
             </div>
-            <div className="flex items-center justify-center w-full">
-            <SearchBar />
+            <div className="bg-gradient-banner flex items-center justify-center w-full">
+                <ServicesPage />
             </div>
-            
+
         </div>
 
     );
