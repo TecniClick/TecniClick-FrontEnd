@@ -4,6 +4,7 @@ import RotatingText from "@/components/RotatingText/RotatingText";
 import click from "../../public/click.png";
 import Link from "next/link";
 import SearchBar from "@/components/SearchBar/SearchBar";
+import profesionesIconos from "../../public/profesionesIconos.png"
 
 export default function Home() {
   return (
@@ -27,21 +28,8 @@ export default function Home() {
       </div>
 
       <section className="bg-secondary text-tertiary p-6 sm:p-8">
-        <div className="mx-[5%] lg:mx-[12%] 2xl:mx-[20%]">
-          <h2 className="font-bold text-lg sm:text-xl">Nuestra Misión</h2>
-          <div className="flex flex-col sm:flex-row gap-6 items-center justify-center sm:items-stretch">
-            <p className="w-full sm:w-1/2 text-justify flex-1 text-sm sm:text-base">
-              Desde 2025, nuestra misión es ayudar a las personas a encontrar servicios técnicos y
-              de mantenimiento confiables para satisfacer las necesidades de su hogar o espacio.
-              Creemos que la tranquilidad y seguridad de nuestros usuarios comienzan con
-              profesionales capacitados, eficientes y responsables. Asimismo, también buscamos
-              apoyar a los profesionales del sector, ofreciéndoles una plataforma donde puedan
-              mostrar sus habilidades, conectar con más clientes y hacer crecer su negocio.
-              Facilitamos la comunicación, la confianza y la transparencia entre quienes necesitan
-              un servicio y quienes lo ofrecen. Nos esforzamos por crear un ecosistema donde la
-              calidad, la rapidez y la confianza sean los pilares de cada conexión entre clientes y
-              trabajadores.
-            </p>
+        <div className="mx-[5%] lg:mx-[12%] 2xl:mx-[20%] flex flex-col gap-12">
+          <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-stretch">
             <div className="w-full sm:w-1/2 flex items-center justify-center">
               <div className="h-64 sm:h-auto sm:w-full aspect-[5/4] relative">
                 <Image
@@ -53,6 +41,43 @@ export default function Home() {
                 />
               </div>
             </div>
+            <p className="w-full sm:w-1/2 text-justify flex-1 text-sm sm:text-base">
+              <strong className="font-bold text-lg sm:text-xl block">Nuestra Misión</strong>
+              Desde 2025, nuestra misión es ayudar a las personas a encontrar servicios técnicos y
+              de mantenimiento confiables para satisfacer las necesidades de su hogar o espacio.
+              Creemos que la tranquilidad y seguridad de nuestros usuarios comienzan con
+              profesionales capacitados, eficientes y responsables. Asimismo, también buscamos
+              apoyar a los profesionales del sector, ofreciéndoles una plataforma donde puedan
+              mostrar sus habilidades, conectar con más clientes y hacer crecer su negocio.
+              Facilitamos la comunicación, la confianza y la transparencia entre quienes necesitan
+              un servicio y quienes lo ofrecen. Nos esforzamos por crear un ecosistema donde la
+              calidad, la rapidez y la confianza sean los pilares de cada conexión entre clientes y
+              trabajadores.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row-reverse gap-6 items-center sm:items-stretch">
+            <div className="w-full sm:w-1/2 flex items-center justify-center">
+              <div className="h-64 sm:h-auto sm:w-full aspect-[5/4] relative">
+                <Image
+                  src={profesionesIconos}
+                  alt="Visión de la empresa"
+                  fill
+                  loading="lazy"
+                  style={{ objectFit: "contain", borderRadius: "12px" }}
+                />
+              </div>
+            </div>
+            <p className="w-full sm:w-1/2 text-justify flex-1 text-sm sm:text-base">
+              <strong className="font-bold text-lg sm:text-xl block">Nuestra Visión</strong>
+              Aspiramos a ser la plataforma líder en la conexión entre clientes y profesionales del
+              servicio técnico y mantenimiento, revolucionando la forma en que las personas encuentran
+              soluciones para sus hogares y espacios. Nos visualizamos como un ecosistema dinámico y
+              confiable, donde la calidad y la transparencia sean el estándar. Queremos empoderar a
+              los profesionales, brindándoles herramientas innovadoras para impulsar su crecimiento, y
+              garantizar a nuestros usuarios experiencias seguras y satisfactorias. Nuestra meta es
+              transformar la búsqueda de servicios en un proceso ágil, eficiente y sin preocupaciones,
+              fortaleciendo comunidades a través de la confianza y el profesionalismo.
+            </p>
           </div>
         </div>
       </section>

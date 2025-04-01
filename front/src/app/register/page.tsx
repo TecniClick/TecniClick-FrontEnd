@@ -106,7 +106,7 @@ export default function Register() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error("Por favor corrige los errores en el formulario");
       return;
@@ -117,7 +117,7 @@ export default function Register() {
     try {
       // Simulamos una llamada a la API
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Aquí iría tu llamada real a la API de registro
       console.log("Datos a enviar:", {
         nombre: formData.fullName,
@@ -128,7 +128,7 @@ export default function Register() {
       });
 
       toast.success("Registro exitoso! Redirigiendo...");
-      
+
       // Redirigir después de 2 segundos
       setTimeout(() => {
         window.location.href = "/login";
@@ -143,14 +143,15 @@ export default function Register() {
   };
 
   return (
-    <main className="w-full h-full flex flex-row justify-center items-center gap-16 px-16 pt-4 text-primary">
-      <form onSubmit={handleSubmit} className="bg-secondary p-4 flex flex-col items-center h-fit rounded-md w-2/4">
-        <div className="flex items-center justify-center relative w-2/4">
+    <main className="w-full h-full flex justify-center items-center gap-8 px-4 pt-4 text-primary">
+      <form onSubmit={handleSubmit} className="bg-secondary p-4 flex flex-col items-center rounded-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3">
+        <div className="flex items-center justify-center relative w-1/2 md:w-2/4 h-24">
           <Image
             src="/logoContraste.png"
-            alt="Logo de la página"
+            alt="Logo de la pagina"
             fill
-            className="!relative object-contain"
+            className="!relative object-contain pb-4"
+            priority
           />
         </div>
 
@@ -216,11 +217,11 @@ export default function Register() {
                   placeholder="******"
                   className={`input-login ${errors.password ? 'border-red-500' : ''}`}
                 />
-                <div 
-                  className="pl-2 cursor-pointer" 
-                  onClick={() => setShowPassword({...showPassword, password: !showPassword.password})}
+                <div
+                  className="pl-2 cursor-pointer"
+                  onClick={() => setShowPassword({ ...showPassword, password: !showPassword.password })}
                 >
-                  {showPassword.password ? <FaEyeSlash size={24}/> : <FaEye size={24}/>}
+                  {showPassword.password ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
                 </div>
               </div>
               {errors.password && <span className="text-red-500 text-xs mt-1">{errors.password}</span>}
@@ -240,11 +241,11 @@ export default function Register() {
                   placeholder="******"
                   className={`input-login ${errors.confirmPassword ? 'border-red-500' : ''}`}
                 />
-                <div 
-                  className="pl-2 cursor-pointer" 
-                  onClick={() => setShowPassword({...showPassword, confirmPassword: !showPassword.confirmPassword})}
+                <div
+                  className="pl-2 cursor-pointer"
+                  onClick={() => setShowPassword({ ...showPassword, confirmPassword: !showPassword.confirmPassword })}
                 >
-                  {showPassword.confirmPassword ? <FaEyeSlash size={24}/> : <FaEye size={24}/>}
+                  {showPassword.confirmPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
                 </div>
               </div>
               {errors.confirmPassword && <span className="text-red-500 text-xs mt-1">{errors.confirmPassword}</span>}
@@ -269,7 +270,7 @@ export default function Register() {
         </div>
 
         <button
-          className={`mt-4 py-2 w-4/5 bg-primary rounded-md text-secondary ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`mt-4 py-2 w-full sm:w-4/5 bg-primary rounded-md text-secondary ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
           type="submit"
           disabled={isLoading}
         >
@@ -285,5 +286,6 @@ export default function Register() {
         </Link>
       </form>
     </main>
+
   );
 }

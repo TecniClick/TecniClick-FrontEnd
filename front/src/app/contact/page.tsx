@@ -6,7 +6,7 @@ export default function Contact() {
             <h2 className="font-bold py-8 text-2xl sm:text-3xl">Habla con nosotros</h2>
             <p className="text-justify text-sm sm:text-base">
                 En <span className="font-semibold italic text-lg">Tecniclick</span> nos interesa la opinión de todos nuestros usuarios. <br />
-                Por esa misma razón, te invitamos expresarte, completando el siguiente formulario.
+                Por esa misma razón, te invitamos expresarte completando el siguiente formulario.
             </p>
             <div className="mt-8">
                 <FormContact />
