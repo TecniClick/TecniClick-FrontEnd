@@ -14,6 +14,7 @@ export default {
         secondary: "#FFFFFF",
         tertiary: "#1E1E1E",
         quaternary: "#1962FF",
+        quinary: "#d31f4f",
       },
       backgroundImage: {
         "gradient-navbar": "linear-gradient(to bottom, #181f47 0%, #10194b 100%)",
