@@ -282,7 +282,7 @@ export default function Register() {
         </div>
 
         <Link href='/login'>
-          <p className="self-start text-primary underline cursor-pointer">¿Ya tienes cuenta? Inicia sesión</p>
+          <p className="self-start text-primary hover:underline cursor-pointer">¿Ya tienes cuenta? Inicia sesión</p>
         </Link>
       </form>
     </main>

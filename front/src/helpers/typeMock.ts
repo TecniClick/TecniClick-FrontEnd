@@ -45,6 +45,7 @@ export type UserType = {
 export type ServiceProfileType = {
     id: string;
     user: string;
+    userId: string;
     appointments: AppointmentType[];
     reviews: ReviewType[];
     name: string;
