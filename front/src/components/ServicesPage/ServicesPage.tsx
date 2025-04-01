@@ -7,6 +7,7 @@ import { CategoryType, ServiceProfileType } from "@/helpers/typeMock";
 import { getCategories } from "@/services/categoryService";
 import Image from "next/image";
 import profile from "../../../public/profile.png";
+import Link from "next/link";
 
 const ServicesPage: React.FC = () => {
     const searchParams = useSearchParams();
@@ -45,7 +46,6 @@ const ServicesPage: React.FC = () => {
                 updatedServices = await getServiceProfileByCategory(nameCategory) || [];
             }
 
-
             if (sortPrice === "asc") {
                 updatedServices = [...updatedServices].sort((a, b) => a.price - b.price);
             } else if (sortPrice === "desc") {
@@ -64,17 +64,17 @@ const ServicesPage: React.FC = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 text-tertiary">
-            <div className="flex items-center justify-center w-full">
+        <div className="max-w-7xl mx-auto p-4 md:p-6 min-h-screen text-tertiary">
+            <div className="flex items-center justify-center w-full mb-4">
                 <SearchBar onSearch={async (query) => {
                     const services = await getFilteredServices(query);
                     setFilteredServices(services);
                 }} />
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 my-8">
+            <div className="flex flex-wrap items-center justify-center gap-4 my-4">
                 <select
-                    className="border p-2 rounded-lg"
+                    className="border p-2 rounded-lg w-full sm:w-auto"
                     onChange={(e) => setNameCategory(e.target.value || null)}
                     value={nameCategory || ""}
                 >
@@ -85,7 +85,7 @@ const ServicesPage: React.FC = () => {
                 </select>
 
                 <select
-                    className="border p-2 rounded-lg"
+                    className="border p-2 rounded-lg w-full sm:w-auto"
                     onChange={(e) => setSortPrice(e.target.value || null)}
                     value={sortPrice || ""}
                 >
@@ -95,44 +95,54 @@ const ServicesPage: React.FC = () => {
                 </select>
 
                 <button
-                    className="bg-quaternary text-white px-4 py-2 rounded-lg hover:bg-opacity-80"
+                    className="bg-quaternary text-white px-4 py-2 rounded-lg hover:bg-opacity-80 w-full sm:w-auto"
                     onClick={resetFilters}
                 >
                     Limpiar Filtros
                 </button>
             </div>
 
-            <ul className="grid grid-cols-2 gap-8">
-                {filteredServices.map(service => (
-                    <li key={service.id} className="bg-secondary border p-8 rounded-lg shadow-lg">
-                        <div className="flex items-center gap-4">
-                            <Image
-                                src={profile}
-                                alt="Foto de perfil"
-                                width={50}
-                                className="rounded-full"
-                            />
-                            <h3 className="text-lg font-semibold">{service.name}</h3>
-                        </div>
-                        <div className="p-4">
-                            <p className="text-gray-600">
-                                Categoría: <span className="font-bold">
-                                    {service.category ? service.category.name : "Categoría no disponible"}
-                                </span>
-                            </p>
-                            <p className="text-gray-600">
-                                Profesional: <span className="font-bold">
-                                    {service.user}
-                                </span>
-                            </p>
-                            <p className="text-gray-600">Precio Base: <span className="font-bold">${service.price}</span></p>
-                            <p className="text-gray-500">Descripción: {service.description}.</p>
-                            <p className="text-sm text-gray-500">Puntuación: {service.rating}</p>
-                        </div>
-                    </li>
-                ))}
+            <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredServices.length > 0 ? (
+                    filteredServices.map((service) => (
+                        <li
+                            key={service.id}
+                            className="bg-secondary border p-4 rounded-lg shadow-lg"
+                        >
+                            <Link href={`/services/${service.id}`}>
+                                <div className="flex items-center gap-2 cursor-pointer">
+                                    <Image
+                                        src={profile}
+                                        alt="Foto de perfil"
+                                        width={50}
+                                        className="rounded-full"
+                                    />
+                                    <h3 className="text-lg font-semibold">{service.name}</h3>
+                                </div>
+                                <div className="p-1">
+                                    <p className="text-tertiary">
+                                        Profesional: <span className="font-bold">{service.user}</span>
+                                    </p>
+                                    <p className="text-tertiary">
+                                        Categoría: <span className="font-bold">{service.category ? service.category.name : "Categoría no disponible"}</span>
+                                    </p>
+                                    <p className="text-tertiary">
+                                        Precio Base: <span className="font-bold">${service.price}</span>
+                                    </p>
+                                    <p className="text-tertiary">Descripción: {service.description}.</p>
+                                    <p className="text-sm text-tertiary">Puntuación: {service.rating}</p>
+                                </div>
+                            </Link>
+                        </li>
+                    ))
+                ) : (
+                    <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center">
+                        <p className="text-tertiary">
+                            No hay profesionales disponibles aún en esta categoría.
+                        </p>
+                    </div>
+                )}
             </ul>
-
         </div>
     );
 };

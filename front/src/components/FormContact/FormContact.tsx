@@ -10,6 +10,11 @@ export default function ContactPage() {
     setForm({ ...form, [e.target.name]: newValue });
   };
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -18,32 +23,35 @@ export default function ContactPage() {
       return;
     }
 
+    if (!validateEmail(form.email)) {
+      toast.error("Por favor, ingresa un correo electrónico válido!");
+      return;
+    }
+
     toast.success("Mensaje enviado correctamente! En breve nos pondremos en contacto contigo.");
     setForm({ title: "", description: "", subject: "Consultas", email: "" });
   };
 
-
   return (
     <div className="container mx-auto my-8 p-4 bg-primary rounded">
-      <h4 className="text-2xl text-center text-secondary font-bold mb-4">¿Tenes alguna consulta?🤔<br/>¿Necesitas reportar algún problema?🙋</h4>
+      <h4 className="text-2xl text-center text-secondary font-bold mb-4">¿Tenes alguna consulta?<br />¿Necesitas reportar algún problema?</h4>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-tertiary">
         <select 
-        name="subject"
-        value={form.subject}
-        onChange={handleChange}
-        className="border p-2 rounded text-tertiary"
+          name="subject"
+          value={form.subject}
+          onChange={handleChange}
+          className="border p-2 rounded text-tertiary"
         >
           <option value="Consultas">Consulta</option>
           <option value="Reportes">Reporte</option>
           <option value="Denuncias">Denuncia</option>
-         </select>
+        </select>
         <input
           type="email"
           name="email"
           placeholder="Tu email"
           value={form.email}
           onChange={handleChange}
-          
           className="border p-2 rounded"
         />
         <input
@@ -52,7 +60,6 @@ export default function ContactPage() {
           placeholder="Título"
           value={form.title}
           onChange={handleChange}
-          
           className="border p-2 rounded"
         />
         <textarea
@@ -60,7 +67,6 @@ export default function ContactPage() {
           placeholder="Describe tu mensaje"
           value={form.description}
           onChange={handleChange}
-          
           className="border p-2 rounded"
         />
         <button

@@ -3,9 +3,9 @@ import logo from "../../../public/logo.png";
 import Link from "next/link";
 import DarkMode from "../DarkMode/DarkMode";
 import { IoSearch } from "react-icons/io5";
-import { IoMdContact } from "react-icons/io";
 import { MdLogin } from "react-icons/md";
 import { FaUserPlus } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa6";
 
 const NavBar = () => {
     return (
@@ -37,7 +37,7 @@ const NavBar = () => {
                 <ul className="flex justify-around items-center text-secondary font-semibold py-2">
                     <li><Link className="hover:text-quaternary transition" href="/"><Image className="w-10" src={logo} alt="logo" /></Link></li>
                     <li><Link className="hover:text-quaternary transition" href="/services"><IoSearch size={30} /></Link></li>
-                    <li><Link className="hover:text-quaternary transition" href="/contact"><IoMdContact size={30}/></Link></li>
+                    <li><Link className="hover:text-quaternary transition" href="/contact"><FaEnvelope size={30}/></Link></li>
                     <li><Link className="hover:text-quaternary transition" href="/register"><FaUserPlus size={30} /></Link></li>
                     <li><Link className="hover:text-quaternary transition" href="/login"><MdLogin size={30} /></Link></li>
                 </ul>
