@@ -34,7 +34,7 @@ export default function ContactPage() {
 
   return (
     <div className="container mx-auto my-8 p-4 bg-primary rounded">
-      <h4 className="text-2xl text-center text-secondary font-bold mb-4">¿Tenes alguna consulta?🤔<br />¿Necesitas reportar algún problema?🙋</h4>
+      <h4 className="text-2xl text-center text-secondary font-bold mb-4">¿Tenes alguna consulta?<br />¿Necesitas reportar algún problema?</h4>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-tertiary">
         <select 
           name="subject"

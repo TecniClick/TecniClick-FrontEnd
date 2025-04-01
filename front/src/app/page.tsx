@@ -9,7 +9,7 @@ import { FaCalendarCheck, FaCheck, FaSearch } from "react-icons/fa";
 import { MdRocketLaunch } from "react-icons/md";
 import { FaFaceGrinWink } from "react-icons/fa6";
 import profesionesIconos from "../../public/profesionesIconos.png";
-import oficios from "../../public/oficios.png";
+import oficios from "../../public/oficios.jpg";
 
 export default function Home() {
   return (
