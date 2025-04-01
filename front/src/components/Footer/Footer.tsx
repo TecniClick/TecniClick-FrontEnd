@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Footer = () => {
     return (
-        <footer className="text-secondary bg-primary w-full text-xs px-4 md:px-8 xl:px-16 py-4">
+        <footer className="text-secondary bg-gradient-banner w-full text-xs px-4 md:px-8 xl:px-16 py-4">
             <div className="flex flex-col md:flex-row justify-between items-center md:items-start my-4 gap-4">
                 <ul className="text-left grid grid-cols-2 gap-4 underline">
                     <li><Link href="/">🏠 Inicio</Link></li>
