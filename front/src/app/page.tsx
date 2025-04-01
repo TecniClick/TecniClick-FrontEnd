@@ -9,6 +9,7 @@ import { FaCalendarCheck, FaCheck, FaSearch } from "react-icons/fa";
 import { MdRocketLaunch } from "react-icons/md";
 import { FaFaceGrinWink } from "react-icons/fa6";
 import profesionesIconos from "../../public/profesionesIconos.png";
+import oficios from "../../public/oficios.png";
 
 export default function Home() {
   return (
@@ -37,7 +38,7 @@ export default function Home() {
             <div className="w-full sm:w-1/2 flex items-center justify-center">
               <div className="h-64 sm:h-auto sm:w-full aspect-[5/4] relative">
                 <Image
-                  src="/oficios.jpg"
+                  src={oficios}
                   alt="Trabajador 1"
                   fill
                   loading="lazy"
