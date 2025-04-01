@@ -158,6 +158,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service1",
         user: "Raul Perez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Servicio de Plomería Express",
@@ -176,6 +177,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service2",
         user: "Carlos Gomez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Reparación de tuberías",
@@ -194,6 +196,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service3",
         user: "Andres Lopez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Instalación de sanitarios",
@@ -212,6 +215,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service4",
         user: "Luis Fernandez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Electricista a domicilio",
@@ -230,6 +234,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service5",
         user: "Miguel Sanchez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Mantenimiento de cableado",
@@ -248,6 +253,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service6",
         user: "Pedro Ramirez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Instalación de paneles solares",
@@ -267,6 +273,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service7",
         user: "Carlos Gómez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Instalación de gas domiciliario",
@@ -285,6 +292,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service8",
         user: "Lucía Fernández",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Reparaciones de carpintería",
@@ -303,6 +311,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service9",
         user: "Pedro Sánchez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Mantenimiento mecánico de autos",
@@ -321,6 +330,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service10",
         user: "Ana Ramírez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Cuidado de jardines",
@@ -339,6 +349,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service11",
         user: "Fernando López",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Servicio de limpieza integral",
@@ -357,6 +368,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service12",
         user: "Beatriz Herrera",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Construcción de muros y paredes",
@@ -375,6 +387,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service13",
         user: "Hugo Martínez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Instalación de sanitarios",
@@ -393,6 +406,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service14",
         user: "Marta Díaz",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Pintura de interiores",
@@ -411,6 +425,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service15",
         user: "Ana López",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Instalación de Antenas",
@@ -429,6 +444,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service16",
         user: "Carlos Martínez",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Reparación de Electrodomésticos",
@@ -447,6 +463,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service17",
         user: "Sofía Ruiz",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Servicio de Pintura Interior",
@@ -465,6 +482,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service18",
         user: "Julio González",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Servicio de Carpintería a Medida",
@@ -483,6 +501,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service19",
         user: "Pedro Díaz",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Servicio de Plomería de Emergencia",
@@ -501,6 +520,7 @@ export const servicesMock: ServiceProfileType[] = [
     {
         id: "service20",
         user: "Patricia González",
+        userId: "user1",
         appointments: [],
         reviews: [],
         name: "Instalación de Baños",

@@ -109,7 +109,7 @@ const ServicesPage: React.FC = () => {
                             key={service.id}
                             className="bg-secondary border p-4 rounded-lg shadow-lg"
                         >
-                            <Link href={`/services/${service.id}`}>
+                            <Link href={`/services/${service.userId}`}>
                                 <div className="flex items-center gap-2 cursor-pointer">
                                     <Image
                                         src={profile}

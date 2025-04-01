@@ -185,7 +185,7 @@ export default function Login() {
 
         {/* Enlace de Registro */}
         <Link href='/register' className="self-center">
-          <p className="text-primary underline cursor-pointer text-sm sm:text-base hover:text-opacity-80 transition-colors">
+          <p className="text-primary hover:underline cursor-pointer text-sm sm:text-base hover:text-opacity-80 transition-colors">
             ¿No tienes cuenta? Regístrate
           </p>
         </Link>
