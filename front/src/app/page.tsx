@@ -4,7 +4,11 @@ import RotatingText from "@/components/RotatingText/RotatingText";
 import click from "../../public/click.png";
 import Link from "next/link";
 import SearchBar from "@/components/SearchBar/SearchBar";
-import profesionesIconos from "../../public/profesionesIconos.png"
+import { IoIosCard, IoIosStar } from "react-icons/io";
+import { FaCalendarCheck, FaCheck, FaSearch } from "react-icons/fa";
+import { MdRocketLaunch } from "react-icons/md";
+import { FaFaceGrinWink } from "react-icons/fa6";
+import profesionesIconos from "../../public/profesionesIconos.png";
 
 export default function Home() {
   return (
@@ -87,48 +91,54 @@ export default function Home() {
           <h2 className="font-bold text-lg sm:text-xl">¿Por qué elegirnos?</h2>
           <ul className="my-6 sm:my-8 text-left grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-16">
             <li>
-              <h5 className="font-semibold">✅ Profesionales Verificados</h5>
+              <h5 className="font-semibold flex items-center"><FaCheck size={35} className="pr-2 text-quaternary"/>
+                Profesionales Verificados</h5>
               <p className="text-justify">
                 Cada trabajador en nuestra plataforma pasa por un proceso de validación para
                 garantizar seguridad y confianza.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold">⭐ Reseñas y Calificaciones</h5>
+              <h5 className="font-semibold flex items-center"><IoIosStar size={35} className="pr-2 text-quaternary" />
+                 Reseñas y Calificaciones</h5>
               <p className="text-justify">
                 Consulta opiniones de otros clientes para tomar decisiones informadas antes de
                 contratar un servicio.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold">📅 Reserva Fácil y Rápida</h5>
+              <h5 className="font-semibold flex items-center"><FaCalendarCheck size={35} className="pr-2 text-quaternary"/>
+                 Reserva Fácil y Rápida</h5>
               <p className="text-justify">
                 Agenda servicios en pocos pasos y recibe confirmaciones al instante.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold">🔍 Búsqueda Inteligente</h5>
+              <h5 className="font-semibold flex items-center"><FaSearch size={35} className="pr-2 text-quaternary"/>
+                 Búsqueda Inteligente</h5>
               <p className="text-justify">
                 Filtra por categoría, ubicación y calificaciones para encontrar el profesional que
                 mejor se adapte a tus necesidades.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold">🚀 Oportunidades para Profesionales</h5>
+              <h5 className="font-semibold flex items-center"><MdRocketLaunch size={35} className="pr-2 text-quaternary"/>
+                 Oportunidades para Profesionales</h5>
               <p>
                 Si eres técnico o especialista en mantenimiento, nuestra plataforma te ayuda a
                 encontrar más clientes y hacer crecer tu negocio.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold">💳 Pagos Seguros</h5>
+              <h5 className="font-semibold flex items-center"><IoIosCard size={35} className="pr-2 text-quaternary" />
+                Pagos Seguros</h5>
               <p className="text-justify">
                 Opciones de pago en línea con garantía de seguridad y transparencia.
               </p>
             </li>
           </ul>
-          <p className="mt-6 sm:mt-10 font-bold">
-            😉Encuentra el mejor servicio o da a conocer tus habilidades, todo en un solo lugar.
+          <p className="mt-6 sm:mt-10 font-bold flex justify-center items-center gap-2"><FaFaceGrinWink size={35} className=" text-quaternary" />
+            Encuentra el mejor servicio o da a conocer tus habilidades, todo en un solo lugar.
           </p>
         </div>
       </section>
