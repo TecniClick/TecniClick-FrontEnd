@@ -102,7 +102,7 @@ const ServicesPage: React.FC = () => {
                 </button>
             </div>
 
-            <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-">
                 {filteredServices.length > 0 ? (
                     filteredServices.map((service) => (
                         <li
@@ -136,7 +136,7 @@ const ServicesPage: React.FC = () => {
                         </li>
                     ))
                 ) : (
-                    <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center">
+                    <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
                         <p className="text-tertiary">
                             No hay profesionales disponibles aún en esta categoría.
                         </p>
