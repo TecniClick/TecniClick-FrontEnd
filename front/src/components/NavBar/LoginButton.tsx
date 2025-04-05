@@ -29,7 +29,7 @@ const LoginButton = () => {
     <>
       {logged ? (
         <div className="hidden w-full md:flex justify-between items-center">
-          <Link href="/dashord" className="btn-hundido">Perfil</Link>
+          <Link href="/dashboard" className="btn-hundido">Perfil</Link>
           <button onClick={(event) => logoutHandler(event)} className="px-3 py-1 ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center">
             <span>Cerrar Sesión</span>
           </button>
