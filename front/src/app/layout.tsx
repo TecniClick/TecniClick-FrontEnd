@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        <nav className="bg-gradient-navbar p-4 shadow-lg">
+        <nav className="w-full bg-gradient-navbar p-4 shadow-lg">
           <NavBar />
         </nav>
         <main>
