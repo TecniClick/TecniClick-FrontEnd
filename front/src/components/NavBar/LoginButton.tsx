@@ -48,7 +48,7 @@ const LoginButton = () => {
         <Link className="hover:text-quaternary transition" href="/services"><IoSearch size={30} /></Link>
         <Link className="hover:text-quaternary transition" href="/contact"><FaEnvelope size={30}/></Link>
 
-      {logged ? <Link className="hover:text-quaternary transition" href="/dashord"><FaUser size={30} /></Link>
+      {logged ? <Link className="hover:text-quaternary transition" href="/dashboard"><FaUser size={30} /></Link>
       : <Link className="hover:text-quaternary transition" href="/register"><FaUserPlus size={30} /></Link>}
 
       {logged ? <button className="hover:text-quaternary transition" onClick={(event) => logoutHandler(event)}><MdLogout size={30} /></button>
