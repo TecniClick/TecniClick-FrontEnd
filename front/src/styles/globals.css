@@ -17,10 +17,7 @@
     h5 { @apply text-h5; }
     h6 { @apply text-h6; }
 
-    body {
-        @apply bg-secondary text-primary font-fontSecondary;
-    }
-
+    body { @apply bg-secondary text-primary font-fontSecondary; }
     html.dark body { @apply bg-primary text-secondary; }
 
     .secundary { @apply bg-[#dde0f1] text-tertiary; }
