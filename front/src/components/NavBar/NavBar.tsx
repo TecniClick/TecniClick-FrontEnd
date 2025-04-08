@@ -1,10 +1,18 @@
+"use client";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
 import Link from "next/link";
 import DarkMode from "../DarkMode/DarkMode";
 import LoginButton from "./LoginButton";
+import { useAuth } from "@/contexts/authContext";
+import LoadingSkeleton from "../LoadingSkeleton/LoadingSkeleton";
 
 const NavBar = () => {
+  const {loading} = useAuth();
+
+  if (loading) {
+    return <LoadingSkeleton />
+  }
   return (
     <>
       <nav className="hidden md:flex mx-6 lg:mx-36">

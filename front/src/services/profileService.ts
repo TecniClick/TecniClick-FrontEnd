@@ -117,7 +117,7 @@ export const getFilteredServices = async (query: string): Promise<ServiceProfile
     try {
         if (MODE === "developer") {
             return servicesMock.filter(service =>
-                normalizeString(service.name).includes(normalizeString(query))
+                normalizeString(service.title).includes(normalizeString(query))
             );
         } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services?search=${query}`, { cache: "no-cache" });
@@ -125,7 +125,7 @@ export const getFilteredServices = async (query: string): Promise<ServiceProfile
 
 
             return data.filter((service: ServiceProfileType) =>
-                normalizeString(service.name).includes(normalizeString(query))
+                normalizeString(service.title).includes(normalizeString(query))
             ) || [];
         }
     } catch (error) {

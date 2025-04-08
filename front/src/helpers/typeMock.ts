@@ -48,7 +48,7 @@ export type ServiceProfileType = {
     userId: string;
     appointments: AppointmentType[];
     reviews: ReviewType[];
-    name: string;
+    title: string;
     address: string;
     rating: number;
     category: CategoryType;

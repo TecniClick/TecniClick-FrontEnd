@@ -6,9 +6,9 @@ import {
 } from "@/services/profileService";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getCategories } from "@/services/categoryService";
-import { CategoryType } from "@/helpers/typeMock";
 import SearchBar from "../SearchBar/SearchBar";
+import { CategoryType, ServiceProfileType } from "@/helpers/typeMock";
+import { getCategories } from "@/services/categoryService";
 import Image from "next/image";
 import profile from "../../../public/profile.png";
 import Link from "next/link";
@@ -106,14 +106,14 @@ const ServicesPage: React.FC = () => {
         >Limpiar Filtros</button>
       </div>
 
-      <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-">
         {filteredServices.length > 0 ? (
           filteredServices.map((service) => (
             <li key={service.id} className="oscuro border p-4 rounded-lg shadow-lg">
               <Link href={`/services/${service.userId}`}>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image src={profile} alt="Foto de perfil" width={50} className="rounded-full border-2 border-quaternary dark:border-quinary" />
-                  <h3 className="text-lg font-semibold">{service.name}</h3>
+                  <h3 className="text-lg font-semibold">{service.title}</h3>
                 </div>
                 <div className="p-1">
                   <p>Profesional: <span className="font-bold">{service.user}</span></p>
@@ -140,4 +140,3 @@ const ServicesPage: React.FC = () => {
 };
 
 export default ServicesPage;
-
