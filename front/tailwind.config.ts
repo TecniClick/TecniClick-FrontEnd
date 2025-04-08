@@ -1,20 +1,24 @@
 import type { Config } from "tailwindcss";
 
 export default {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    darkMode: "class",
     extend: {
       colors: {
         primary: "#181F47",
         secondary: "#FFFFFF",
         tertiary: "#1E1E1E",
-        quaternary: "#1962FF",
+        // quaternary: "#1962FF",
+        quaternary: "#2163f0",
         quinary: "#d31f4f",
+        senary: "#e7e7e7",
+        // septenary: "#d31f4f",
+        // octonary: "#d31f4f",
       },
       backgroundImage: {
         "gradient-navbar": "linear-gradient(to bottom, #181f47 0%, #10194b 100%)",
