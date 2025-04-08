@@ -9,17 +9,22 @@ import { MdLogin, MdLogout } from "react-icons/md";
 import { FaUser, FaUserPlus } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa6";
 import logo from "../../../public/logo.png";
+import { useAuth } from "@/contexts/authContext"
+import { useRouter } from "next/navigation"
 
 
 const LoginButton = () => {
-  const [logged, setLogged] = useState(true)
+  const {isAuthenticated, logout} = useAuth();
+  const router = useRouter();
 
   const logoutHandler = (event: MouseEvent) => {
     event.preventDefault()
     toast.warning("Seguro que quieres cerrar sesión?", {
       action: {
         label: "Seguro",
-        onClick() { setLogged(false) },
+        onClick() { logout();
+          router.push("/");
+        },
       },
       position: "top-right"
     })
@@ -27,7 +32,7 @@ const LoginButton = () => {
 
   return (
     <>
-      {logged ? (
+      {isAuthenticated ? (
         <div className="hidden w-full md:flex justify-between items-center">
           <Link href="/dashboard" className="btn-hundido">Perfil</Link>
           <button onClick={(event) => logoutHandler(event)} className="px-3 py-1 ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center">
@@ -48,10 +53,10 @@ const LoginButton = () => {
         <Link className="hover:text-quaternary transition" href="/services"><IoSearch size={30} /></Link>
         <Link className="hover:text-quaternary transition" href="/contact"><FaEnvelope size={30}/></Link>
 
-      {logged ? <Link className="hover:text-quaternary transition" href="/dashboard"><FaUser size={30} /></Link>
+      {isAuthenticated ? <Link className="hover:text-quaternary transition" href="/dashboard"><FaUser size={30} /></Link>
       : <Link className="hover:text-quaternary transition" href="/register"><FaUserPlus size={30} /></Link>}
 
-      {logged ? <button className="hover:text-quaternary transition" onClick={(event) => logoutHandler(event)}><MdLogout size={30} /></button>
+      {isAuthenticated ? <button className="hover:text-quaternary transition" onClick={(event) => logoutHandler(event)}><MdLogout size={30} /></button>
       : <Link className="hover:text-quaternary transition" href="/login"><MdLogin size={30} /></Link>}
       </ul>
     </>

@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { UserType, UserRole } from "@/helpers/typeMock";
 
@@ -5,6 +6,7 @@ interface AuthContextType {
     user: UserType | null;
     token: string | null;
     isAuthenticated: boolean;
+    loading: boolean;
     login: (token: string, user: UserType) => Promise<void>;
     logout: () => void;
 }
@@ -14,6 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserType | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
@@ -30,6 +33,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else if (storedToken) {
             logout(); // limpiamos si no hay user válido
         }
+
+        setLoading(false);
     }, []);
 
     const login = async (jwtToken: string, userData: UserType) => {
@@ -55,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         token,
         isAuthenticated: !!user,
+        loading,
         login,
         logout,
     };
