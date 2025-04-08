@@ -11,7 +11,7 @@ const AppointmentHandler = () => {
   return (
     <div className="p-4 w-full flex justify-center items-center">
       <button
-        className="py-1 px-8 bg-primary text-secondary rounded-md"
+        className="py-1 px-8 bg-primary hover:bg-quaternary dark:bg-quinary dark:hover:bg-[#ff1251] text-secondary rounded-md"
         onClick={(event) => handler(event)}
       >
         Agregar turno a la agenda

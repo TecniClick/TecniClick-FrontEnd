@@ -35,32 +35,23 @@ const DarkMode = () => {
     <div className="flex justify-end gap-2 w-36">
       <button
         onClick={() => setTheme("light")}
-        className={`px-4 py-2 rounded btn-hundido ${theme === "light" ? "bg-primary border border-secondary" : "bg-gray-200 dark:bg-secondary dark:text-white"}`}
+        className={`px-4 py-2 rounded btn-hundido border-secondary ${theme === "light" ? "bg-quaternary border" : "bg-senary"}`}
       >
-        <Image
-          src={light}
-          alt="light"
-          className="w-4"
+        <Image src={light} alt="light" className="w-4"
         />
       </button>
       <button
         onClick={() => setTheme("dark")}
-        className={`px-4 py-2 rounded btn-hundido ${theme === "dark" ? "bg-primary border border-secondary" : "bg-gray-200 dark:bg-secondary dark:text-white"}`}
+        className={`px-4 py-2 rounded btn-hundido border-secondary ${theme === "dark" ? "bg-quaternary border" : "bg-senary"}`}
       >
-        <Image
-          src={dark}
-          alt="dark"
-          className="w-4"
+        <Image src={dark} alt="dark" className="w-4"
         />
       </button>
       <button
         onClick={() => setTheme("system")}
-        className={`px-4 py-2 rounded btn-hundido ${theme === "system" ? "bg-primary border border-secondary" : "bg-gray-200 dark:bg-secondary dark:text-white"}`}
+        className={`px-4 py-2 rounded btn-hundido border-secondary ${theme === "system" ? "bg-quaternary border" : "bg-senary"}`}
       >
-        <Image
-          src={auto}
-          alt="auto"
-          className="w-4"
+        <Image src={auto} alt="auto" className="w-4"
         />
       </button>
     </div>

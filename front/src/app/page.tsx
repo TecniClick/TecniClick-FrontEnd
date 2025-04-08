@@ -1,5 +1,6 @@
 import Image from "next/image";
 import logoContraste from "../../public/logoContraste.png";
+import logo from "../../public/logo.png";
 import RotatingText from "@/components/RotatingText/RotatingText";
 import click from "../../public/click.png";
 import Link from "next/link";
@@ -23,7 +24,7 @@ export default function Home() {
             <h3 className="italic">
               Y al alcance de un <span className="font-bold">Click!</span>
             </h3>
-            <Image src={click} alt="click" className="w-10 sm:w-16 ml-2" />
+            <Image src={click} alt="click" loading="lazy" className="w-10 sm:w-16 ml-2" />
           </div>
           <RotatingText />
           <button className="border text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg mt-6 text-base sm:text-lg font-extrabold hover:bg-quaternary">
@@ -32,7 +33,7 @@ export default function Home() {
         </main>
       </div>
 
-      <section className="bg-secondary text-tertiary p-6 sm:p-8">
+      <section className="oscuro p-6 sm:p-8">
         <div className="mx-[5%] lg:mx-[12%] 2xl:mx-[20%] flex flex-col gap-12">
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-stretch">
             <div className="w-full sm:w-1/2 flex items-center justify-center">
@@ -144,10 +145,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center bg-secondary my-6 sm:my-8">
+      <section className="flex flex-col items-center oscuro my-6 sm:my-8">
         <div className="mx-4 sm:mx-36 my-6 sm:my-8 text-center">
           <div className="flex justify-center mb-6 sm:mb-8">
-            <Image src={logoContraste} alt="logo" className="w-48 sm:w-64" />
+            {/* Logo para modo claro */}
+            <Image src={logoContraste} alt="logo claro" loading="lazy" className="w-48 sm:w-64 block dark:hidden"/>
+            {/* Logo para modo oscuro */}
+            <Image src={logo} alt="logo oscuro" loading="lazy" className="w-48 sm:w-64 hidden dark:block"/>
           </div>
           <p className="font-semibold mb-6 sm:mb-8">
             Nuestros usuarios encuentran 10 veces más profesionales que en cualquier otro lugar.

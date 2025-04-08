@@ -20,8 +20,8 @@
     body { @apply bg-secondary text-primary font-fontSecondary; }
     html.dark body { @apply bg-primary text-secondary; }
 
-    .secundary { @apply bg-[#dde0f1] text-tertiary; }
-    html.dark .secundary { @apply bg-tertiary text-[#dde0f1]; }
+    .oscuro { @apply bg-secondary text-tertiary; }
+    html.dark .oscuro { @apply bg-tertiary text-secondary; }
     
     .borders { @apply border-tertiary; }
     html.dark .borders { @apply border-[#dde0f1]; }

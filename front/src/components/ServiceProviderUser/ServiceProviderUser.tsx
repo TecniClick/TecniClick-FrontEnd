@@ -23,10 +23,10 @@ const ServiceProviderUser: React.FC<UserType> = ({
   deletedAt,
 }) => {
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="w-full max-w-4xl mx-auto p-6 oscuro shadow-lg rounded-lg">
       {/* Información del Prestador */}
       <section className="flex flex-row justify-center items-center">
-        <div className="relative aspect-square w-12 mr-2 border-primary rounded-lg border-[3px]">
+        <div className="relative aspect-square w-12 mr-2 rounded-lg border-[3px] border-quaternary dark:bg-quinary">
           <Image
             src={imgUrl || profile}
             alt={name}
@@ -51,12 +51,12 @@ const ServiceProviderUser: React.FC<UserType> = ({
               <p className="font-semibold">
                 {services.name} - {services.category.name} ({services.category.description})
               </p>
-              <p className="mt-2 text-gray-700">Tarifa base: ${services.price}</p>
-              <p className="mt-2 text-gray-700">Descripción: {services.description}.</p>
+              <p>Tarifa base: ${services.price}</p>
+              <p>Descripción: {services.description}.</p>
               <h4 className="text-lg font-semibold">Realiza trabajos de:</h4>
-              <p className="text-gray-700">{interests.length ? interests.join(", ") : "No especificados"}.</p>
+              <p>{interests.length ? interests.join(", ") : "No especificados"}.</p>
               <h4 className="text-lg font-semibold">Puntuación:</h4>
-              <p className="text-gray-700">{services.rating}</p>
+              <p>{services.rating}</p>
             </>
           ) : (
             <p className="text-gray-500">No hay servicios disponibles</p>
@@ -82,7 +82,7 @@ const ServiceProviderUser: React.FC<UserType> = ({
               />
             ))
           ) : (
-            <p className="col-span-full text-gray-500 text-center">
+            <p className="col-span-full text-center">
               El profesional no ha publicado imágenes
             </p>
           )}
@@ -98,13 +98,13 @@ const ServiceProviderUser: React.FC<UserType> = ({
             reviews.map((review) => (
               <div key={review.id} className="border-b py-2">
                 <h5 className="font-semibold">{review.user.name}</h5>
-                <p className="text-sm text-gray-500">Servicio: {review.service.name}</p>
+                <p className="text-sm text-opacity-85">Servicio: {review.service.name}</p>
                 <p className="text-sm">Puntuación: {review.rating}</p>
-                <p className="text-gray-700">{review.comment}</p>
+                <p>{review.comment}</p>
               </div>
             ))
           ) : (
-            <p className="text-gray-500">No hay reseñas disponibles.</p>
+            <p className="text-opacity-85">No hay reseñas disponibles.</p>
           )}
         </div>
       </section>
