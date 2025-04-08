@@ -1,23 +1,50 @@
 "use client";
-import { getFilteredServices, getServiceProfile, getServiceProfileByCategory } from "@/services/profileService";
-import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import SearchBar from "../SearchBar/SearchBar";
-import { CategoryType, ServiceProfileType } from "@/helpers/typeMock";
+import { useSearchParams } from "next/navigation";
 import { getCategories } from "@/services/categoryService";
+import { CategoryType } from "@/helpers/typeMock";
+import SearchBar from "../SearchBar/SearchBar";
+import { useServiceContext } from "@/contexts/serviceContext";
 import Image from "next/image";
 import profile from "../../../public/profile.png";
 import Link from "next/link";
 
 const ServicesPage: React.FC = () => {
     const searchParams = useSearchParams();
-    const searchQuery = searchParams.get("Buscar Servicio") || "";
+    const searchQueryParam = searchParams.get("Buscar Servicio") || "";
 
-    const [services, setServices] = useState<ServiceProfileType[]>([]);
-    const [filteredServices, setFilteredServices] = useState<ServiceProfileType[]>([]);
+    const {
+        filteredServices,
+        setSearchQuery,
+        setCategory,
+        selectedCategory,
+        fetchFilteredServices,
+        setMinRating,
+        minRating,
+    } = useServiceContext();
+
     const [categories, setCategories] = useState<CategoryType[]>([]);
-    const [nameCategory, setNameCategory] = useState<string | null>(null);
-    const [sortPrice, setSortPrice] = useState<string | null>(null);
+    const [sortPrice, setSortPriceLocal] = useState<string | null>(null);
+
+    const handleSortChange = (value: string | null) => {
+        setSortPriceLocal(value);
+        fetchFilteredServices();
+    };
+
+    const handleRatingChange = (value: string | null) => {
+        setMinRating(value ? parseInt(value) : null);
+        fetchFilteredServices();
+    };
+
+    const handleCategoryChange = (value: string | null) => {
+        setCategory(value);
+        fetchFilteredServices();
+    };
+
+    const handleSearchChange = (query: string) => {
+        setSearchQuery(query);
+        fetchFilteredServices();
+    };
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -28,70 +55,61 @@ const ServicesPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const fetchServices = async () => {
-            const allServices = await getServiceProfile();
-            setServices(allServices);
-            setFilteredServices(allServices);
-        };
-        fetchServices();
-    }, []);
-
-    useEffect(() => {
-        const fetchFilteredServices = async () => {
-            let updatedServices = services;
-
-            if (searchQuery) {
-                updatedServices = await getFilteredServices(searchQuery);
-            } else if (nameCategory) {
-                updatedServices = await getServiceProfileByCategory(nameCategory) || [];
-            }
-
-            if (sortPrice === "asc") {
-                updatedServices = [...updatedServices].sort((a, b) => a.price - b.price);
-            } else if (sortPrice === "desc") {
-                updatedServices = [...updatedServices].sort((a, b) => b.price - a.price);
-            }
-
-            setFilteredServices(updatedServices);
-        };
-        fetchFilteredServices();
-    }, [searchQuery, nameCategory, services, sortPrice]);
+        if (searchQueryParam) {
+            setSearchQuery(searchQueryParam);
+            fetchFilteredServices();
+        }
+    }, [searchQueryParam, setSearchQuery]);
 
     const resetFilters = () => {
-        setNameCategory(null);
-        setSortPrice(null);
-        setFilteredServices(services);
+        setCategory(null);
+        setSearchQuery("");
+        setSortPriceLocal(null);
+        setMinRating(null);
+        fetchFilteredServices();
     };
 
     return (
         <div className="max-w-7xl mx-auto p-4 md:p-6 min-h-screen text-tertiary">
             <div className="flex items-center justify-center w-full mb-4">
-                <SearchBar onSearch={async (query) => {
-                    const services = await getFilteredServices(query);
-                    setFilteredServices(services);
-                }} />
+                <SearchBar onSearch={handleSearchChange} />
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 my-4">
                 <select
                     className="border p-2 rounded-lg w-full sm:w-auto"
-                    onChange={(e) => setNameCategory(e.target.value || null)}
-                    value={nameCategory || ""}
+                    onChange={(e) => handleCategoryChange(e.target.value || null)}
+                    value={selectedCategory || ""}
                 >
                     <option value="">Todas las categorías</option>
-                    {categories.map(category => (
-                        <option key={category.id} value={category.id}>{category.name}</option>
+                    {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
                     ))}
                 </select>
 
                 <select
                     className="border p-2 rounded-lg w-full sm:w-auto"
-                    onChange={(e) => setSortPrice(e.target.value || null)}
+                    onChange={(e) => handleSortChange(e.target.value || null)}
                     value={sortPrice || ""}
                 >
                     <option value="">Ordenar por precio</option>
                     <option value="asc">Menor a Mayor</option>
                     <option value="desc">Mayor a Menor</option>
+                </select>
+
+                <select
+                    className="border p-2 rounded-lg w-full sm:w-auto"
+                    onChange={(e) => handleRatingChange(e.target.value || null)}
+                    value={minRating?.toString() || ""}
+                >
+                    <option value="">Puntuación mínima</option>
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                        <option key={rating} value={rating}>
+                            {rating} estrellas o más
+                        </option>
+                    ))}
                 </select>
 
                 <button
@@ -102,7 +120,7 @@ const ServicesPage: React.FC = () => {
                 </button>
             </div>
 
-            <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-">
+            <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredServices.length > 0 ? (
                     filteredServices.map((service) => (
                         <li
@@ -121,13 +139,18 @@ const ServicesPage: React.FC = () => {
                                 </div>
                                 <div className="p-1">
                                     <p className="text-tertiary">
-                                        Profesional: <span className="font-bold">{service.user}</span>
+                                        Profesional:{" "}
+                                        <span className="font-bold">{service.user}</span>
                                     </p>
                                     <p className="text-tertiary">
-                                        Categoría: <span className="font-bold">{service.category ? service.category.name : "Categoría no disponible"}</span>
+                                        Categoría:{" "}
+                                        <span className="font-bold">
+                                            {service.category ? service.category.name : "Categoría no disponible"}
+                                        </span>
                                     </p>
                                     <p className="text-tertiary">
-                                        Precio Base: <span className="font-bold">${service.price}</span>
+                                        Precio Base:{" "}
+                                        <span className="font-bold">${service.price}</span>
                                     </p>
                                     <p className="text-tertiary">Descripción: {service.description}.</p>
                                     <p className="text-sm text-tertiary">Puntuación: {service.rating}</p>
@@ -138,7 +161,7 @@ const ServicesPage: React.FC = () => {
                 ) : (
                     <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
                         <p className="text-tertiary">
-                            No hay profesionales disponibles aún en esta categoría.
+                            No hay profesionales disponibles aún con estos filtros.
                         </p>
                     </div>
                 )}

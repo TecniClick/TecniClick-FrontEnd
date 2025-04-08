@@ -115,32 +115,39 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      // Simulamos una llamada a la API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Aquí iría tu llamada real a la API de registro
-      console.log("Datos a enviar:", {
-        nombre: formData.fullName,
-        email: formData.email,
-        telefono: formData.phone,
-        password: formData.password,
-        direccion: formData.address
+      const response = await fetch("http://localhost:3000/auth/signUp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          phone: Number(formData.phone),
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          address: formData.address,
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error en el registro");
+      }
 
       toast.success("Registro exitoso! Redirigiendo...");
 
-      // Redirigir después de 2 segundos
       setTimeout(() => {
         window.location.href = "/login";
       }, 2000);
 
-    } catch (error) {
-      toast.error("Error al registrar. Por favor intenta nuevamente.");
+    } catch (error: any) {
+      toast.error(error.message || "Error al registrar. Por favor intenta nuevamente.");
       console.error("Error en registro:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
     <main className="w-full h-full flex justify-center items-center gap-8 px-4 pt-4 text-primary">
