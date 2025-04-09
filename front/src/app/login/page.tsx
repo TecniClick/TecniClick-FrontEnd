@@ -20,8 +20,8 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);  // ✅ activamos loading
-    setError("");        // limpiamos errores viejos
+    setIsLoading(true); 
+    setError("");      
 
     try {
       const res = await fetch("http://localhost:3000/auth/signIn", {

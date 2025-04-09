@@ -43,7 +43,7 @@ export const ServiceProvider = ({ children }: { children: React.ReactNode }) => 
 
         if (searchQuery) {
             filtered = filtered.filter(service =>
-                service.name.toLowerCase().includes(searchQuery.toLowerCase())
+                service.title.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
