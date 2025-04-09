@@ -17,7 +17,7 @@ export default {
         quaternary: "#2163f0",
         quinary: "#d31f4f",
         senary: "#e7e7e7",
-        // septenary: "#d31f4f",
+        septenary: "#aa1c38",
         // octonary: "#d31f4f",
       },
       backgroundImage: {

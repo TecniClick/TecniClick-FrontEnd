@@ -1,10 +1,12 @@
 "use client";
 
+import { useAuth } from "@/contexts/authContext";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { FaStar, FaPlus } from "react-icons/fa";
 
-export default function PerfilProveedorEditablePage() {
+const PerfilProveedorEditablePage = () => {
+  const {user} = useAuth
   const [editing] = useState(true);
   const [name, setName] = useState("Carlos López");
   const [description, setDescription] = useState(
@@ -25,12 +27,14 @@ export default function PerfilProveedorEditablePage() {
   const reviews = [
     {
       user: "Laura Gómez",
-      comment: "Excelente trabajo, llegó puntual y dejó todo funcionando perfecto. Súper recomendado.",
+      comment:
+        "Excelente trabajo, llegó puntual y dejó todo funcionando perfecto. Súper recomendado.",
       rating: 5,
     },
     {
       user: "Daniel Ruiz",
-      comment: "Muy amable y profesional. Solucionó una fuga que otros no pudieron. Lo volveré a contratar.",
+      comment:
+        "Muy amable y profesional. Solucionó una fuga que otros no pudieron. Lo volveré a contratar.",
       rating: 5,
     },
     {
@@ -66,7 +70,7 @@ export default function PerfilProveedorEditablePage() {
   };
 
   return (
-    <div className="pb-28 max-w-xl mx-auto">
+    <div className="mx-[6%] p-[3%] oscuro shadow-lg">
       {/* Header */}
       <div className="flex items-center gap-4 p-4 border-b border-gray-200">
         <div
@@ -74,11 +78,20 @@ export default function PerfilProveedorEditablePage() {
           onClick={() => profileInputRef.current?.click()}
         >
           {profileImage ? (
-            <Image src={profileImage} alt="Perfil" className="w-full h-full object-cover !relative" fill />
+            <Image
+              src={profileImage}
+              alt="Perfil"
+              className="w-full h-full object-cover !relative"
+              fill
+            />
           ) : (
-            <span className="flex items-center justify-center h-full w-full text-gray-600 text-sm">Foto</span>
+            <span className="flex items-center justify-center h-full w-full text-gray-600 text-sm">
+              Foto
+            </span>
           )}
-          <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs transition">Editar</div>
+          <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs transition">
+            Editar
+          </div>
           <input
             type="file"
             accept="image/*"
@@ -93,13 +106,13 @@ export default function PerfilProveedorEditablePage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="text-xl font-bold bg-transparent border-b border-gray-300 focus:outline-none w-full"
+              className="text-xl font-bold bg-transparent border-b border-gray-500 focus:outline-none w-full"
             />
           ) : (
             <h2 className="text-xl font-bold">{name}</h2>
           )}
 
-          <p className="text-sm text-gray-500">Bogotá, Colombia</p>
+          <p className="text-sm text-opacity-90">Bogotá, Colombia</p>
 
           <div className="flex items-center mt-1">
             {Array.from({ length: 5 }, (_, i) => (
@@ -110,9 +123,7 @@ export default function PerfilProveedorEditablePage() {
                 }`}
               />
             ))}
-            <span className="ml-2 text-sm text-gray-600">
-              {promedioRating.toFixed(1)} / 5
-            </span>
+            <span className="ml-2 text-sm text-opacity-85">{promedioRating.toFixed(1)} / 5</span>
           </div>
         </div>
       </div>
@@ -124,7 +135,7 @@ export default function PerfilProveedorEditablePage() {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2"
+            className="w-full text-sm text-opacity-85 border border-gray-500 rounded-md p-2"
             rows={4}
           />
         ) : (
@@ -144,9 +155,7 @@ export default function PerfilProveedorEditablePage() {
               {service}
               {editing && (
                 <button
-                  onClick={() =>
-                    setServices(services.filter((_, i) => i !== index))
-                  }
+                  onClick={() => setServices(services.filter((_, i) => i !== index))}
                   className="text-red-500 text-xs ml-2"
                 >
                   ✕
@@ -178,15 +187,13 @@ export default function PerfilProveedorEditablePage() {
         <h3 className="text-lg font-semibold mb-2">Trabajos realizados</h3>
         <div className="grid grid-cols-2 gap-2 mb-2">
           {evidencias.map((src, index) => (
-              
-              <div key={index} className="relative w-full aspect-square rounded-md overflow-hidden"> 
-
-                  <Image
-                    src={src}
-                    fill
-                    alt={`Evidencia ${index + 1}`}
-                    className=" object-cover !relative"
-                  />
+            <div key={index} className="relative w-full aspect-square rounded-md overflow-hidden">
+              <Image
+                src={src}
+                fill
+                alt={`Evidencia ${index + 1}`}
+                className=" object-cover !relative"
+              />
             </div>
           ))}
         </div>
@@ -214,10 +221,7 @@ export default function PerfilProveedorEditablePage() {
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Opiniones de clientes</h3>
         {reviews.map((review, i) => (
-          <div
-            key={i}
-            className="mb-3 p-3 bg-white shadow-sm rounded-md border border-gray-100"
-          >
+          <div key={i} className="mb-3 p-3 bg-white shadow-sm rounded-md border border-gray-100">
             <p className="text-sm font-semibold">{review.user}</p>
             <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
             <div className="flex text-yellow-500 text-sm">
@@ -239,4 +243,6 @@ export default function PerfilProveedorEditablePage() {
       )}
     </div>
   );
-}
+};
+
+export default PerfilProveedorEditablePage;
