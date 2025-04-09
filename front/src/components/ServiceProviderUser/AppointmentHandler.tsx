@@ -3,20 +3,26 @@
 import { MouseEvent } from "react";
 import { toast } from "sonner";
 
-const AppointmentHandler = () => {
-  const handler = (event: MouseEvent) => {
+type Props = {
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+};
+
+const AppointmentHandler = ({ onClick }: Props) => {
+  const handler = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     toast.error("Debes iniciar sesión para poder reservar un turno! ");
   };
+
   return (
     <div className="p-4 w-full flex justify-center items-center">
       <button
         className="py-1 px-8 bg-primary hover:bg-quaternary dark:bg-quinary dark:hover:bg-[#ff1251] text-secondary rounded-md"
-        onClick={(event) => handler(event)}
+        onClick={onClick || handler} // 👈 usa el handler por defecto si no recibe uno
       >
         Agregar turno a la agenda
       </button>
     </div>
   );
 };
+
 export default AppointmentHandler;

@@ -113,3 +113,17 @@ export type OrderType = {
     status: OrderStatus;
     createdAt: Date;
 }
+
+export type UserProfile = {
+    name: string;
+    imgUrl: string | null;
+    services: {
+      title: string;
+      description: string;
+      images: mediaType[];
+      rating: number;
+      category: CategoryType;
+    };
+    reviews: ReviewType[];
+  };
+  
