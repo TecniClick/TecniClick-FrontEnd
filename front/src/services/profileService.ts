@@ -7,23 +7,40 @@ const MODE = process.env.NEXT_PUBLIC_MODE;
 export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
     console.log("ENV VARIABLES:", process.env);
 
-    // TODO: Implementar la lógica para obtener todos los servicios
-
     try {
         if (MODE === "developer") {
-            // ! Mock
+            // En modo desarrollo, siempre se devuelve el mock
             return servicesMock;
-        } else if (MODE === "production") {
+        }
+
+        if (MODE === "production") {
             const response = await fetch(`${API_URL}/services`, { cache: "no-cache" });
-            return await response.json() || [];
+
+            if (!response.ok) {
+                console.warn("Respuesta no exitosa del servidor, usando mock...");
+                return servicesMock;
+            }
+
+            const data = await response.json();
+
+            // Si no hay datos válidos, también devolvemos el mock
+            if (!Array.isArray(data) || data.length === 0) {
+                console.warn("Datos inválidos o vacíos, usando mock...");
+                return servicesMock;
+            }
+
+            return data;
         }
     } catch (error) {
-        console.error(error);
-        return [];
+        console.error("Error en la conexión con el backend:", error);
+        return servicesMock;
     }
 
-    return [];
-}
+    // Por si MODE no está definido correctamente
+    console.warn("MODE desconocido, devolviendo mock por defecto...");
+    return servicesMock;
+};
+
 
 export const getServiceProfileById = async (id: string): Promise<ServiceProfileType | null> => {
     // TODO: Implementar la lógica para obtener el perfil del servicio por id
