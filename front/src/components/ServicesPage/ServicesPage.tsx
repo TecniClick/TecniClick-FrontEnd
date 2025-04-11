@@ -51,9 +51,9 @@ const ServicesPage: React.FC = () => {
       }
 
       if (sortPrice === "asc") {
-        updatedServices = [...updatedServices].sort((a, b) => a.price - b.price);
+        updatedServices = [...updatedServices].sort((a, b) => a.appointmentPrice - b.appointmentPrice);
       } else if (sortPrice === "desc") {
-        updatedServices = [...updatedServices].sort((a, b) => b.price - a.price);
+        updatedServices = [...updatedServices].sort((a, b) => b.appointmentPrice - a.appointmentPrice);
       }
 
       setFilteredServices(updatedServices);
@@ -110,19 +110,19 @@ const ServicesPage: React.FC = () => {
         {filteredServices.length > 0 ? (
           filteredServices.map((service) => (
             <li key={service.id} className="oscuro border p-4 rounded-lg shadow-lg">
-              <Link href={`/services/${service.userId}`}>
+              <Link href={`/services/${service.id}`}>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image src={profile} alt="Foto de perfil" width={50} className="rounded-full border-2 border-quaternary dark:border-quinary" />
-                  <h3 className="text-lg font-semibold">{service.title}</h3>
+                  <h3 className="text-lg font-semibold">{service.serviceTitle}</h3>
                 </div>
                 <div className="p-1">
-                  <p>Profesional: <span className="font-bold">{service.user}</span></p>
+                  <p>Profesional: <span className="font-bold">{service.userName}</span></p>
                   <p>Categoría:{" "}
                     <span className="font-bold">
                       {service.category ? service.category.name : "Categoría no disponible"}
                     </span>
                   </p>
-                  <p>Precio Base: <span className="font-bold">${service.price}</span></p>
+                  <p>Precio Base: <span className="font-bold">${service.appointmentPrice}</span></p>
                   <p>Descripción: {service.description}.</p>
                   <p className="text-sm">Puntuación: {service.rating}</p>
                 </div>
@@ -130,7 +130,7 @@ const ServicesPage: React.FC = () => {
             </li>
           ))
         ) : (
-          <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
+          <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full max-h-f">
             <p className="text-tertiary">No hay profesionales disponibles aún en esta categoría.</p>
           </div>
         )}

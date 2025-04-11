@@ -44,22 +44,23 @@ export type UserType = {
 
 export type ServiceProfileType = {
     id: string;
-    user: string;
+    userName: string;
     userId: string;
     appointments: AppointmentType[];
     reviews: ReviewType[];
-    title: string;
+    serviceTitle: string;
     address: string;
     rating: number;
     category: CategoryType;
     description: string;
-    price: number;
+    appointmentPrice: number;
     images: mediaType[];
     subscription: SubscriptionType;
     orders: OrderType[];
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
+    user: UserType;
 }
 
 export type mediaType = {
@@ -114,16 +115,4 @@ export type OrderType = {
     createdAt: Date;
 }
 
-export type UserProfile = {
-    name: string;
-    imgUrl: string | null;
-    services: {
-      title: string;
-      description: string;
-      images: mediaType[];
-      rating: number;
-      category: CategoryType;
-    };
-    reviews: ReviewType[];
-  };
   

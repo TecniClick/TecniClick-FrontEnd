@@ -14,7 +14,7 @@ const AppointmentForm = () => {
 
     const [date, setDate] = useState("");
     const [notes, setNotes] = useState("");
-    const [mockAppointment, setMockAppointment] = useState<any>(null); // Guarda el turno simulado
+    const [mockAppointment, setMockAppointment] = useState<any>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

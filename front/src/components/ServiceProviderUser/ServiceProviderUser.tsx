@@ -2,28 +2,49 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
-import { UserType } from "@/helpers/typeMock";
+import { ServiceProfileType } from "@/helpers/typeMock";
 import profile from "../../../public/profile.png";
 import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import AppointmentHandler from "./AppointmentHandler";
 
-const ServiceProviderUser: React.FC<UserType> = ({
-  id,
-  name,
-  imgUrl,
-  services,
-  interests,
+const ServiceProviderUser: React.FC<ServiceProfileType> = ({
+  userName,
+  user,
   reviews,
+  serviceTitle,
+  category,
+  description,
+  images,
 }) => {
-  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState<number | null>(null);
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-
   const promedioRating =
-    reviews.reduce((acc, r) => acc + r.rating, 0) / (reviews.length || 1);
+    Array.isArray(reviews) && reviews.length > 0
+      ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+      : 0;
+
+  const currentImageUrl =
+    modalImageIndex !== null ? images?.[modalImageIndex]?.imgUrl : null;
+
+  const showPrevImage = () => {
+    if (modalImageIndex !== null && modalImageIndex > 0) {
+      setModalImageIndex(modalImageIndex - 1);
+    }
+  };
+
+  const showNextImage = () => {
+    if (
+      modalImageIndex !== null &&
+      images &&
+      modalImageIndex < images.length - 1
+    ) {
+      setModalImageIndex(modalImageIndex + 1);
+    }
+  };
 
   return (
     <div className="bg-secondary pb-8 w-3/4 dark:bg-tertiary mx-auto px-4 sm:px-6">
@@ -31,29 +52,31 @@ const ServiceProviderUser: React.FC<UserType> = ({
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 py-6 border-b border-gray-200 items-center justify-center">
         <div
           className="w-24 h-24 rounded-full overflow-hidden bg-gray-300 relative cursor-pointer hover:scale-105 transition"
-          onClick={() => setShowImageModal(true)}
+          onClick={() => setModalImageIndex(-1)} // -1 representa la imagen de perfil
         >
           <Image
-            src={imgUrl || profile}
-            alt={name}
+            src={user?.imgUrl || profile}
+            alt={userName}
             fill
             style={{ objectFit: "cover" }}
           />
         </div>
         <div className="text-center sm:text-left">
-          <h2 className="text-2xl font-bold">{name}</h2>
-          <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1">
-            {services?.title || "Sin servicio"} - {services?.category?.name}
+          <h2 className="text-2xl font-bold">{userName}</h2>
+          <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1 capitalize">
+            {serviceTitle || "Sin servicio"} - {category.name}
           </p>
           <p className="text-sm text-tertiary dark:text-secondary">
-            {services?.category?.description}
+            {user?.services?.category?.description}
           </p>
 
           <div className="flex items-center justify-center sm:justify-start mt-2">
             {Array.from({ length: 5 }, (_, i) => (
               <FaStar
                 key={i}
-                className={`text-yellow-400 ${i < Math.round(promedioRating) ? "opacity-100" : "opacity-80"
+                className={`text-yellow-400 ${i < Math.round(promedioRating)
+                    ? "opacity-100"
+                    : "opacity-80"
                   }`}
               />
             ))}
@@ -65,38 +88,38 @@ const ServiceProviderUser: React.FC<UserType> = ({
           <div className="mt-4 sm:mt-2">
             <AppointmentHandler
               onClick={() => {
-                console.log("¿Estoy autenticado?", isAuthenticated);
                 if (!isAuthenticated) {
-                  toast.error("Debes iniciar sesión para poder reservar un turno!");
+                  toast.error(
+                    "Debes iniciar sesión para poder reservar un turno!"
+                  );
                   return;
                 }
                 router.push("/appointments");
               }}
             />
           </div>
-
         </div>
       </div>
 
       {/* Sobre mí */}
-      {
-        services?.description && (
-          <section className="py-4">
-            <h3 className="text-lg font-semibold mb-2">Sobre mí</h3>
-            <p className="text-sm  text-tertiary dark:text-secondary">{services.description}</p>
-          </section>
-        )
-      }
+      {description && (
+        <section className="py-4">
+          <h3 className="text-lg font-semibold mb-2">Sobre mí</h3>
+          <p className="text-sm text-tertiary dark:text-secondary">
+            {description}
+          </p>
+        </section>
+      )}
 
       {/* Servicios */}
       <section className="py-4">
         <h3 className="text-lg font-semibold mb-2">Servicios ofrecidos</h3>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {interests.length ? (
-            interests.map((interest, index) => (
+          {user?.interests?.length ? (
+            user.interests.map((interest, index) => (
               <li
                 key={index}
-                className="bg-gray-100 p-2 rounded-md shadow-xl border  text-tertiary text-sm text-center"
+                className="bg-gray-100 p-2 rounded-md shadow-xl border text-tertiary text-sm text-center"
               >
                 {interest}
               </li>
@@ -112,16 +135,17 @@ const ServiceProviderUser: React.FC<UserType> = ({
         <h3 className="text-lg font-semibold mb-2">
           Galería de trabajos realizados
         </h3>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 border shadow-xl">
-          {services?.images?.length ? (
-            services.images.map((image, index) => (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 border rounded shadow-xl">
+          {images?.length ? (
+            images.map((image, index) => (
               <div
                 key={index}
-                className="relative h-28 sm:h-32 rounded-md overflow-hidden"
+                className="relative h-28 sm:h-32 gap-2 rounded-md overflow-hidden cursor-pointer hover:scale-105 transition"
+                onClick={() => setModalImageIndex(index)}
               >
                 <Image
                   src={image.imgUrl}
-                  alt={`${name} - Imagen ${index + 1}`}
+                  alt={`${userName} - Imagen ${index + 1}`}
                   fill
                   className="object-cover"
                 />
@@ -138,7 +162,7 @@ const ServiceProviderUser: React.FC<UserType> = ({
       {/* Comentarios */}
       <section className="py-4">
         <h3 className="text-lg font-semibold mb-2">Opiniones de clientes</h3>
-        {reviews.length ? (
+        {Array.isArray(reviews) && reviews.length > 0 ? (
           reviews.map((review, i) => (
             <div
               key={i}
@@ -158,27 +182,52 @@ const ServiceProviderUser: React.FC<UserType> = ({
         )}
       </section>
 
-      {/* Modal */}
-      {
-        showImageModal && (
+      {/* Modal de imagen */}
+      {modalImageIndex !== null && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center px-4"
+          onClick={() => setModalImageIndex(null)}
+        >
           <div
-            className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center px-4"
-            onClick={() => setShowImageModal(false)}
+            className="bg-white p-4 rounded-lg max-w-sm w-full relative"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white p-4 rounded-lg max-w-sm w-full">
-              <div className="relative aspect-square bg-gray-300 rounded-full overflow-hidden">
-                <Image
-                  src={imgUrl || profile}
-                  alt={`${name} - perfil grande`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+            <div className="relative aspect-square bg-gray-300 rounded-md overflow-hidden">
+              <Image
+                src={
+                  modalImageIndex === -1
+                    ? user?.imgUrl || profile
+                    : currentImageUrl || profile
+                }
+                alt="Imagen ampliada"
+                fill
+                className="object-cover"
+              />
             </div>
+
+            {/* Botones de navegación */}
+            {modalImageIndex !== -1 && images?.length > 1 && (
+              <div className="flex justify-between mt-4">
+                <button
+                  className="text-sm text-blue-600 hover:underline disabled:opacity-50"
+                  onClick={showPrevImage}
+                  disabled={modalImageIndex === 0}
+                >
+                  Anterior
+                </button>
+                <button
+                  className="text-sm text-blue-600 hover:underline disabled:opacity-50"
+                  onClick={showNextImage}
+                  disabled={modalImageIndex === images.length - 1}
+                >
+                  Siguiente
+                </button>
+              </div>
+            )}
           </div>
-        )
-      }
-    </div >
+        </div>
+      )}
+    </div>
   );
 };
 

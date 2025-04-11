@@ -5,7 +5,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const MODE = process.env.NEXT_PUBLIC_MODE;
 
 export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
-    console.log("ENV VARIABLES:", process.env);
 
     try {
         if (MODE === "developer") {
@@ -14,7 +13,7 @@ export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
         }
 
         if (MODE === "production") {
-            const response = await fetch(`${API_URL}/services`, { cache: "no-cache" });
+            const response = await fetch(`${API_URL}/service-profile`, { cache: "no-cache" });
 
             if (!response.ok) {
                 console.warn("Respuesta no exitosa del servidor, usando mock...");
@@ -46,11 +45,12 @@ export const getServiceProfileById = async (id: string): Promise<ServiceProfileT
     // TODO: Implementar la lógica para obtener el perfil del servicio por id
 
     try {
+        console.log("Consultando ID de perfil:", id, " (Ambiente: ", typeof window !== "undefined" ? "cliente" : "servidor", ")");
         if (MODE === "developer") {
             // ! Mock
             return servicesMock.find((service) => service.id === id) || null;
         } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/services/${id}`, { cache: "no-cache" });
+            const response = await fetch(`${API_URL}/service-profile/${id}`, { cache: "no-cache" });
             return await response.json() || null;
         }
     } catch (error) {
@@ -134,7 +134,7 @@ export const getFilteredServices = async (query: string): Promise<ServiceProfile
     try {
         if (MODE === "developer") {
             return servicesMock.filter(service =>
-                normalizeString(service.title).includes(normalizeString(query))
+                normalizeString(service.serviceTitle).includes(normalizeString(query))
             );
         } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/services?search=${query}`, { cache: "no-cache" });
@@ -142,7 +142,7 @@ export const getFilteredServices = async (query: string): Promise<ServiceProfile
 
 
             return data.filter((service: ServiceProfileType) =>
-                normalizeString(service.title).includes(normalizeString(query))
+                normalizeString(service.serviceTitle).includes(normalizeString(query))
             ) || [];
         }
     } catch (error) {
@@ -153,3 +153,4 @@ export const getFilteredServices = async (query: string): Promise<ServiceProfile
     return [];
 };
 
+// /service-profile/create
