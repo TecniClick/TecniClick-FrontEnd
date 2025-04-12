@@ -7,10 +7,10 @@ const MODE = process.env.NEXT_PUBLIC_MODE;
 export const getCategories = async () : Promise<CategoryType[]> => {
     // TODO: Implementar la lógica para obtener todas las categorías
     try {
-        if(MODE === "developer") {
+        if(MODE === "production") {
             // ! Mock
             return categoriesMock;
-        } else if(MODE === "production") {
+        } else if(MODE === "") {
             const response = await fetch(`${API_URL}/categories`, { cache: "no-cache" });
             return await response.json() || [];
         }
