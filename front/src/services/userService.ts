@@ -27,7 +27,7 @@ export const getUserById = async (id: string): Promise<UserType | null> => {
         if (MODE === "developer") {
             return usersMock.find((user) => user.id === id) || null;
         } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/users/${id}`, { cache: "no-cache" });
+            const response = await fetch(`${API_URL}/users/${id}`, { cache: "no-cache" });  {/* service-profile/{id} */}
             if (!response.ok) throw new Error("No se pudo obtener el usuario");
             return await response.json();
         }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import NavBar from "@/components/NavBar/NavBar";
+import NavBarWrapper from "@/components/NavBar/NavBarWrapper";
 import Footer from "@/components/Footer/Footer";
 import { Toaster } from "sonner";
 import Providers from "@/providers/providers";
@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen">
         <Providers>
           <nav className="w-full bg-gradient-navbar p-4 shadow-lg">
-            <NavBar />
+            <NavBarWrapper />
           </nav>
           <main>{children}</main>
           <Toaster position="top-center" richColors theme="system" />
@@ -31,4 +31,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
