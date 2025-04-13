@@ -48,8 +48,8 @@ export type ServiceProfileType = {
     userId: string;
     appointments: AppointmentType[];
     reviews: ReviewType[];
+    address: addressType;
     serviceTitle: string;
-    address: string;
     rating: number;
     category: CategoryType;
     description: string;
@@ -61,6 +61,27 @@ export type ServiceProfileType = {
     updatedAt: Date;
     deletedAt: Date | null;
     user: UserType;
+}
+export type ServiceRequestType = {
+    serviceTitle: string;
+    userName: string;
+    address: addressType;
+    description: string;
+    appointmentPrice: number;
+    category: CategoryType;
+    phone: number;
+    // images: mediaType[] | undefined;
+}
+
+export type addressType = {
+    extNumber: string;
+    intNumber: number | undefined;
+    street: string;
+    neighborhood: string;
+    zipCode: number | undefined;
+    city: string;
+    state: string;
+    country: string;
 }
 
 export type mediaType = {
