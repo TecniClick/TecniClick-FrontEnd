@@ -1,4 +1,4 @@
-import { ServiceProfileType } from "@/helpers/typeMock";
+import { ServiceProfileType, ServiceRequestType, UserType } from "@/helpers/typeMock";
 import { servicesMock } from "@/helpers/dataMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -61,6 +61,40 @@ export const getServiceProfileByCategory = async (id: string): Promise<ServicePr
     }
 
     return null;
+}
+
+export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<UserType> => {
+    // TODO: Implementar la lógica para actualizar el perfil del servicio
+
+    // try {
+        // if (MODE === "developer") {
+        //     // ! Mock
+        //     return servicesMock.find((service) => service.id === service.id) || null;
+        // } else if (MODE === "production") {
+            // const res = await fetch(`${API_URL}/service-profile/create`, {
+            const res = await fetch(`http://localhost:3000/service-profile/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+                body: JSON.stringify(service),
+            });
+            const response = await res.json();
+            console.log(response);
+            
+            if (res.status !== 201) {
+                const data: string[] = response.message.split("«");
+                throw new Error(data[0]);
+            }
+            return response;
+        // }
+    // } catch (error) {
+    //     console.error(error);
+    //     return null;
+    // }
+
+    // return null;
 }
 
 export const updateServiceProfile = async (service: ServiceProfileType): Promise<ServiceProfileType | null> => {

@@ -17,17 +17,11 @@
     h5 { @apply text-h5; }
     h6 { @apply text-h6; }
 
-    body { @apply bg-secondary text-primary font-fontSecondary; }
-    html.dark body { @apply bg-primary text-secondary; }
-
-    .oscuro { @apply bg-secondary text-tertiary; }
-    html.dark .oscuro { @apply bg-tertiary text-secondary; }
-    
-    .borders { @apply border-tertiary; }
-    html.dark .borders { @apply border-[#dde0f1]; }
-
+    body { @apply bg-secondary text-primary font-fontSecondary dark:bg-primary dark:text-secondary; }
+    .oscuro { @apply bg-secondary text-tertiary dark:bg-tertiary dark:text-secondary; }
+    .borders { @apply border-tertiary dark:border-senary; }
     .buttons { @apply text-center bg-primary hover:bg-quaternary dark:bg-septenary dark:hover:bg-quinary text-secondary rounded-md; }
-
+    .impunts { @apply bg-senary dark:bg-primary border borders outline-quaternary dark:outline-quinary; }
     
 }
 

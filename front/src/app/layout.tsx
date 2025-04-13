@@ -22,10 +22,8 @@ export default function RootLayout({
           <nav className="w-full bg-gradient-navbar p-4 shadow-lg">
             <NavBar />
           </nav>
-          <main>
-            {children}
-          </main>
-          <Toaster position="top-center" richColors />
+          <main>{children}</main>
+          <Toaster position="top-center" richColors theme="system" />
           <footer className="mt-auto">
             <Footer />
           </footer>
