@@ -7,7 +7,7 @@ export default function UserInfo({
     email: string;
     phone: string;
     address: string;
-    role: string;
+    role?: string;
   }) {
     return (
       <div className="w-full bg-quaternary/40 dark:bg-quinary/40 p-4 rounded-2xl border borders shadow-md">
@@ -16,7 +16,6 @@ export default function UserInfo({
           <li>Email: {email}</li>
           <li>Teléfono: {phone}</li>
           <li>Dirección: {address}</li>
-          <li>Rol: {role}</li>
         </ul>
       </div>
     );

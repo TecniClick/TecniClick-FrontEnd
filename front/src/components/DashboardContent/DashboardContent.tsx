@@ -1,14 +1,24 @@
 "use client";
 
 import { useAuth } from "@/contexts/authContext";
+import { useAppointments } from "@/contexts/appointmentContext";
 import UserImage from "./UserImage";
 import UserInfo from "./UserInfo";
 import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
+import { useEffect } from "react";
 
 export default function DashboardContent() {
-    const { user } = useAuth();
+    const { user, token } = useAuth();
+    const { appointments, refreshAppointments } = useAppointments();
+
+    useEffect(() => {
+        if (token && user) {
+            refreshAppointments();
+        }
+    }, [token, user, refreshAppointments]);
+
 
     return (
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
@@ -30,7 +40,6 @@ export default function DashboardContent() {
                                 email={user.email}
                                 phone={user.phone}
                                 address={user.address}
-                                role={user.role}
                             />
                         </div>
                         {user.interests?.length > 0 && (
@@ -42,7 +51,7 @@ export default function DashboardContent() {
 
                     {/* Turnos */}
                     <div className="w-full">
-                        <UserAppointments appointments={user.appointments || []} />
+                        <UserAppointments appointments={appointments || []} />
                     </div>
                 </div>
             ) : (

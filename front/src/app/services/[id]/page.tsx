@@ -7,7 +7,7 @@ interface ProductParams {
 
 const SlugProduct = async ({ params }: { params: ProductParams }) => {
 
-  const { id } = params;
+  const { id } = await params;
   console.log("params:", params);
   console.log("ID recibido en SlugProduct:", id);
 
