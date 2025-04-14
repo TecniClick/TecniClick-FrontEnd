@@ -18,7 +18,7 @@ export default {
         quinary: "#d31f4f",
         senary: "#e7e7e7",
         septenary: "#aa1c38",
-        // octonary: "#d31f4f",
+        octonary: "#999999",
       },
       backgroundImage: {
         "gradient-navbar": "linear-gradient(to bottom, #181f47 0%, #10194b 100%)",

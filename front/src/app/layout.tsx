@@ -23,7 +23,7 @@ export default function RootLayout({
             <NavBarWrapper />
           </nav>
           <main>{children}</main>
-          <Toaster position="top-center" richColors />
+          <Toaster position="top-center" richColors theme="system" />
           <footer className="mt-auto">
             <Footer />
           </footer>
