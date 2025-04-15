@@ -79,7 +79,7 @@ export const getServiceProfileByCategory = async (id: string): Promise<ServicePr
 }
 
 export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<UserType> => {
-    // TODO: Implementar la lógica para actualizar el perfil del servicio
+    // TODO: Implementar la lógica para crear el perfil del servicio
 
     // try {
         // if (MODE === "developer") {
@@ -87,11 +87,14 @@ export const createServiceProfile = async (token: string, service: ServiceReques
         //     return servicesMock.find((service) => service.id === service.id) || null;
         // } else if (MODE === "production") {
             // const res = await fetch(`${API_URL}/service-profile/create`, {
+            console.log(token);
+            console.log(service);
+            
             const res = await fetch(`http://localhost:3000/service-profile/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: token,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(service),
             });

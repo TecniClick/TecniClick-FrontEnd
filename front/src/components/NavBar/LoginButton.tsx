@@ -1,16 +1,17 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { MouseEvent, useState } from "react"
+import { MouseEvent } from "react"
 import { toast } from "sonner"
 
 import { IoSearch } from "react-icons/io5";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { FaUser, FaUserPlus } from "react-icons/fa";
-import { FaEnvelope } from "react-icons/fa6";
 import logo from "../../../public/logo.png";
 import { useAuth } from "@/contexts/authContext"
 import { useRouter } from "next/navigation"
+import { BsEnvelopePaperFill } from "react-icons/bs"
+import { RiFilePaper2Fill } from "react-icons/ri"
 
 
 const LoginButton = () => {
@@ -51,7 +52,9 @@ const LoginButton = () => {
       <ul className="md:hidden flex justify-around items-center text-secondary font-semibold py-2">
         <Link className="hover:text-quaternary transition flex justify-center items-center h-8 aspect-[5/3] relative" href="/"><Image src={logo} alt="logo" fill loading="lazy" style={{ objectFit: "contain" }} /></Link>
         <Link className="hover:text-quaternary transition" href="/services"><IoSearch size={30} /></Link>
-        <Link className="hover:text-quaternary transition" href="/contact"><FaEnvelope size={30}/></Link>
+
+      {isAuthenticated ? <Link className="hover:text-quaternary transition" href="/contact"><BsEnvelopePaperFill size={30}/></Link>
+      : <Link className="hover:text-quaternary transition" href="/terms"><RiFilePaper2Fill size={30} /></Link>}
 
       {isAuthenticated ? <Link className="hover:text-quaternary transition" href="/dashboard"><FaUser size={30} /></Link>
       : <Link className="hover:text-quaternary transition" href="/register"><FaUserPlus size={30} /></Link>}

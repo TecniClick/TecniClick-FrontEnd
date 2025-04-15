@@ -68,17 +68,17 @@ export type ServiceRequestType = {
     address: addressType;
     description: string;
     appointmentPrice: number;
-    category: CategoryType;
+    category: string;
     phone: number;
     // images: mediaType[] | undefined;
 }
 
 export type addressType = {
     extNumber: string;
-    intNumber: number | undefined;
+    intNumber: string;
     street: string;
     neighborhood: string;
-    zipCode: number | undefined;
+    zipCode: string;
     city: string;
     state: string;
     country: string;
