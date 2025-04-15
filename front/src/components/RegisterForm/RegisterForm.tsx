@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import "@/styles/styles.css"
+import { useRouter } from "next/navigation";
 
 interface FormData {
     fullName: string;
@@ -41,6 +42,7 @@ export default function RegisterForm() {
     });
     const [errors, setErrors] = useState<FormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {};
@@ -103,9 +105,11 @@ export default function RegisterForm() {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://localhost:3000/auth/signUp", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signUp`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
                     name: formData.fullName,
                     email: formData.email,
@@ -121,9 +125,13 @@ export default function RegisterForm() {
                 throw new Error(errorData.message || "Error en el registro");
             }
 
+            const data = await response.json();
+            
             toast.success("Registro exitoso! Redirigiendo...");
-            setTimeout(() => window.location.href = "/login", 2000);
+            // Redirigir usando el router de Next.js
+            router.push("/login");
         } catch (error: any) {
+            console.error("Registration error:", error);
             toast.error(error.message || "Error al registrar. Por favor intenta nuevamente.");
         } finally {
             setIsLoading(false);
@@ -274,6 +282,5 @@ export default function RegisterForm() {
                 </Link>
             </form>
         </main>
-
     );
 }

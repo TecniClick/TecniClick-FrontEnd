@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,7 +7,6 @@ import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "@/styles/styles.css"
-
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -25,7 +23,8 @@ const LoginForm = () => {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:3000/auth/signIn", {
+            // 1. Inicio de sesión - Cambiado a la variable de entorno
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signIn`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -33,11 +32,15 @@ const LoginForm = () => {
                 body: JSON.stringify({ email, password }),
             });
 
-            if (!res.ok) throw new Error("Error al iniciar sesión");
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || "Error al iniciar sesión");
+            }
 
             const { token, userId } = await res.json();
 
-            const userRes = await fetch(`http://localhost:3000/users/${userId}`, {
+            // 2. Obtención de datos del usuario - También con la variable de entorno
+            const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -47,13 +50,13 @@ const LoginForm = () => {
 
             const user = await userRes.json();
 
+            // 3. Guardado en contexto y redirección
             await login(token, user);
-
             router.push("/");
 
         } catch (error: any) {
             console.error("Login fallido:", error);
-            setError("Correo o contraseña incorrectos.");
+            setError(error.message || "Correo o contraseña incorrectos");
         } finally {
             setIsLoading(false);
         }

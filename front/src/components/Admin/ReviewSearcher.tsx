@@ -1,15 +1,21 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Review = {
   id: string
   rating: number
   comment: string
   createdAt: string
+  deletedAt: string | null
   user: {
     id: string
     name: string
     imgUrl: string
+  }
+  serviceProfile: {
+    id: string
+    serviceTitle: string
   }
   appointment?: {
     id: string
@@ -21,101 +27,174 @@ type ServiceProfile = {
   id: string
   serviceTitle: string
   userName: string
-  rating: number
+  rating: number | null
   description?: string
+  user: {
+    id: string
+    name: string
+  }
 }
 
 const ReviewSearchModalBlock = () => {
-  const [providerId, setProviderId] = useState('')
+  const [serviceProfileId, setServiceProfileId] = useState('')
   const [reviews, setReviews] = useState<Review[]>([])
   const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [showResultsModal, setShowResultsModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [providerInfo, setProviderInfo] = useState<ServiceProfile | null>(null)
+  const [serviceProfileInfo, setServiceProfileInfo] = useState<ServiceProfile | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
-  // Mock de búsqueda
-  const handleSearch = () => {
+  const handleSearch = async () => {
+    if (!serviceProfileId.trim()) {
+      setError('Por favor ingresa un ID de perfil de servicio')
+      return
+    }
+
     setIsLoading(true)
-    
-    setTimeout(() => {
-      if (providerId === 'provider-123') {
-        setProviderInfo({
-          id: 'provider-123',
-          serviceTitle: 'Electricista Profesional',
-          userName: 'Juan Pérez',
-          rating: 4.5,
-          description: 'Instalaciones eléctricas residenciales e industriales'
-        })
-        
-        setReviews([
-          {
-            id: 'review-1',
-            rating: 5,
-            comment: 'Excelente trabajo, muy profesional y solucionó el problema rápidamente.',
-            createdAt: '2025-04-15T14:30:00',
-            user: {
-              id: 'user-111',
-              name: 'María Gómez',
-              imgUrl: 'https://randomuser.me/api/portraits/women/65.jpg'
-            },
-            appointment: {
-              id: 'appointment-1',
-              date: '2025-04-15'
-            }
+    setError(null)
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reviews/service-profile/${serviceProfileId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
-          {
-            id: 'review-2',
-            rating: 4,
-            comment: 'Buen servicio aunque llegó con algo de retraso.',
-            createdAt: '2025-04-10T10:15:00',
-            user: {
-              id: 'user-112',
-              name: 'Carlos Rodríguez',
-              imgUrl: 'https://randomuser.me/api/portraits/men/32.jpg'
-            }
-          }
-        ])
-        setShowResultsModal(true)
-      } else {
-        alert('Proveedor no encontrado. Prueba con "provider-123"')
+        }
+      )
+
+      if (response.status === 401) {
+        localStorage.removeItem('token')
+        router.push('/login')
+        return
       }
+
+      if (!response.ok) {
+        throw new Error(response.status === 404 
+          ? 'Perfil de servicio no encontrado' 
+          : 'Error al obtener los reviews')
+      }
+
+      const reviewsData = await response.json()
+
+      const formattedReviews = reviewsData.map((review: any) => ({
+        id: review.id,
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.createdAt,
+        deletedAt: review.deletedAt,
+        user: {
+          id: review.user?.id,
+          name: review.user?.name || 'Usuario anónimo',
+          imgUrl: review.user?.imgUrl || '/default-avatar.png'
+        },
+        serviceProfile: {
+          id: review.serviceProfile?.id,
+          serviceTitle: review.serviceProfile?.serviceTitle
+        },
+        ...(review.appointment && {
+          appointment: {
+            id: review.appointment.id,
+            date: review.appointment.date
+          }
+        })
+      }))
+
+      if (reviewsData.length > 0 && reviewsData[0].serviceProfile) {
+        setServiceProfileInfo({
+          id: reviewsData[0].serviceProfile.id,
+          serviceTitle: reviewsData[0].serviceProfile.serviceTitle,
+          userName: reviewsData[0].serviceProfile.user?.name || 'Nombre no disponible',
+          rating: reviewsData[0].serviceProfile.rating,
+          description: reviewsData[0].serviceProfile.description,
+          user: {
+            id: reviewsData[0].serviceProfile.user?.id,
+            name: reviewsData[0].serviceProfile.user?.name
+          }
+        })
+      }
+
+      setReviews(formattedReviews)
+      setShowResultsModal(true)
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error buscando reviews')
+    } finally {
       setIsLoading(false)
-    }, 800)
+    }
   }
 
   const handleDeleteReview = (review: Review) => {
+    if (review.deletedAt) return // No permitir desactivar un review ya desactivado
     setSelectedReview(review)
     setShowDeleteModal(true)
   }
 
-  const confirmDelete = () => {
-    if (!selectedReview) return
+  const confirmDelete = async () => {
+    if (!selectedReview || selectedReview.deletedAt) return
     
     setIsLoading(true)
-    setTimeout(() => {
-      setReviews(reviews.filter(r => r.id !== selectedReview.id))
+    setError(null)
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reviews/softDelete/${selectedReview.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      )
+
+      if (response.status === 401) {
+        localStorage.removeItem('token')
+        router.push('/login')
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: No se pudo desactivar el review`)
+      }
+
+      // Actualizar el review localmente con la fecha de desactivación
+      setReviews(reviews.map(review => 
+        review.id === selectedReview.id 
+          ? { ...review, deletedAt: new Date().toISOString() } 
+          : review
+      ))
+      
       setSelectedReview(null)
       setShowDeleteModal(false)
+      alert('Review desactivado correctamente')
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al desactivar review')
+    } finally {
       setIsLoading(false)
-    }, 800)
+    }
   }
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 mt-6">
-      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Buscar Reviews por Proveedor</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Buscar Reviews por Perfil de Servicio</h2>
       
       <div className="flex gap-4 items-end">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            ID del Proveedor
+            ID del Perfil de Servicio
           </label>
           <input
             type="text"
-            placeholder='Ingresa "provider-123" para probar'
+            placeholder='Ingresa el ID del perfil de servicio'
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
-            value={providerId}
-            onChange={(e) => setProviderId(e.target.value)}
+            value={serviceProfileId}
+            onChange={(e) => {
+              setServiceProfileId(e.target.value)
+              setError(null)
+            }}
           />
         </div>
         <button
@@ -129,22 +208,25 @@ const ReviewSearchModalBlock = () => {
         </button>
       </div>
 
+      {error && (
+        <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
+
       {/* Modal de resultados */}
-      {showResultsModal && providerInfo && (
+      {showResultsModal && serviceProfileInfo && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-            {/* Header del modal */}
             <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
               <div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-                  {providerInfo.serviceTitle}
+                  {serviceProfileInfo.serviceTitle}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {providerInfo.userName} • Rating: {providerInfo.rating.toFixed(1)}/5
+                  {serviceProfileInfo.userName} • Rating: {serviceProfileInfo.rating?.toFixed(1) || 'N/A'}/5
                 </p>
-                {providerInfo.description && (
+                {serviceProfileInfo.description && (
                   <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
-                    {providerInfo.description}
+                    {serviceProfileInfo.description}
                   </p>
                 )}
               </div>
@@ -156,7 +238,6 @@ const ReviewSearchModalBlock = () => {
               </button>
             </div>
 
-            {/* Contenido con scroll */}
             <div className="overflow-y-auto flex-1 p-6">
               <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
                 Reviews ({reviews.length})
@@ -167,7 +248,11 @@ const ReviewSearchModalBlock = () => {
                   {reviews.map((review) => (
                     <div 
                       key={review.id} 
-                      className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow"
+                      className={`border rounded-lg p-4 transition-shadow ${
+                        review.deletedAt 
+                          ? 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50' 
+                          : 'border-gray-200 dark:border-gray-700 hover:shadow-md'
+                      }`}
                     >
                       <div className="flex items-start gap-4">
                         <img
@@ -178,9 +263,16 @@ const ReviewSearchModalBlock = () => {
                         <div className="flex-1">
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="font-medium text-gray-800 dark:text-white">
-                                {review.user.name}
-                              </p>
+                              <div className="flex items-center">
+                                <p className="font-medium text-gray-800 dark:text-white">
+                                  {review.user.name}
+                                </p>
+                                {review.deletedAt && (
+                                  <span className="ml-2 px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-xs rounded-full">
+                                    Desactivado
+                                  </span>
+                                )}
+                              </div>
                               <div className="flex items-center mt-1">
                                 {[...Array(5)].map((_, i) => (
                                   <span 
@@ -194,8 +286,11 @@ const ReviewSearchModalBlock = () => {
                             </div>
                             <button
                               onClick={() => handleDeleteReview(review)}
-                              className="text-red-500 hover:text-red-700 dark:hover:text-red-400 p-1"
-                              title="Eliminar review"
+                              disabled={review.deletedAt !== null}
+                              className={`p-1 ${review.deletedAt !== null 
+                                ? 'text-gray-400 cursor-not-allowed' 
+                                : 'text-red-500 hover:text-red-700 dark:hover:text-red-400'}`}
+                              title={review.deletedAt !== null ? 'Review ya desactivado' : 'Desactivar review'}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -203,7 +298,7 @@ const ReviewSearchModalBlock = () => {
                             </button>
                           </div>
                           
-                          <p className="mt-3 text-gray-700 dark:text-gray-300 italic">
+                          <p className={`mt-3 ${review.deletedAt ? 'text-gray-500 dark:text-gray-400' : 'text-gray-700 dark:text-gray-300'} italic`}>
                             "{review.comment}"
                           </p>
                           
@@ -229,13 +324,12 @@ const ReviewSearchModalBlock = () => {
               ) : (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">
-                    Este proveedor no tiene reviews aún.
+                    Este perfil de servicio no tiene reviews aún.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Footer del modal */}
             <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
               <button
                 onClick={() => setShowResultsModal(false)}
@@ -248,12 +342,12 @@ const ReviewSearchModalBlock = () => {
         </div>
       )}
 
-      {/* Modal de confirmación de eliminación */}
+      {/* Modal de confirmación de desactivación */}
       {showDeleteModal && selectedReview && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
             <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-              Eliminar Review
+              Desactivar Review
             </h3>
             
             <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-6">
@@ -283,8 +377,12 @@ const ReviewSearchModalBlock = () => {
             </div>
 
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              ¿Estás seguro que deseas eliminar permanentemente este review?
+              ¿Estás seguro que deseas desactivar este review? El review no se mostrará públicamente pero permanecerá en el sistema.
             </p>
+
+            {error && (
+              <p className="text-red-500 dark:text-red-400 text-sm mb-4">{error}</p>
+            )}
 
             <div className="flex justify-end gap-3">
               <button
@@ -301,7 +399,7 @@ const ReviewSearchModalBlock = () => {
                   isLoading ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'
                 } transition-colors`}
               >
-                {isLoading ? 'Eliminando...' : 'Eliminar'}
+                {isLoading ? 'Desactivando...' : 'Confirmar Desactivación'}
               </button>
             </div>
           </div>
