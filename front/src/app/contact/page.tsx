@@ -1,6 +1,10 @@
 import FormContact from "@/components/FormContact/FormContact";
 import RouteProtect from "@/components/RouteProtect/RouteProtect";
 
+export const metadata = {
+    title: "Contactanos | TecniClick",
+  };
+  
 export default function Contact() {
     return (
         <RouteProtect>

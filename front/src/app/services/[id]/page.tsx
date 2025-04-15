@@ -1,9 +1,27 @@
 import ServiceProviderUser from "@/components/ServiceProviderUser/ServiceProviderUser";
 import { getServiceProfileById } from "@/services/profileService";
+import { Metadata } from "next";
 
 interface ProductParams {
   id: string;
 }
+
+export async function generateMetadata(
+  { params }: { params: ProductParams }
+): Promise<Metadata> {
+  const user = await getServiceProfileById(params.id);
+
+  if (!user) {
+    return {
+      title: "Proveedor no encontrado | TecniClick",
+    };
+  }
+
+  return {
+    title: `${user.userName} | TecniClick`,
+  };
+}
+
 
 const SlugProduct = async ({ params }: { params: ProductParams }) => {
 

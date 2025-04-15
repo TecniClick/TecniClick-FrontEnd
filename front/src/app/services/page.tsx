@@ -1,5 +1,10 @@
 import ServicesPage from "@/components/ServicesPage/ServicesPage";
 
+export const metadata = {
+    title: "Buscar Servicio | TecniClick",
+};
+  
+
 export default function Services() {
     return (
         <div>

@@ -78,41 +78,27 @@ export const getServiceProfileByCategory = async (id: string): Promise<ServicePr
     return null;
 }
 
-export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<UserType> => {
+export const createServiceProfile = async (token: string, service: ServiceRequestType, user: UserType): Promise<UserType> => {
     // TODO: Implementar la lógica para crear el perfil del servicio
-
-    // try {
-        // if (MODE === "developer") {
-        //     // ! Mock
-        //     return servicesMock.find((service) => service.id === service.id) || null;
-        // } else if (MODE === "production") {
-            // const res = await fetch(`${API_URL}/service-profile/create`, {
-            console.log(token);
-            console.log(service);
-            
-            const res = await fetch(`http://localhost:3000/service-profile/create`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(service),
-            });
-            const response = await res.json();
-            console.log(response);
-            
-            if (res.status !== 201) {
-                const data: string[] = response.message.split("«");
-                throw new Error(data[0]);
-            }
-            return response;
-        // }
-    // } catch (error) {
-    //     console.error(error);
-    //     return null;
+    // if (MODE === "developer") {
+    //     return user
+    // } else if (MODE === "production") {
+        const res = await fetch(`${API_URL}/service-profile/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(service),
+        });
+        const response = await res.json();        
+        if (res.status !== 201) {
+            const data: string[] = response.message.split("«");
+            throw new Error(data[0]);
+        }
+        return response;
     // }
-
-    // return null;
+    // return user
 }
 
 export const updateServiceProfile = async (service: ServiceProfileType): Promise<ServiceProfileType | null> => {
