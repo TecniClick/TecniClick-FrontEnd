@@ -17,6 +17,8 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   category,
   description,
   images,
+  appointmentPrice,
+  id
 }) => {
   const [modalImageIndex, setModalImageIndex] = useState<number | null>(null);
   const { isAuthenticated } = useAuth();
@@ -66,8 +68,8 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1 capitalize">
             {serviceTitle || "Sin servicio"} - {category.name}
           </p>
-          <p className="text-sm text-tertiary dark:text-secondary">
-            {user?.services?.category?.description}
+          <p className="text-lg text-secondary dark:text-secondary font-extrabold border rounded text-center bg-primary dark:bg-quinary">
+            ${appointmentPrice}
           </p>
 
           <div className="flex items-center justify-center sm:justify-start mt-2">
@@ -75,8 +77,8 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
               <FaStar
                 key={i}
                 className={`text-yellow-400 ${i < Math.round(promedioRating)
-                    ? "opacity-100"
-                    : "opacity-80"
+                  ? "opacity-100"
+                  : "opacity-80"
                   }`}
               />
             ))}
@@ -87,14 +89,15 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
 
           <div className="mt-4 sm:mt-2">
             <AppointmentHandler
-              onClick={() => {
+              isAuthenticated={isAuthenticated}  // Pasar el estado de autenticación
+              onClick={(event) => {
+                event.preventDefault(); // Para evitar el comportamiento predeterminado
                 if (!isAuthenticated) {
-                  toast.error(
-                    "Debes iniciar sesión para poder reservar un turno!"
-                  );
+                  toast.error("Debes iniciar sesión para poder reservar un turno!");
                   return;
                 }
-                router.push("/appointments");
+                console.log("userId enviado al link:", id);
+                router.push(`/appointments?id=${id}`);
               }}
             />
           </div>
@@ -135,18 +138,21 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
         <h3 className="text-lg font-semibold mb-2">
           Galería de trabajos realizados
         </h3>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 border rounded shadow-xl">
+        <div
+          className="grid gap-4 p-4 border rounded shadow-xl bg-primary dark:bg-quinary"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}
+        >
           {images?.length ? (
             images.map((image, index) => (
               <div
                 key={index}
-                className="relative h-28 sm:h-32 gap-2 rounded-md overflow-hidden cursor-pointer hover:scale-105 transition"
+                className="relative aspect-square rounded-md overflow-hidden cursor-pointer hover:scale-105 transition shadow-sm"
                 onClick={() => setModalImageIndex(index)}
               >
                 <Image
                   src={image.imgUrl}
                   alt={`${userName} - Imagen ${index + 1}`}
-                  fill
+                  layout="fill"
                   className="object-cover"
                 />
               </div>
@@ -158,6 +164,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           )}
         </div>
       </section>
+
 
       {/* Comentarios */}
       <section className="py-4">

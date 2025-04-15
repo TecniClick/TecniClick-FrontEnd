@@ -43,7 +43,7 @@ export const ServiceProvider = ({ children }: { children: React.ReactNode }) => 
 
         if (searchQuery) {
             filtered = filtered.filter(service =>
-                service.title.toLowerCase().includes(searchQuery.toLowerCase())
+                service.serviceTitle.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
@@ -57,7 +57,7 @@ export const ServiceProvider = ({ children }: { children: React.ReactNode }) => 
 
         if (sortPrice) {
             filtered = [...filtered].sort((a, b) =>
-                sortPrice === "asc" ? a.price - b.price : b.price - a.price
+                sortPrice === "asc" ? a.appointmentPrice - b.appointmentPrice : b.appointmentPrice - a.appointmentPrice
             );
         }
 

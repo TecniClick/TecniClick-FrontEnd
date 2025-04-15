@@ -18,9 +18,9 @@ export enum OrderStatus {
 }
 
 export enum AppointmentStatus {
-    pending = "pending",
-    confirmed = "confirmed",
-    canceled = "canceled"
+    pending = "Pendiente",
+    confirmed = "Confirmado",
+    canceled = "Cancelado"
 }
 
 export type UserType = {

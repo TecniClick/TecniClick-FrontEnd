@@ -28,10 +28,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setUser(JSON.parse(storedUser));
             } catch (err) {
                 console.error("Error al parsear el usuario desde localStorage:", err);
-                localStorage.removeItem("user"); // eliminá lo roto
+                localStorage.removeItem("user");
             }
         } else if (storedToken) {
-            logout(); // limpiamos si no hay user válido
+            logout();
         }
 
         setLoading(false);
