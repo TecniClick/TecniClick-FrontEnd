@@ -5,6 +5,10 @@ import { WelcomeBlock } from "@/components/Admin/WelcomeBlock";
 import UserSearcherBlock from "@/components/Admin/UserSearcherBlock";
 import ReviewManagerBlock from "@/components/Admin/ReviewSearcher";
 
+export const metadata = {
+    title: "Perfil de Administrador | TecniClick",
+  };
+  
 export default function AdminDashboard() {
     return (
         <div className="p-6 space-y-6">

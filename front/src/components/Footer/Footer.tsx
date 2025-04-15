@@ -1,21 +1,12 @@
-import Link from "next/link";
-import { FaEnvelope, FaFacebook, FaFileContract, FaHome, FaInstagram, FaLinkedin, FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { IoSearch } from "react-icons/io5";
+import FooterConditional from "./Conditional";
 
 const Footer = () => {
     return (
         <footer className="text-secondary bg-gradient-banner w-full text-xs px-4 md:px-8 xl:px-16 py-4">
             <div className="flex flex-col md:flex-row justify-between items-center md:items-start my-4 gap-4">
-                <ul className="text-left grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <li><Link className="flex flex-row items-center gap-3 hover:text-quaternary transition" href="/"><FaHome  size={22} /> Inicio</Link></li>
-                    <li><Link className="flex flex-row items-center gap-3 hover:text-quaternary transition" href="/services"><IoSearch size={22}/>Buscar Servicios</Link></li>
-                    <li><Link className="flex flex-row items-center gap-3 hover:text-quaternary transition" href="/register"><FaUserPlus size={22}/>Registrarse  </Link></li>
-                    <li><Link className="flex flex-row items-center gap-3 hover:text-quaternary transition" href="/login"><FaSignInAlt size={22}/>Iniciar Sesión </Link></li>
-                    <li><Link className="flex flex-row items-center gap-3 hover:text-quaternary transition" href="/contact"><FaEnvelope size={22}/>Contacto </Link></li>
-                    <li><Link className="flex flex-row items-center gap-3 hover:text-quaternary transition" href="/terms"><FaFileContract size={22}/>Términos y Condiciones</Link></li>
-                </ul>
-
+                <FooterConditional/>
                 <div className="flex flex-col items-center">
                     <h6 className="font-bold mb-2"> Síguenos en Redes Sociales</h6>
                     <ul className="grid grid-cols-4 gap-4">

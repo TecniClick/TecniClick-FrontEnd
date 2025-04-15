@@ -1,14 +1,10 @@
-"use client";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
 import Link from "next/link";
 import DarkMode from "../DarkMode/DarkMode";
 import LoginButton from "./LoginButton";
-import { useAuth } from "@/contexts/authContext";
 
 const NavBar = () => {
-  const {loading} = useAuth();
-
   return (
     <>
       <nav className="hidden md:flex mx-6 lg:mx-36">
@@ -18,15 +14,7 @@ const NavBar = () => {
               <Image src={logo} alt="logo" fill loading="lazy" style={{ objectFit: "contain" }} />
             </button>
           </Link>
-          <li className="btn-hundido">
-            <Link href="/services">Buscar Servicios</Link>
-          </li>
-          <li className="btn-hundido">
-            <Link href="/contact">Contacto</Link>
-          </li>
-          <li className="w-1/3">
-            <LoginButton />
-          </li>
+          <LoginButton />
           <li>
             <DarkMode />
           </li>
