@@ -94,8 +94,8 @@ const UserSearcherBlock = () => {
     setError(null)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${foundUser.id}`, {
-        method: 'DELETE',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/softDelete/${foundUser.id}`, {
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
