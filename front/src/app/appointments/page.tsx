@@ -1,5 +1,10 @@
 import AppointmentForm from "@/components/AppointmentForm/AppointmentForm";
+import RouteProtect from "@/components/RouteProtect/RouteProtect";
 
 export default function Page() {
-    return <AppointmentForm />;
-  }
+  return (
+    <RouteProtect>
+      <AppointmentForm />
+    </RouteProtect>
+  );
+}
