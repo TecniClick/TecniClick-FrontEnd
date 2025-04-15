@@ -1,39 +1,49 @@
-//Toda las funciones para conectar con los endpoints del back//
-
 import { AppointmentType } from "@/helpers/typeMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const MODE = process.env.NEXT_PUBLIC_MODE;
 
-
 interface NewAppointmentPayload {
     date: string;
-    userId: string;
     providerId: string;
     additionalNotes?: string;
 }
 
 export const newAppointment = async (
-    payload: NewAppointmentPayload
+    payload: NewAppointmentPayload,
+    token: string
 ): Promise<AppointmentType> => {
-    try {
-        const response = await fetch(`${API_URL}/appointments/createAppointment`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-        });
+    if (!token) throw new Error("Token requerido");
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Error al crear el turno");
-        }
+    const response = await fetch(`${API_URL}/appointments/createAppointment`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+    });
 
-        const createdAppointment: AppointmentType = await response.json();
-        return createdAppointment;
-    } catch (error) {
-        console.error("Error en newAppointment:", error);
-        throw error;
+    const data = await response.json(); // ✅ solo una vez
+    console.log("Respuesta del servidor:", data);
+
+    if (!response.ok) {
+        throw new Error(data.message || "Error al crear el turno");
     }
+
+    return data;
 };
+
+
+export const getUserAppointments = async (token: string) => {
+    const response = await fetch(`${API_URL}/appointments/userAppointments`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Error al obtener turnos");
+    return data;
+};
+

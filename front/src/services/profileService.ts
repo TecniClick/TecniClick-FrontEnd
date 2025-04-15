@@ -43,7 +43,6 @@ export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
 
 export const getServiceProfileById = async (id: string): Promise<ServiceProfileType | null> => {
     // TODO: Implementar la lógica para obtener el perfil del servicio por id
-
     try {
         console.log("Consultando ID de perfil:", id, " (Ambiente: ", typeof window !== "undefined" ? "cliente" : "servidor", ")");
         if (MODE === "developer") {
@@ -55,7 +54,7 @@ export const getServiceProfileById = async (id: string): Promise<ServiceProfileT
         }
     } catch (error) {
         console.error(error);
-        return null;
+        return servicesMock.find((service) => service.id === id) || null;;
     }
 
     return null;
@@ -63,13 +62,12 @@ export const getServiceProfileById = async (id: string): Promise<ServiceProfileT
 
 export const getServiceProfileByCategory = async (id: string): Promise<ServiceProfileType[] | null> => {
     // TODO: Implementar la lógica para obtener el perfil del servicio por categoría
-
     try {
         if (MODE === "developer") {
             // ! Mock
             return servicesMock.filter((service) => service.category.id === id) || null;
         } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/services?category=${id}`, { cache: "no-cache" });
+            const response = await fetch(`${API_URL}/categories/${id}`, { cache: "no-cache" });
             return await response.json() || null;
         }
     } catch (error) {

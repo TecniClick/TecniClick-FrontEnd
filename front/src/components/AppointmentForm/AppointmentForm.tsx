@@ -1,85 +1,73 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/authContext";
 import { toast } from "sonner";
-
-const MOCK_MODE = true;
+import { newAppointment } from "@/services/appointmentService";
 
 const AppointmentForm = () => {
     const router = useRouter();
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const searchParams = useSearchParams();
     const providerId = searchParams.get("id");
 
     const [date, setDate] = useState("");
     const [notes, setNotes] = useState("");
-    const [mockAppointment, setMockAppointment] = useState<any>(null);
+
+    useEffect(() => {
+        if (!providerId) {
+            toast.error("Proveedor no encontrado.");
+            router.push("/");
+        }
+    }, [providerId, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const mockUser = { id: "mock-user" };
-        const mockProviderId = "mock-provider";
+        if (!user || !user.id) {
+            toast.error("Usuario no autenticado.");
+            return;
+        }
 
-        const realUser = MOCK_MODE ? mockUser : user;
-        const realProviderId = MOCK_MODE ? mockProviderId : providerId;
-
-        if (!realUser || !realProviderId) {
-            toast.error("Error de autenticación o proveedor no encontrado.");
+        if (!providerId) {
+            toast.error("Proveedor no encontrado.");
             return;
         }
 
         const selectedDate = new Date(date);
-        const day = selectedDate.getDay();
-        const hour = selectedDate.getHours();
+        const now = new Date();
 
-        if (day === 0) {
-            toast.error("No se pueden reservar turnos los domingos.");
-            return;
-        }
-
-        if (hour < 8 || hour >= 20) {
-            toast.error("Solo se pueden reservar turnos entre las 8:00 y las 20:00 hs.");
+        if (selectedDate < now) {
+            toast.error("No se puede reservar un turno en el pasado.");
             return;
         }
 
         const payload = {
-            date: new Date(date).toISOString(),
-            userId: realUser.id,
-            providerId: realProviderId,
+            date: selectedDate.toISOString(),
+            providerId,
             additionalNotes: notes,
         };
 
+        console.log("Token:", token);
+        console.log("Payload:", payload);
+
         try {
-            if (MOCK_MODE) {
-                await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula delay
-
-                const mockResponse = {
-                    id: "mock123",
-                    ...payload,
-                };
-
-                setMockAppointment(mockResponse); // Guarda para mostrar resumen
-                console.log("✅ Mock Turno creado:", mockResponse);
-            } else {
-                const res = await fetch("/appointments/createAppointment", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                });
-
-                if (!res.ok) throw new Error("No se pudo crear el turno");
-
+            const response = await newAppointment(payload, token!);
+            if (response) {
+                toast.success("Turno creado con éxito. Te llegará un correo con los detalles.");
                 router.push("/dashboard");
+            } else {
+                toast.error("Hubo un error al crear el turno.");
             }
-
-            toast.success("Turno creado con éxito. Te llegará un correo con los detalles.");
         } catch (err) {
-            toast.error("Hubo un error al crear el turno");
+            toast.error("Hubo un error al crear el turno.");
             console.error(err);
         }
     };
+
+    if (!providerId) {
+        return <div>Cargando...</div>;
+    }
 
     return (
         <div className="max-w-md mx-auto mt-10 space-y-6">
@@ -90,7 +78,7 @@ const AppointmentForm = () => {
                     <label className="block text-sm font-medium">Fecha y hora</label>
                     <input
                         type="datetime-local"
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded dark:text-tertiary"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                         required
@@ -100,28 +88,26 @@ const AppointmentForm = () => {
                 <div>
                     <label className="block text-sm font-medium">Indica tu problema o consulta</label>
                     <textarea
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded dark:text-tertiary"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder=""
                     />
                 </div>
 
-                <button type="submit" className="bg-primary text-white px-4 py-2 rounded">
-                    Confirmar turno
-                </button>
-            </form>
+                <div className="flex justify-between gap-4">
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
+                        className="bg-gray-300 text-black px-4 py-2 rounded"
+                    >
+                        Volver atrás
+                    </button>
 
-            {MOCK_MODE && mockAppointment && (
-                <div className="mt-6 p-4 border rounded bg-gray-100">
-                    <h3 className="text-lg font-medium mb-2">🧾 Resumen del Turno (Mock)</h3>
-                    <p><strong>ID:</strong> 3</p>
-                    <p><strong>Fecha:</strong> {new Date(mockAppointment.date).toLocaleString()}</p>
-                    <p><strong>Usuario:</strong> Pepe Pepita</p>
-                    <p><strong>Proveedor:</strong> Raul Perez</p>
-                    <p><strong>Notas:</strong> {mockAppointment.additionalNotes || "Sin notas"}</p>
+                    <button type="submit" className="bg-primary text-white px-4 py-2 rounded">
+                        Confirmar turno
+                    </button>
                 </div>
-            )}
+            </form>
         </div>
     );
 };
