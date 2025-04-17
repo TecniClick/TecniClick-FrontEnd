@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import "@/styles/styles.css"
 import { useRouter } from "next/navigation";
+import GoogleButton from "../GoogleButton/GoogleButton";
 
 interface FormData {
     fullName: string;
@@ -107,7 +108,7 @@ export default function RegisterForm() {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signUp`, {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
@@ -126,7 +127,7 @@ export default function RegisterForm() {
             }
 
             const data = await response.json();
-            
+
             toast.success("Registro exitoso! Redirigiendo...");
             // Redirigir usando el router de Next.js
             router.push("/login");
@@ -273,8 +274,8 @@ export default function RegisterForm() {
                     {isLoading ? 'Registrando...' : 'Registrarse'}
                 </button>
 
-                <div className="my-4">
-                    <FcGoogle size={40} className="p-2 shadow-md rounded-full cursor-pointer" />
+                <div className="my-4 flex flex-col items-center w-full">
+                    <GoogleButton />
                 </div>
 
                 <Link href='/login'>

@@ -2,7 +2,6 @@
 
 import { MouseEvent } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 type Props = {
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;

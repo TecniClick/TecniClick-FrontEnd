@@ -3,8 +3,13 @@ import logo from "../../../public/logo.png";
 import Link from "next/link";
 import DarkMode from "../DarkMode/DarkMode";
 import LoginButton from "./LoginButton";
+import { useAuth } from "@/contexts/authContext";
+import { useSession } from "next-auth/react";
 
 const NavBar = () => {
+  const {data: session} = useSession();
+  console.log(session)
+
   return (
     <>
       <nav className="hidden md:flex mx-6 lg:mx-36">

@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/authContext";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "@/styles/styles.css"
+import GoogleButton from "../GoogleButton/GoogleButton";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -138,11 +138,7 @@ const LoginForm = () => {
 
                 {/* Google Login (decorativo) */}
                 <div className="my-4 flex flex-col items-center w-full">
-                    <p className="text-sm mb-2">O inicia sesión con</p>
-                    <FcGoogle
-                        size={40}
-                        className="p-2 shadow-md rounded-full cursor-pointer hover:shadow-lg transition-shadow"
-                    />
+                    <GoogleButton />
                 </div>
 
                 {/* Link de registro */}
