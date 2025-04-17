@@ -43,6 +43,7 @@ export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
 
 export const getServiceProfileById = async (id: string): Promise<ServiceProfileType | null> => {
     // TODO: Implementar la lógica para obtener el perfil del servicio por id
+
     try {
         console.log("Consultando ID de perfil:", id, " (Ambiente: ", typeof window !== "undefined" ? "cliente" : "servidor", ")");
         if (MODE === "developer") {
@@ -54,59 +55,43 @@ export const getServiceProfileById = async (id: string): Promise<ServiceProfileT
         }
     } catch (error) {
         console.error(error);
-        return servicesMock.find((service) => service.id === id) || null;;
-    }
-
-    return null;
-}
-
-export const getServiceProfileByCategory = async (id: string): Promise<ServiceProfileType[] | null> => {
-    // TODO: Implementar la lógica para obtener el perfil del servicio por categoría
-    try {
-        if (MODE === "developer") {
-            // ! Mock
-            return servicesMock.filter((service) => service.category.id === id) || null;
-        } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/categories/${id}`, { cache: "no-cache" });
-            return await response.json() || null;
-        }
-    } catch (error) {
-        console.error(error);
         return null;
     }
 
     return null;
 }
 
+export const getServiceProfileByCategory = async (categoryId: string): Promise<ServiceProfileType[]> => {
+    const allServices = await getServiceProfile();
+    return allServices.filter(service => service.category?.id === categoryId);
+};
+
 export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<UserType> => {
-    // TODO: Implementar la lógica para crear el perfil del servicio
+    // TODO: Implementar la lógica para actualizar el perfil del servicio
 
     // try {
-        // if (MODE === "developer") {
-        //     // ! Mock
-        //     return servicesMock.find((service) => service.id === service.id) || null;
-        // } else if (MODE === "production") {
-            // const res = await fetch(`${API_URL}/service-profile/create`, {
-            console.log(token);
-            console.log(service);
-            
-            const res = await fetch(`http://localhost:3000/service-profile/create`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(service),
-            });
-            const response = await res.json();
-            console.log(response);
-            
-            if (res.status !== 201) {
-                const data: string[] = response.message.split("«");
-                throw new Error(data[0]);
-            }
-            return response;
-        // }
+    // if (MODE === "developer") {
+    //     // ! Mock
+    //     return servicesMock.find((service) => service.id === service.id) || null;
+    // } else if (MODE === "production") {
+    // const res = await fetch(`${API_URL}/service-profile/create`, {
+    const res = await fetch(`http://localhost:3000/service-profile/create`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+        },
+        body: JSON.stringify(service),
+    });
+    const response = await res.json();
+    console.log(response);
+
+    if (res.status !== 201) {
+        const data: string[] = response.message.split("«");
+        throw new Error(data[0]);
+    }
+    return response;
+    // }
     // } catch (error) {
     //     console.error(error);
     //     return null;

@@ -4,13 +4,13 @@ import { categoriesMock } from "@/helpers/dataMock";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const MODE = process.env.NEXT_PUBLIC_MODE;
 
-export const getCategories = async () : Promise<CategoryType[]> => {
+export const getCategories = async (): Promise<CategoryType[]> => {
     // TODO: Implementar la lógica para obtener todas las categorías
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return categoriesMock;
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/categories`, { cache: "no-cache" });
             return await response.json() || [];
         }
@@ -22,13 +22,13 @@ export const getCategories = async () : Promise<CategoryType[]> => {
     return [];
 }
 
-export const getCategoryById = async (id: string) : Promise<CategoryType | null> => {
+export const getCategoryById = async (id: string): Promise<CategoryType | null> => {
     // TODO: Implementar la lógica para obtener la categoría por id
     try {
-        if(MODE === "developer") {
+        if (MODE === "developer") {
             // ! Mock
             return categoriesMock.find((category) => category.id === id) || null;
-        } else if(MODE === "production") {
+        } else if (MODE === "production") {
             const response = await fetch(`${API_URL}/categories/${id}`, { cache: "no-cache" });
             return await response.json() || null;
         }

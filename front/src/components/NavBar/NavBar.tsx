@@ -5,9 +5,11 @@ import Link from "next/link";
 import DarkMode from "../DarkMode/DarkMode";
 import LoginButton from "./LoginButton";
 import { useAuth } from "@/contexts/authContext";
+import { useSession } from "next-auth/react";
 
 const NavBar = () => {
-  const {loading} = useAuth();
+  const {data: session} = useSession();
+  console.log(session)
 
   return (
     <>
