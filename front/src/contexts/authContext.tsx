@@ -6,8 +6,7 @@ import React, {
     useEffect,
     ReactNode,
 } from "react";
-import { UserType, UserRole } from "@/helpers/typeMock";
-import { useSession } from "next-auth/react";
+import { UserType } from "@/helpers/typeMock";
 
 interface AuthContextType {
     user: UserType | null;
@@ -24,8 +23,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserType | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-
-    const { data: session } = useSession();
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
@@ -45,43 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         setLoading(false);
     }, []);
-
-    // 🔄 Detecta sesión de Google y crea/recupera usuario desde tu backend
-    useEffect(() => {
-        if (session?.user) { // Verifica que session y session.user estén definidos
-            const createOrFetchUser = async () => {
-                try {
-                    const res = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                name: session.user?.name ?? "",
-                                email: session.user?.email ?? "",
-                                image: session.user?.image ?? "",
-                            }),
-                        }
-                    );
-
-                    const data = await res.json();
-
-                    console.log("Usuario creado o recuperado:", data);
-
-                    // ⚠️ Asegurate que el backend devuelva: { token, user }
-                    if (data?.token && data?.user) {
-                        await login(data.token, data.user);
-                    }
-                } catch (err) {
-                    console.error("Error creando usuario desde sesión de Google:", err);
-                }
-            };
-
-            createOrFetchUser();
-        }
-    }, [session, user]);
 
     const login = async (jwtToken: string, userData: UserType) => {
         try {

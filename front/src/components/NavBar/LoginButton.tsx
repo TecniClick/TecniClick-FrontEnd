@@ -15,11 +15,8 @@ import { RiFilePaper2Fill } from "react-icons/ri"
 import { useSession, signOut } from "next-auth/react"
 
 const LoginButton = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const { data: session, status } = useSession();
+  const { isAuthenticated, logout } = useAuth(); // Usamos el contexto que creaste
   const router = useRouter();
-
-  const isLoggedIn = isAuthenticated || status === "authenticated";
 
   const logoutHandler = (event: MouseEvent) => {
     event.preventDefault();
@@ -30,10 +27,7 @@ const LoginButton = () => {
           if (isAuthenticated) {
             logout();
           }
-          if (status === "authenticated") {
-            signOut({ callbackUrl: "/" });
-          }
-          router.push("/");
+          router.push("/"); // Redirige a la página principal después de cerrar sesión
         },
       },
       position: "top-right",
@@ -42,10 +36,13 @@ const LoginButton = () => {
 
   return (
     <>
-      {isLoggedIn ? (
+      {isAuthenticated ? (
         <div className="hidden w-full md:flex justify-between items-center">
           <Link href="/dashboard" className="btn-hundido">Perfil</Link>
-          <button onClick={(event) => logoutHandler(event)} className="px-3 py-1 ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center">
+          <button
+            onClick={(event) => logoutHandler(event)}
+            className="px-3 py-1 ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center"
+          >
             <span>Cerrar Sesión</span>
           </button>
         </div>
@@ -59,20 +56,36 @@ const LoginButton = () => {
       )}
 
       <ul className="md:hidden flex justify-around items-center text-secondary font-semibold py-2">
-        <Link className="hover:text-quaternary transition flex justify-center items-center h-8 aspect-[5/3] relative" href="/"><Image src={logo} alt="logo" fill loading="lazy" style={{ objectFit: "contain" }} /></Link>
-        <Link className="hover:text-quaternary transition" href="/services"><IoSearch size={30} /></Link>
+        <Link className="hover:text-quaternary transition flex justify-center items-center h-8 aspect-[5/3] relative" href="/">
+          <Image src={logo} alt="logo" fill loading="lazy" style={{ objectFit: "contain" }} />
+        </Link>
+        <Link className="hover:text-quaternary transition" href="/services">
+          <IoSearch size={30} />
+        </Link>
 
-        {isLoggedIn ? (
+        {isAuthenticated ? (
           <>
-            <Link className="hover:text-quaternary transition" href="/contact"><BsEnvelopePaperFill size={30} /></Link>
-            <Link className="hover:text-quaternary transition" href="/dashboard"><FaUser size={30} /></Link>
-            <button className="hover:text-quaternary transition" onClick={(event) => logoutHandler(event)}><MdLogout size={30} /></button>
+            <Link className="hover:text-quaternary transition" href="/contact">
+              <BsEnvelopePaperFill size={30} />
+            </Link>
+            <Link className="hover:text-quaternary transition" href="/dashboard">
+              <FaUser size={30} />
+            </Link>
+            <button className="hover:text-quaternary transition" onClick={(event) => logoutHandler(event)}>
+              <MdLogout size={30} />
+            </button>
           </>
         ) : (
           <>
-            <Link className="hover:text-quaternary transition" href="/terms"><RiFilePaper2Fill size={30} /></Link>
-            <Link className="hover:text-quaternary transition" href="/register"><FaUserPlus size={30} /></Link>
-            <Link className="hover:text-quaternary transition" href="/login"><MdLogin size={30} /></Link>
+            <Link className="hover:text-quaternary transition" href="/terms">
+              <RiFilePaper2Fill size={30} />
+            </Link>
+            <Link className="hover:text-quaternary transition" href="/register">
+              <FaUserPlus size={30} />
+            </Link>
+            <Link className="hover:text-quaternary transition" href="/login">
+              <MdLogin size={30} />
+            </Link>
           </>
         )}
       </ul>
