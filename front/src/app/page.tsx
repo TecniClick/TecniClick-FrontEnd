@@ -12,6 +12,10 @@ import { FaFaceGrinWink } from "react-icons/fa6";
 import profesionesIconos from "../../public/profesionesIconos.png";
 import oficios from "../../public/oficios.jpg";
 
+export const metadata = {
+  title: "Inicio | TecniClick",
+};
+
 export default function Home() {
   return (
     <div>

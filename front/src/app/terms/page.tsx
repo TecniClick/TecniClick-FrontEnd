@@ -1,6 +1,11 @@
 import Image from "next/image";
 import logoContraste from "../../../public/logoContraste.png";
 
+export const metadata = {
+    title: "Términos y Condiciones | TecniClick",
+};
+
+
 export default function Terms() {
     return (
         <section className="max-w-4xl mx-auto p-6 md:p-10 text-gray-800">
