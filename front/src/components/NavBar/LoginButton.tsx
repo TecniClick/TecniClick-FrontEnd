@@ -12,10 +12,9 @@ import { useAuth } from "@/contexts/authContext"
 import { useRouter } from "next/navigation"
 import { BsEnvelopePaperFill } from "react-icons/bs"
 import { RiFilePaper2Fill } from "react-icons/ri"
-import { useSession, signOut } from "next-auth/react"
 
 const LoginButton = () => {
-  const { isAuthenticated, logout } = useAuth(); // Usamos el contexto que creaste
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
 
   const logoutHandler = (event: MouseEvent) => {
@@ -27,7 +26,7 @@ const LoginButton = () => {
           if (isAuthenticated) {
             logout();
           }
-          router.push("/"); // Redirige a la página principal después de cerrar sesión
+          router.push("/");
         },
       },
       position: "top-right",
@@ -37,20 +36,29 @@ const LoginButton = () => {
   return (
     <>
       {isAuthenticated ? (
-        <div className="hidden w-full md:flex justify-between items-center">
+        <div className="hidden md:flex flex-1 justify-evenly items-center">
+          <Link href="/services" className="btn-hundido">Buscar Servicios</Link>
+          <Link href="/contact" className="btn-hundido">Contacto</Link>
           <Link href="/dashboard" className="btn-hundido">Perfil</Link>
           <button
             onClick={(event) => logoutHandler(event)}
-            className="px-3 py-1 ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center"
+            className="px-3 py-1 ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary text-center"
           >
-            <span>Cerrar Sesión</span>
+            Cerrar Sesión
           </button>
         </div>
       ) : (
-        <div className="hidden w-full md:flex justify-end items-center">
-          <Link href="/login" className="text-nowrap hover:text-quaternary">Iniciar Sesión</Link>
-          <div className="px-3 py-[2px] ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center">
-            <Link href="/register">Registrarse</Link>
+        <div className="hidden md:flex flex-1 justify-evenly items-center">
+          <Link href="/services" className="btn-hundido">Buscar Servicios</Link>
+          <Link href="/terms" className="hidden xl:flex btn-hundido">Términos y Condiciones</Link>
+          <div className="flex flex-nowrap justify-center items-center">
+            <Link href="/login" className="text-nowrap hover:text-quaternary">Iniciar Sesión</Link>
+            <Link
+              href="/register"
+              className="px-3 py-[2px] ml-2 rounded-md bg-secondary hover:bg-quaternary text-primary hover:text-secondary flex justify-center items-center"
+            >
+              Registrarse
+            </Link>
           </div>
         </div>
       )}

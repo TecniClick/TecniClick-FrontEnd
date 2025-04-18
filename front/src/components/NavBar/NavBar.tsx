@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link";
@@ -10,6 +9,7 @@ import DarkMode from "@/components/DarkMode/DarkMode";
 const NavBar = () => {
   return (
     <>
+      {/* NavBar para pantallas medianas y grandes */}
       <nav className="hidden md:flex mx-6 lg:mx-36">
         <ul className="flex flex-row justify-between items-center text-secondary font-semibold w-full">
           <Link href="/" className="w-16 h-full justify-center">
@@ -23,15 +23,7 @@ const NavBar = () => {
               />
             </button>
           </Link>
-          <li className="btn-hundido">
-            <Link href="/services">Buscar Servicios</Link>
-          </li>
-          <li className="btn-hundido">
-            <Link href="/contact">Contacto</Link>
-          </li>
-          <li className="w-1/3">
-            <LoginButton />
-          </li>
+          <LoginButton />
           <li>
             <DarkMode />
           </li>
@@ -47,4 +39,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
