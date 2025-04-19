@@ -130,7 +130,7 @@ const ServicesPage: React.FC = () => {
       <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filteredServices.length > 0 ? (
           filteredServices.map((service) => (
-            <li key={service.id} className="oscuro border p-4 rounded-lg shadow-lg">
+            <li key={service.id} className="bg-secondary dark:bg-tertiary dark:text-secondary border p-4 rounded-lg shadow-lg">
               <Link href={`/services/${service.id}`}>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image

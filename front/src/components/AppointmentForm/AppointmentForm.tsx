@@ -42,6 +42,14 @@ const AppointmentForm = () => {
             return;
         }
 
+        const diffInMs = selectedDate.getTime() - now.getTime();
+        const diffInHours = diffInMs / (1000 * 60 * 60);
+
+        if (diffInHours < 2) {
+            toast.error("El turno debe reservarse con al menos 2 horas de anticipación.");
+            return;
+        }
+
         const payload = {
             date: selectedDate.toISOString(),
             providerId,
@@ -103,7 +111,7 @@ const AppointmentForm = () => {
                         Volver atrás
                     </button>
 
-                    <button type="submit" className="bg-primary text-white px-4 py-2 rounded">
+                    <button type="submit" className="bg-primary dark:bg-quinary text-white px-4 py-2 rounded">
                         Confirmar turno
                     </button>
                 </div>
