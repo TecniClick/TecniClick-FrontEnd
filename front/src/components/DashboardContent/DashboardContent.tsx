@@ -11,20 +11,16 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 export default function DashboardContent() {
-    const { user, token } = useAuth();
+    const { user, token } = useAuth(); // Usamos el contexto de autenticación
     const { appointments, refreshAppointments } = useAppointments();
-    const { data: session, status } = useSession();
 
-    const isLoggedIn = !!user || status === "authenticated";
-
-    // Para datos de usuario desde Google
-    const googleUser = session?.user;
+    const isLoggedIn = !!user; // Verificamos si el usuario está autenticado
 
     useEffect(() => {
-        if ((user && token) || status === "authenticated") {
+        if (user && token) {
             refreshAppointments();
         }
-    }, [token, user, status, refreshAppointments]);
+    }, [token, user, refreshAppointments]);
 
     return (
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
@@ -33,11 +29,11 @@ export default function DashboardContent() {
                     {/* Imagen + nombre */}
                     <div className="flex flex-col items-center gap-4">
                         <UserImage
-                            imgUrl={user?.imgUrl ?? googleUser?.image ?? undefined}
-                            name={user?.name ?? googleUser?.name ?? "Usuario"}
+                            imgUrl={user?.imgUrl ?? undefined}
+                            name={user?.name ?? "Usuario"}
                         />
                         <h1 className="text-2xl font-semibold text-center">
-                            ¡Bienvenido/a {user?.name ?? googleUser?.name}!
+                            ¡Bienvenido/a {user?.name}!
                         </h1>
                     </div>
 
@@ -50,13 +46,13 @@ export default function DashboardContent() {
                     <div className="flex flex-wrap gap-6 w-full justify-center">
                         <div className="flex-1">
                             <UserInfo
-                                email={user?.email ?? googleUser?.email ?? ""}
+                                email={user?.email ?? ""}
                                 phone={user?.phone ?? "No especificado"}
                                 address={user?.address ?? "No especificado"}
                             />
                         </div>
 
-                        {Array.isArray(user?.interests) && user!.interests.length > 0 && (
+                        {Array.isArray(user?.interests) && user?.interests.length > 0 && (
                             <div className="flex-1">
                                 <UserInterests interests={user.interests} />
                             </div>
@@ -76,3 +72,4 @@ export default function DashboardContent() {
         </section>
     );
 }
+

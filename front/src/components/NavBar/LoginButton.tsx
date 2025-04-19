@@ -12,14 +12,10 @@ import { useAuth } from "@/contexts/authContext"
 import { useRouter } from "next/navigation"
 import { BsEnvelopePaperFill } from "react-icons/bs"
 import { RiFilePaper2Fill } from "react-icons/ri"
-import { useSession, signOut } from "next-auth/react"
 
 const LoginButton = () => {
   const { isAuthenticated, logout } = useAuth();
-  const { data: session, status } = useSession();
   const router = useRouter();
-
-  const isLoggedIn = isAuthenticated || status === "authenticated";
 
   const logoutHandler = (event: MouseEvent) => {
     event.preventDefault();
@@ -30,9 +26,6 @@ const LoginButton = () => {
           if (isAuthenticated) {
             logout();
           }
-          if (status === "authenticated") {
-            signOut({ callbackUrl: "/" });
-          }
           router.push("/");
         },
       },
@@ -42,7 +35,7 @@ const LoginButton = () => {
 
   return (
     <>
-      {isLoggedIn ? (
+      {isAuthenticated ? (
         <div className="hidden md:flex flex-1 justify-evenly items-center">
           <Link href="/services" className="btn-hundido">Buscar Servicios</Link>
           <Link href="/contact" className="btn-hundido">Contacto</Link>
@@ -71,17 +64,14 @@ const LoginButton = () => {
       )}
 
       <ul className="md:hidden flex justify-around items-center text-secondary font-semibold py-2">
-        <Link
-          className="hover:text-quaternary transition flex justify-center items-center h-8 aspect-[5/3] relative"
-          href="/"
-        >
+        <Link className="hover:text-quaternary transition flex justify-center items-center h-8 aspect-[5/3] relative" href="/">
           <Image src={logo} alt="logo" fill loading="lazy" style={{ objectFit: "contain" }} />
         </Link>
         <Link className="hover:text-quaternary transition" href="/services">
           <IoSearch size={30} />
         </Link>
 
-        {isLoggedIn ? (
+        {isAuthenticated ? (
           <>
             <Link className="hover:text-quaternary transition" href="/contact">
               <BsEnvelopePaperFill size={30} />

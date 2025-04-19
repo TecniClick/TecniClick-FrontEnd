@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import LoadingSkeleton from "../LoadingSkeleton/LoadingSkeleton";
+import { useAuth } from "@/contexts/authContext";
 
 const RouteProtect = ({ children }: { children: ReactNode }) => {
-  const { status } = useSession();
+  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
@@ -16,21 +16,20 @@ const RouteProtect = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!loading && !isAuthenticated) {
       router.push("/login");
     }
-  }, [status, router]);
+  }, [loading, isAuthenticated]);
 
-  if (!isClient || status === "loading") {
+  if (!isClient || loading) {
     return <LoadingSkeleton />;
   }
 
-  if (status === "authenticated") {
+  if (isAuthenticated) {
     return <>{children}</>;
   }
 
-  return null; // Esto evita que se renderice algo innecesariamente
+  return null;
 };
 
 export default RouteProtect;
-
