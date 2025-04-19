@@ -140,14 +140,14 @@ export default function RegisterForm() {
     };
 
     return (
-        <main className="w-full h-full flex justify-center items-center gap-8 px-4 pt-4 text-primary">
-            <form onSubmit={handleSubmit} className="bg-secondary p-4 flex flex-col items-center rounded-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3">
-                <div className="flex items-center justify-center relative w-1/2 md:w-2/4 h-24">
+        <main className="w-full min-h-[calc(100vh-89px)] flex flex-col md:flex-row justify-center items-center gap-4 md:gap-16 px-4 sm:px-8 md:px-16 py-8 text-primary dark:bg-primary">
+            <form onSubmit={handleSubmit} className="bg-secondary dark:bg-tertiary dark:text-secondary p-4 flex flex-col items-center rounded-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3">
+                <div className="flex items-center justify-center relative w-1/2 mb-4 md:w-2/4 h-24">
                     <Image
                         src="/logoContraste.png"
                         alt="Logo de la pagina"
                         fill
-                        className="!relative object-contain pb-4"
+                        className="!relative object-contain pb-4 dark:bg-secondary dark:rounded-md"
                         priority
                     />
                 </div>
@@ -267,7 +267,7 @@ export default function RegisterForm() {
                 </div>
 
                 <button
-                    className={`mt-4 py-2 w-full sm:w-4/5 bg-primary rounded-md text-secondary ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    className={`mt-4 py-2 w-full sm:w-4/5 bg-primary dark:bg-quinary rounded-md text-secondary ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     type="submit"
                     disabled={isLoading}
                 >
@@ -279,7 +279,7 @@ export default function RegisterForm() {
                 </div>
 
                 <Link href='/login'>
-                    <p className="self-start text-primary hover:underline cursor-pointer">¿Ya tienes cuenta? Inicia sesión</p>
+                    <p className="self-start text-primary dark:text-quinary hover:underline cursor-pointer">¿Ya tienes cuenta? Inicia sesión</p>
                 </Link>
             </form>
         </main>

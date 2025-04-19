@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "@/styles/styles.css"
 import GoogleButton from "../GoogleButton/GoogleButton";
+import logo from "../../../public/logo.png";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -64,17 +65,17 @@ const LoginForm = () => {
 
 
     return (
-        <main className="w-full min-h-[calc(100vh-89px)] flex flex-col md:flex-row justify-center items-center gap-4 md:gap-16 px-4 sm:px-8 md:px-16 py-8 text-primary">
+        <main className="w-full min-h-[calc(100vh-89px)] flex flex-col md:flex-row justify-center items-center gap-4 md:gap-16 px-4 sm:px-8 md:px-16 py-8 text-primary dark:bg-primary">
             <form
                 onSubmit={handleSubmit}
-                className="relative bg-secondary p-4 flex flex-col items-center h-fit rounded-md w-full md:w-2/3 lg:w-1/2 xl:w-2/5 max-w-md"
+                className="relative bg-secondary dark:bg-tertiary dark:text-secondary p-4 flex flex-col items-center h-fit rounded-md w-full md:w-2/3 lg:w-1/2 xl:w-2/5 max-w-md"
             >
                 <div className="flex items-center justify-center relative w-1/2 md:w-2/4 h-24">
                     <Image
                         src="/logoContraste.png"
                         alt="Logo de la página"
                         fill
-                        className="!relative object-contain pb-4"
+                        className="!relative object-contain pb-4 dark:bg-secondary dark:rounded-md"
                         priority
                     />
                 </div>
@@ -130,7 +131,7 @@ const LoginForm = () => {
                 {/* Botón de Enviar */}
                 <button
                     type="submit"
-                    className={`mt-6 py-2 w-full sm:w-4/5 bg-primary rounded-md text-secondary hover:bg-opacity-90 transition-colors ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+                    className={`mt-6 py-2 w-full sm:w-4/5 bg-primary dark:bg-quinary rounded-md text-secondary hover:bg-opacity-90 transition-colors ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
                     disabled={isLoading}
                 >
                     {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
@@ -143,7 +144,7 @@ const LoginForm = () => {
 
                 {/* Link de registro */}
                 <Link href="/register" className="self-center">
-                    <p className="text-primary hover:underline cursor-pointer text-sm sm:text-base hover:text-opacity-80 transition-colors">
+                    <p className="text-primary dark:text-quinary hover:underline cursor-pointer text-sm sm:text-base hover:text-opacity-80 transition-colors">
                         ¿No tienes cuenta? Regístrate
                     </p>
                 </Link>

@@ -9,7 +9,7 @@ export const metadata = {
 export default function Terms() {
     return (
         <section className="max-w-4xl mx-auto p-6 md:p-10 text-gray-800">
-            <h1 className="text-3xl font-bold mb-2 text-center text-primary">
+            <h1 className="text-3xl font-bold mb-2 text-center text-primary dark:text-secondary">
                 Términos y Condiciones
             </h1>
 
@@ -98,7 +98,7 @@ export default function Terms() {
             <Image
                 src={logoContraste}
                 alt="logo"
-                className="mx-auto w-48 sm:w-64"
+                className="mx-auto w-48 sm:w-64 dark:bg-secondary rounded my-4"
             />
         </section>
     )
