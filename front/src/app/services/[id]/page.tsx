@@ -1,7 +1,6 @@
 import ServiceProviderUser from "@/components/ServiceProviderUser/ServiceProviderUser";
 import { getServiceProfileById } from "@/services/profileService";
 import { Metadata } from "next";
-import { NextPageContext } from "next";
 
 interface ProductParams {
   id: string;
