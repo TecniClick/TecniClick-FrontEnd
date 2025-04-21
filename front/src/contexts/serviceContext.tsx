@@ -36,10 +36,8 @@ export const ServiceProvider = ({ children }: { children: React.ReactNode }) => 
         fetchServices();
     }, []);
 
-    const fetchFilteredServices = async () => {
-        const allServices = await getServiceProfile();
-
-        let filtered = allServices;
+    const fetchFilteredServices = () => {
+        let filtered = [...services];
 
         if (searchQuery) {
             filtered = filtered.filter(service =>
@@ -56,8 +54,10 @@ export const ServiceProvider = ({ children }: { children: React.ReactNode }) => 
         }
 
         if (sortPrice) {
-            filtered = [...filtered].sort((a, b) =>
-                sortPrice === "asc" ? a.appointmentPrice - b.appointmentPrice : b.appointmentPrice - a.appointmentPrice
+            filtered = filtered.sort((a, b) =>
+                sortPrice === "asc"
+                    ? a.appointmentPrice - b.appointmentPrice
+                    : b.appointmentPrice - a.appointmentPrice
             );
         }
 

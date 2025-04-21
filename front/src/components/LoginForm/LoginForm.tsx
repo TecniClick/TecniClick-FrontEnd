@@ -7,7 +7,6 @@ import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "@/styles/styles.css"
 import GoogleButton from "../GoogleButton/GoogleButton";
-import logo from "../../../public/logo.png";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -55,9 +54,9 @@ const LoginForm = () => {
             await login(token, user);
             router.push("/");
 
-        } catch (error: any) {
+        } catch {
             console.error("Login fallido:", error);
-            setError(error.message || "Correo o contraseña incorrectos");
+            setError("Correo o contraseña incorrectos");
         } finally {
             setIsLoading(false);
         }

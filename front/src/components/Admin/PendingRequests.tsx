@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 type Address = {
   city: string
@@ -226,7 +227,7 @@ const PendingRequests = () => {
 
             <div className="space-y-4 text-gray-800 dark:text-white">
               <div className="flex items-start gap-4">
-                <img
+                <Image
                   src={selectedRequest.user?.imgUrl || 'https://www.shutterstock.com/image-vector/default-avatar-profile-social-media-600nw-1920331226.jpg'}
                   alt={selectedRequest.user?.name || selectedRequest.userName}
                   className="w-16 h-16 rounded-full object-cover"
@@ -272,7 +273,7 @@ const PendingRequests = () => {
               {getDocumentImage(selectedRequest) && (
                 <div className="mt-4">
                   <p className="font-semibold mb-2">Documento de verificación:</p>
-                  <img
+                  <Image
                     src={getDocumentImage(selectedRequest) || ''}
                     alt="Documento de verificación"
                     className="w-full max-w-md rounded border border-gray-200 dark:border-gray-700"

@@ -8,7 +8,6 @@ import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 
 export default function DashboardContent() {
     const { user, token } = useAuth(); // Usamos el contexto de autenticación

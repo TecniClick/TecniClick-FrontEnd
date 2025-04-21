@@ -55,7 +55,7 @@ export type ServiceProfileType = {
     description: string;
     appointmentPrice: number;
     images: mediaType[];
-    subscription: SubscriptionType;
+    subscription: SubscriptionType | null;
     orders: OrderType[];
     createdAt: Date;
     updatedAt: Date;

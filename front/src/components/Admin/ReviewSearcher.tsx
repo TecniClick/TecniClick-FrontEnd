@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 type Review = {
   id: string
@@ -79,7 +80,7 @@ const ReviewSearchModalBlock = () => {
 
       const reviewsData = await response.json()
 
-      const formattedReviews = reviewsData.map((review: any) => ({
+      const formattedReviews = reviewsData.map((review: Review) => ({
         id: review.id,
         rating: review.rating,
         comment: review.comment,
@@ -255,7 +256,7 @@ const ReviewSearchModalBlock = () => {
                       }`}
                     >
                       <div className="flex items-start gap-4">
-                        <img
+                        <Image
                           src={review.user.imgUrl}
                           alt={review.user.name}
                           className="w-12 h-12 rounded-full object-cover"
@@ -299,7 +300,7 @@ const ReviewSearchModalBlock = () => {
                           </div>
                           
                           <p className={`mt-3 ${review.deletedAt ? 'text-gray-500 dark:text-gray-400' : 'text-gray-700 dark:text-gray-300'} italic`}>
-                            "{review.comment}"
+                          &quot;{review.comment}&quot;
                           </p>
                           
                           <div className="mt-3 text-sm text-gray-500 dark:text-gray-400">
@@ -352,7 +353,7 @@ const ReviewSearchModalBlock = () => {
             
             <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-6">
               <div className="flex items-center gap-3 mb-3">
-                <img
+                <Image
                   src={selectedReview.user.imgUrl}
                   alt={selectedReview.user.name}
                   className="w-10 h-10 rounded-full"
@@ -372,7 +373,7 @@ const ReviewSearchModalBlock = () => {
                 </div>
               </div>
               <p className="text-gray-700 dark:text-gray-300 italic">
-                "{selectedReview.comment}"
+              &quot;{selectedReview.comment}&quot;
               </p>
             </div>
 
