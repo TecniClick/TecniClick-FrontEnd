@@ -27,7 +27,7 @@ export async function generateMetadata(
   }
 }
 
-export async function Page({ params }: { params: ProductParams }) {
+export default async function Page({ params }: { params: ProductParams }) {
   const { id } = params;
   console.log("params:", params);
   console.log("ID recibido en SlugProduct:", id);
