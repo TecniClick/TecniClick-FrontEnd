@@ -2,16 +2,14 @@ import ServiceProviderUser from "@/components/ServiceProviderUser/ServiceProvide
 import { getServiceProfileById } from "@/services/profileService";
 import { Metadata } from "next";
 
-interface ProductParams {
-  id: string;
-}
-
-type Props = {
-  params: ProductParams;
+type PageProps = {
+  params: {
+    id: string;
+  };
 };
 
 export async function generateMetadata(
-  { params }: Props
+  { params }: PageProps
 ): Promise<Metadata> {
   const user = await getServiceProfileById(params.id);
 
@@ -26,10 +24,8 @@ export async function generateMetadata(
   };
 }
 
-const SlugProduct = async ({ params }: Props) => {
+const SlugProduct = async ({ params }: PageProps) => {
   const { id } = params;
-  console.log("params:", params);
-  console.log("ID recibido en SlugProduct:", id);
 
   const user = await getServiceProfileById(id);
 
