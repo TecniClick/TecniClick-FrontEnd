@@ -6,9 +6,11 @@ interface ProductParams {
   id: string;
 }
 
-export async function generateMetadata(
-  { params }: { params: ProductParams }
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: ProductParams;
+}): Promise<Metadata> {
   const user = await getServiceProfileById(params.id);
 
   if (!user) {
@@ -22,13 +24,12 @@ export async function generateMetadata(
   };
 }
 
-interface PageProps {
+export default async function Page({
+  params,
+}: {
   params: ProductParams;
-}
-
-const SlugProduct = async ({ params }: PageProps) => {
+}) {
   const { id } = params;
-
   const user = await getServiceProfileById(id);
 
   return (
@@ -42,6 +43,4 @@ const SlugProduct = async ({ params }: PageProps) => {
       )}
     </div>
   );
-};
-
-export default SlugProduct;
+}
