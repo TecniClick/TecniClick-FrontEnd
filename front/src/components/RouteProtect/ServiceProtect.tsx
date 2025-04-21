@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/authContext";
 
-const RegisterProtect = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
+const ServiceProtect = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated, loading, user } = useAuth();
   const router = useRouter();
-
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -16,12 +15,18 @@ const RegisterProtect = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (isClient && user) {
+    if (isClient && !loading && (!isAuthenticated || !user)) {
+      router.push("/login");
+    } /*else if (user && !user.service) {
       router.push("/dashboard");
-    }
-  }, [isClient, user]);
+    }*/
+  }, [isClient, isAuthenticated, loading, user]);
 
   if (!isClient) {
+    return null;
+  }
+
+  if (loading) {
     return (
       <div className="w-full h-[60vh] flex justify-center items-center">
         <svg className="inline w-8 h-8 animate-spin text-primary dark:text-secondary fill-quaternary" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" >
@@ -33,7 +38,11 @@ const RegisterProtect = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  return <>{children}</>;
+  if (isAuthenticated && user) {
+    return <>{children}</>;
+  }
+
+  return null;
 };
 
-export default RegisterProtect;
+export default ServiceProtect;

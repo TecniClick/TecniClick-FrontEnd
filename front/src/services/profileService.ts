@@ -1,4 +1,4 @@
-import { ServiceProfileType, ServiceRequestType, UserType } from "@/helpers/typeMock";
+import { ServiceProfileType, ServiceRequestType, SubscriptionType } from "@/helpers/typeMock";
 import { servicesMock } from "@/helpers/dataMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -56,7 +56,7 @@ export const getServiceProfileByCategory = async (categoryId: string): Promise<S
     return allServices.filter(service => service.category?.id === categoryId);
 };
 
-export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<UserType> => {
+export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<ServiceProfileType> => {
     try {
         const res = await fetch(`${API_URL}/service-profile/create`, {
             method: "POST",
@@ -70,8 +70,7 @@ export const createServiceProfile = async (token: string, service: ServiceReques
         const response = await res.json();
 
         if (res.status !== 201) {
-            const data: string[] = response.message.split("«");
-            throw new Error(data[0]);
+            throw new Error(response.message);
         }
 
         return response;
@@ -104,29 +103,30 @@ export const updateServiceProfile = async (service: ServiceProfileType): Promise
     return null;
 };
 
-export const updateServiceProfileToPremium = async (id: string, ammount: number): Promise<void> => {
+export const updateServiceProfileToPremium = async (id: string, amount: number, token: string): Promise<SubscriptionType> => {
     try {
         // if (MODE === "developer") {
         //     return servicesMock.find((s) => s.id === service.id) || null;
         // } else if (MODE === "production") {
-            const res = await fetch(`${API_URL}/payments/create-intent`, {
+            const res = await fetch(`${API_URL}/orders/create-intent`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ id, ammount }),
+                body: JSON.stringify({ id, amount }),
             });
 
             const response = await res.json();
 
             if (res.status !== 201) {
-                const data: string[] = response.message.split("«");
-                throw new Error(data[0]);
+                throw new Error(response.message);
             }
     
             return response;
         } catch (error) {
             console.error("Error al cargar la tarjeta:", error);
+            throw error;
         }
 };
 

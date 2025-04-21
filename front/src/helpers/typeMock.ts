@@ -33,7 +33,7 @@ export type UserType = {
     role: UserRole;
     interests: string[];
     imgUrl: string | null;
-    services: ServiceProfileType | null;
+    service: ServiceProfileType | null;
     appointments: AppointmentType[];
     reviews: ReviewType[];
     orders: OrderType[];
@@ -61,7 +61,10 @@ export type ServiceProfileType = {
     updatedAt: Date;
     deletedAt: Date | null;
     user: UserType;
+    phone: number;
+    status: "pending" | "cancelled" | "active";
 }
+
 export type ServiceRequestType = {
     serviceTitle: string;
     userName: string;
