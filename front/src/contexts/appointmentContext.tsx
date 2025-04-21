@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { AppointmentType, AppointmentStatus } from "@/helpers/typeMock";
 import { useAuth } from "./authContext";
 
@@ -15,7 +15,7 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
     const [appointments, setAppointments] = useState<AppointmentType[]>([]);
     const { token, user } = useAuth();
 
-    const fetchAppointments = useCallback(async () => {
+    const fetchAppointments = async () => {
         if (!token || !user) return;
 
         try {
@@ -41,7 +41,7 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
         } catch (err) {
             console.error("Error cargando turnos:", err);
         }
-    }, [token]);
+    };
 
     // Esta función se encarga de mapear el string recibido al enum correspondiente
     const mapStatus = (statusString: string): AppointmentStatus => {

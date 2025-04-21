@@ -59,28 +59,6 @@ const ProviderEdit = () => {
     }
   }, [data]);
 
-  // const reviews = [
-  //   {
-  //     user: "Laura Gómez",
-  //     comment:
-  //       "Excelente trabajo, llegó puntual y dejó todo funcionando perfecto. Súper recomendado.",
-  //     rating: 5,
-  //   },
-  //   {
-  //     user: "Daniel Ruiz",
-  //     comment:
-  //       "Muy amable y profesional. Solucionó una fuga que otros no pudieron. Lo volveré a contratar.",
-  //     rating: 5,
-  //   },
-  //   {
-  //     user: "Marta Villalba",
-  //     comment: "Buen servicio, pero se tardó un poco más de lo acordado.",
-  //     rating: 3,
-  //   },
-  // ];
-
-  // const promedioRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
-
   const handleAddService = () => {
     const matchedCategory = categories.find(
       (cat) => cat.name.toLowerCase() === newService.toLowerCase()
@@ -127,16 +105,14 @@ const ProviderEdit = () => {
         phone: data.phone,
         category: categories[0].name,
       };
-      const response = createServiceProfile(token, request, user)
+      const response = createServiceProfile(token, request)
       toast.promise(response, {
-        loading: "Enviando Formularo...",
+        loading: "Enviando Formulario...",
         success: (data: UserType) => {
           return `Formulario cargado exitosamente, un administrador validará la informacion y sus resultados llegarán en unos dias a su correo: ${data.email}`;
         },
         error: (data) => {
-          // if (data == "TypeError: Failed to fetch") {
-          //   data = "Problemas al conectar con el servidor. Pro favor intente iniciar sesion más tarde";
-          // }
+
           return `Error al registrar el cargar el formulario (${data})`;
         },
       });
@@ -195,21 +171,9 @@ const ProviderEdit = () => {
             className="text-sm text-opacity-90 focus:outline-none w-full bg-transparent"
           />
 
-          {/* <div className="flex items-center mt-1">
-            {Array.from({ length: 5 }, (_, i) => (
-              <FaStar
-                key={i}
-                className={`text-yellow-400 ${
-                  i < Math.round(promedioRating) ? "opacity-100" : "opacity-30"
-                }`}
-              />
-            ))}
-            <span className="ml-2 text-sm text-opacity-85">{promedioRating.toFixed(1)} / 5</span>
-          </div> */}
         </div>
       </div>
 
-      {/* Descripción */}
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Descripcion del servicio</h3>
         {editing ? (
@@ -225,7 +189,6 @@ const ProviderEdit = () => {
         )}
       </section>
 
-      {/* Servicios */}
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Servicios ofrecidos</h3>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
@@ -286,7 +249,6 @@ const ProviderEdit = () => {
         )}
       </section>
 
-      {/* Precio y Telefono */}
       <section className="flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/2 flex items-center p-4 lg:pr-0">
          <span className="text-nowrap mr-1">Precio base del servicio:</span>
@@ -306,7 +268,6 @@ const ProviderEdit = () => {
         </div>
       </section>
 
-      {/* Direccion */}
       <section className="p-4 flex flex-row">
         <div className="flex flex-col w-2/5 lg:w-1/4 pr-1 justify-around my-[0_auto] flex-1 items-end">
           <span>Apartamento (opcional):</span>
@@ -331,7 +292,6 @@ const ProviderEdit = () => {
 
       </section>
 
-      {/* Galería */}
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Trabajos realizados</h3>
         <div className="grid grid-cols-2 gap-2 mb-2">
@@ -367,23 +327,6 @@ const ProviderEdit = () => {
         )}
       </section>
 
-      {/* Opiniones */}
-      {/* <section className="p-4">
-        <h3 className="text-lg font-semibold mb-2">Opiniones de clientes</h3>
-        {reviews.map((review, i) => (
-          <div key={i} className="mb-3 p-3 bg-white shadow-sm rounded-md border border-gray-100">
-            <p className="text-sm font-semibold">{review.user}</p>
-            <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
-            <div className="flex text-yellow-500 text-sm">
-              {Array.from({ length: review.rating }, (_, j) => (
-                <FaStar key={j} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </section> */}
-
-      {/* Botón guardar */}
       {editing && (
         <div className="p-4 sticky bottom-0">
           <div className="w-full bg-senary dark:bg-tertiary bg-opacity-75 dark:bg-opacity-75 text-quinary flex flex-col justify-center items-center">
