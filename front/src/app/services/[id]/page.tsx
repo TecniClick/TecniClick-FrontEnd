@@ -22,8 +22,11 @@ export async function generateMetadata(
   };
 }
 
+interface PageProps {
+  params: ProductParams;
+}
 
-const SlugProduct = async ({ params }: { params: ProductParams }) => {
+const SlugProduct = async ({ params }: PageProps) => {
   const { id } = params;
 
   const user = await getServiceProfileById(id);
