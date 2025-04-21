@@ -6,7 +6,7 @@ import React, {
     useEffect,
     ReactNode,
 } from "react";
-import { UserType } from "@/helpers/typeMock";
+import { ServiceProfileType, UserType } from "@/helpers/typeMock";
 
 interface AuthContextType {
     user: UserType | null;
@@ -15,6 +15,7 @@ interface AuthContextType {
     loading: boolean;
     login: (token: string, user: UserType) => Promise<void>;
     logout: () => void;
+    updateService: (service: ServiceProfileType) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -62,6 +63,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(null);
     };
 
+    const updateService = (service: ServiceProfileType) => {
+        if (user) setUser({...user, service})
+    }
+
     const value: AuthContextType = {
         user,
         token,
@@ -69,6 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         login,
         logout,
+        updateService
     };
 
     return (

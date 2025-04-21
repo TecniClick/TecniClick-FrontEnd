@@ -4,8 +4,10 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { toast } from "sonner";
 import { updateServiceProfileToPremium } from "@/services/profileService";
 import { FormEvent } from "react";
+import { useAuth } from "@/contexts/authContext";
 
 export default function SubscriptionForm() {
+  const { user, updateService } = useAuth()
   const stripe = useStripe();
   const elements = useElements();
 
@@ -19,7 +21,7 @@ export default function SubscriptionForm() {
 
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) {
-      toast.error("No se pudo obtener el elemento de tarjeta.");
+      toast.error("No se pudo obtener el los datos de la tarjeta.");
       return;
     }
 
@@ -30,11 +32,18 @@ export default function SubscriptionForm() {
 
     if (error) {
       toast.error(error.message || "Error procesando la tarjeta.");
-    } else if (paymentMethod) {
-      const response = updateServiceProfileToPremium(paymentMethod.id, 1000);
+    } else if (paymentMethod && !user) {
+      toast.error("Por favor registre y loguee su usuario para concretar la transaccion");
+    } else if (paymentMethod && user && (!user.service || user.service.status != "active")) {
+      toast.error("Por favor registre su usuario como proveedor de servicio para concretar la transaccion");
+    } else if (paymentMethod && user && user.service && user.service.status == "active") {
+      const response = updateServiceProfileToPremium(paymentMethod.id, 1000, user.service.id);
+      
       toast.promise(response, {
         loading: "Espere mientras registramos el pago...",
-        success: () => {
+        success: (subscription) => {
+          
+          updateService({...user.service!, subscription })
           cardElement.clear();
           return "Se registró exitosamente como Usuario Premium";
         },

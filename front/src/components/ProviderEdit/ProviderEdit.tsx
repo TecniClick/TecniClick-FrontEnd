@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/contexts/authContext";
 import providerFormValidators from "@/helpers/providerFormValidators";
-import { addressType, CategoryType, ServiceRequestType, UserType } from "@/helpers/typeMock";
+import { addressType, CategoryType, ServiceRequestType } from "@/helpers/typeMock";
 import { getCategories } from "@/services/categoryService";
 import { createServiceProfile } from "@/services/profileService";
 
@@ -19,7 +19,7 @@ type dataType = {
 }
 
 const ProviderEdit = () => {
-  const { user, token } = useAuth();
+  const { user, token, updateService } = useAuth();
 
   const [editing] = useState(true);
   const [data, setData] = useState<dataType>();
@@ -127,16 +127,14 @@ const ProviderEdit = () => {
         phone: data.phone,
         category: categories[0].name,
       };
-      const response = createServiceProfile(token, request, user)
+      const response = createServiceProfile(token, request)
       toast.promise(response, {
         loading: "Enviando Formularo...",
-        success: (data: UserType) => {
-          return `Formulario cargado exitosamente, un administrador validará la informacion y sus resultados llegarán en unos dias a su correo: ${data.email}`;
+        success: (service) => {
+          updateService(service)
+          return `Formulario cargado exitosamente, un administrador validará la informacion y sus resultados llegarán en unos dias a su correo`;
         },
         error: (data) => {
-          // if (data == "TypeError: Failed to fetch") {
-          //   data = "Problemas al conectar con el servidor. Pro favor intente iniciar sesion más tarde";
-          // }
           return `Error al registrar el cargar el formulario (${data})`;
         },
       });
