@@ -25,7 +25,7 @@ export async function generateMetadata(
 
 const SlugProduct = async ({ params }: { params: ProductParams }) => {
 
-  const { id } = await params;
+  const { id } = params;
   console.log("params:", params);
   console.log("ID recibido en SlugProduct:", id);
 
