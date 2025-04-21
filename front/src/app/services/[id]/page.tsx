@@ -2,8 +2,12 @@ import ServiceProviderUser from "@/components/ServiceProviderUser/ServiceProvide
 import { getServiceProfileById } from "@/services/profileService";
 import { Metadata } from "next";
 
+interface ProductParams {
+  id: string;
+}
+
 export async function generateMetadata(
-  { params }: { params: { id: string } }
+  { params }: { params: ProductParams }
 ): Promise<Metadata> {
   const user = await getServiceProfileById(params.id);
 
@@ -18,16 +22,22 @@ export async function generateMetadata(
   };
 }
 
-const SlugProduct = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
 
-  const user = await getServiceProfileById(id);
+const SlugProduct = async ({ params }: { params: ProductParams }) => {
+
+  const { id } = await params;
+  console.log("params:", params);
+  console.log("ID recibido en SlugProduct:", id);
+
+  const user = await getServiceProfileById(id)
 
   return (
     <div className="mx-[4%]">
       {user ? (
         <div className="flex justify-center items-center">
-          <ServiceProviderUser {...user} />
+          <ServiceProviderUser {...user}
+          />
+
         </div>
       ) : (
         <h2 className="w-full pt-[20vh] text-center">Usuario no encontrado</h2>
