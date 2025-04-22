@@ -4,13 +4,13 @@ import logo from "../../public/logo.png";
 import RotatingText from "@/components/RotatingText/RotatingText";
 import click from "../../public/click.png";
 import Link from "next/link";
-import SearchBar from "@/components/SearchBar/SearchBar";
 import { IoIosCard, IoIosStar } from "react-icons/io";
 import { FaCalendarCheck, FaCheck, FaSearch } from "react-icons/fa";
 import { MdRocketLaunch } from "react-icons/md";
 import { FaFaceGrinWink } from "react-icons/fa6";
 import profesionesIconos from "../../public/profesionesIconos.png";
 import oficios from "../../public/oficios.jpg";
+import customer from "../../public/customer.jpg";
 
 export const metadata = {
   title: "Inicio | TecniClick",
@@ -31,7 +31,7 @@ export default function Home() {
             <Image src={click} alt="click" loading="lazy" className="w-10 sm:w-16 ml-2" />
           </div>
           <RotatingText />
-          <button className="border text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg mt-6 text-base sm:text-lg font-extrabold hover:bg-quaternary">
+          <button className="border text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg mt-6 text-base sm:text-lg font-extrabold hover:bg-quaternary dark:hover:bg-quinary">
             <Link href="/register">Registrarse gratis</Link>
           </button>
         </main>
@@ -97,7 +97,7 @@ export default function Home() {
           <h2 className="font-bold text-lg sm:text-xl">¿Por qué elegirnos?</h2>
           <ul className="my-6 sm:my-8 text-left grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-16">
             <li>
-              <h5 className="font-semibold flex items-center"><FaCheck size={35} className="pr-2 text-quaternary"/>
+              <h5 className="font-semibold flex items-center"><FaCheck size={35} className="pr-2 text-quaternary" />
                 Profesionales Verificados</h5>
               <p className="text-justify">
                 Cada trabajador en nuestra plataforma pasa por un proceso de validación para
@@ -106,30 +106,30 @@ export default function Home() {
             </li>
             <li>
               <h5 className="font-semibold flex items-center"><IoIosStar size={35} className="pr-2 text-quaternary" />
-                 Reseñas y Calificaciones</h5>
+                Reseñas y Calificaciones</h5>
               <p className="text-justify">
                 Consulta opiniones de otros clientes para tomar decisiones informadas antes de
                 contratar un servicio.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold flex items-center"><FaCalendarCheck size={35} className="pr-2 text-quaternary"/>
-                 Reserva Fácil y Rápida</h5>
+              <h5 className="font-semibold flex items-center"><FaCalendarCheck size={35} className="pr-2 text-quaternary" />
+                Reserva Fácil y Rápida</h5>
               <p className="text-justify">
                 Agenda servicios en pocos pasos y recibe confirmaciones al instante.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold flex items-center"><FaSearch size={35} className="pr-2 text-quaternary"/>
-                 Búsqueda Inteligente</h5>
+              <h5 className="font-semibold flex items-center"><FaSearch size={35} className="pr-2 text-quaternary" />
+                Búsqueda Inteligente</h5>
               <p className="text-justify">
                 Filtra por categoría, ubicación y calificaciones para encontrar el profesional que
                 mejor se adapte a tus necesidades.
               </p>
             </li>
             <li>
-              <h5 className="font-semibold flex items-center"><MdRocketLaunch size={35} className="pr-2 text-quaternary"/>
-                 Oportunidades para Profesionales</h5>
+              <h5 className="font-semibold flex items-center"><MdRocketLaunch size={35} className="pr-2 text-quaternary" />
+                Oportunidades para Profesionales</h5>
               <p>
                 Si eres técnico o especialista en mantenimiento, nuestra plataforma te ayuda a
                 encontrar más clientes y hacer crecer tu negocio.
@@ -153,15 +153,26 @@ export default function Home() {
         <div className="mx-4 sm:mx-36 my-6 sm:my-8 text-center">
           <div className="flex justify-center mb-6 sm:mb-8">
             {/* Logo para modo claro */}
-            <Image src={logoContraste} alt="logo claro" loading="lazy" className="w-48 sm:w-64 block dark:hidden"/>
+            <Image src={logoContraste} alt="logo claro" loading="lazy" className="w-48 sm:w-64 block dark:hidden" />
             {/* Logo para modo oscuro */}
-            <Image src={logo} alt="logo oscuro" loading="lazy" className="w-48 sm:w-64 hidden dark:block"/>
+            <Image src={logo} alt="logo oscuro" loading="lazy" className="w-48 sm:w-64 hidden dark:block" />
           </div>
           <p className="font-semibold mb-6 sm:mb-8">
             Nuestros usuarios encuentran 10 veces más profesionales que en cualquier otro lugar.
           </p>
-          <div className="flex items-center justify-center w-full">
-            <SearchBar redirectToServices={true} />
+          <div className="w-full sm:w-auto flex flex-col items-center justify-center">
+            <div className="h-64 sm:h-auto sm:w-full aspect-[5/2] relative">
+              <Image
+                src={customer}
+                alt="customer"
+                fill
+                loading="lazy"
+                className="contain rounded-lg border border-secondary"
+              />
+            </div>
+            <button className="border bg-primary dark:bg-transparent text-secondary mt-6 px-2 py-2 sm:px-6 sm:py-3 rounded-lg sm:text-lg font-extrabold hover:bg-quaternary dark:hover:bg-quinary">
+              <Link href="/services">Buscar servicios</Link>
+            </button>
           </div>
         </div>
       </section>
