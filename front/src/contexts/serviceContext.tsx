@@ -52,7 +52,7 @@ export const ServiceProvider = ({ children }: { children: React.ReactNode }) => 
         }
 
         if (minRating !== null) {
-            filtered = filtered.filter(service => service.rating >= minRating);
+            filtered = filtered.filter(service => service.rating !== null && service.rating >= minRating);
         }
 
         if (sortPrice) {

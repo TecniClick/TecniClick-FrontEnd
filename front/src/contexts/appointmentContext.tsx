@@ -47,14 +47,14 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
     const mapStatus = (statusString: string): AppointmentStatus => {
         switch (statusString) {
             case "pending":
-                return AppointmentStatus.pending;
+                return AppointmentStatus.PENDING;
             case "confirmed":
-                return AppointmentStatus.confirmed;
+                return AppointmentStatus.CONFIRMED;
             case "canceled":
-                return AppointmentStatus.canceled;
+                return AppointmentStatus.CANCELLED;
             default:
                 console.warn("Estado desconocido:", statusString);
-                return AppointmentStatus.pending; // fallback por si llega algo raro
+                return AppointmentStatus.PENDING; // fallback por si llega algo raro
         }
     };
 

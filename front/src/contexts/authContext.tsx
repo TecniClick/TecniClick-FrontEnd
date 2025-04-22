@@ -63,8 +63,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(null);
     };
 
-    const updateService = (service: ServiceProfileType) => {
-        if (user) setUser({...user, service})
+    const updateService = (serviceProfile: ServiceProfileType) => {
+        if (user) setUser({...user, serviceProfile})
     }
 
     const value: AuthContextType = {

@@ -58,9 +58,9 @@ const ServicesPage: React.FC = () => {
 
       if (minRating !== null) {
         updatedServices = updatedServices.filter(
-          (service) => service.rating >= minRating
+          (service) => service.rating !== null && service.rating >= minRating
         );
-      }
+      }      
 
       if (sortPrice === "asc") {
         updatedServices = [...updatedServices].sort(
