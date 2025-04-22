@@ -1,7 +1,6 @@
 import { AppointmentType } from "@/helpers/typeMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const MODE = process.env.NEXT_PUBLIC_MODE;
 
 interface NewAppointmentPayload {
     date: string;

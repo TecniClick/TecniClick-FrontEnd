@@ -107,7 +107,7 @@ const ProviderEdit = () => {
       };
       const response = createServiceProfile(token, request)
       toast.promise(response, {
-        loading: "Enviando Formularo...",
+        loading: "Enviando Formulario...",
         success: (service) => {
           updateService(service)
           return `Formulario cargado exitosamente, un administrador validará la informacion y sus resultados llegarán en unos dias a su correo`;
@@ -171,21 +171,9 @@ const ProviderEdit = () => {
             className="text-sm text-opacity-90 focus:outline-none w-full bg-transparent"
           />
 
-          {/* <div className="flex items-center mt-1">
-            {Array.from({ length: 5 }, (_, i) => (
-              <FaStar
-                key={i}
-                className={`text-yellow-400 ${
-                  i < Math.round(promedioRating) ? "opacity-100" : "opacity-30"
-                }`}
-              />
-            ))}
-            <span className="ml-2 text-sm text-opacity-85">{promedioRating.toFixed(1)} / 5</span>
-          </div> */}
         </div>
       </div>
 
-      {/* Descripción */}
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Descripcion del servicio</h3>
         {editing ? (
@@ -193,7 +181,7 @@ const ProviderEdit = () => {
             value={data?.description ?? ""}
             onChange={(e) => setData({...data, description: e.target.value})}
             className="w-full text-sm impunts rounded-md p-2"
-            placeholder="Treabajo de carpintero los dias de semana pintando paredes y aberturas"
+            placeholder="Trabajo de carpintero los dias de semana pintando paredes y aberturas"
             rows={4}
           />
         ) : (
@@ -201,7 +189,6 @@ const ProviderEdit = () => {
         )}
       </section>
 
-      {/* Servicios */}
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Servicios ofrecidos</h3>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
@@ -262,7 +249,6 @@ const ProviderEdit = () => {
         )}
       </section>
 
-      {/* Precio y Telefono */}
       <section className="flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/2 flex items-center p-4 lg:pr-0">
          <span className="text-nowrap mr-1">Precio base del servicio:</span>
@@ -282,7 +268,6 @@ const ProviderEdit = () => {
         </div>
       </section>
 
-      {/* Direccion */}
       <section className="p-4 flex flex-row">
         <div className="flex flex-col w-2/5 lg:w-1/4 pr-1 justify-around my-[0_auto] flex-1 items-end">
           <span>Apartamento (opcional):</span>
@@ -307,7 +292,6 @@ const ProviderEdit = () => {
 
       </section>
 
-      {/* Galería */}
       <section className="p-4">
         <h3 className="text-lg font-semibold mb-2">Trabajos realizados</h3>
         <div className="grid grid-cols-2 gap-2 mb-2">

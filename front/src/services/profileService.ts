@@ -34,22 +34,44 @@ export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
     return servicesMock;
 };
 
-export const getServiceProfileById = async (id: string): Promise<ServiceProfileType | null> => {
+export const getServiceProfileById = async (
+    id: string
+  ): Promise<ServiceProfileType | null> => {
     try {
-        console.log("Consultando ID de perfil:", id, " (Ambiente: ", typeof window !== "undefined" ? "cliente" : "servidor", ")");
-        if (MODE === "developer") {
-            return servicesMock.find((service) => service.id === id) || null;
-        } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/service-profile/${id}`, { cache: "no-cache" });
-            return await response.json() || null;
+      console.log(
+        "Consultando ID de perfil:",
+        id,
+        "(Ambiente:",
+        typeof window !== "undefined" ? "cliente" : "servidor",
+        ")"
+      );
+  
+      if (MODE === "developer") {
+        return servicesMock.find((service) => service.id === id) || null;
+      }
+  
+      if (MODE === "production") {
+        const response = await fetch(`${API_URL}/service-profile/${id}`, {
+          cache: "no-cache",
+          next: { revalidate: 0 }, // ← Esto es útil en Next.js App Router
+        });
+  
+        if (!response.ok) {
+          console.error("Error al consultar el perfil:", response.statusText);
+          return null;
         }
+  
+        const data = await response.json();
+        return data || null;
+      }
     } catch (error) {
-        console.error(error);
-        return null;
+      console.error("Error en getServiceProfileById:", error);
+      return null;
     }
-
+  
     return null;
-};
+  };
+  
 
 export const getServiceProfileByCategory = async (categoryId: string): Promise<ServiceProfileType[]> => {
     const allServices = await getServiceProfile();

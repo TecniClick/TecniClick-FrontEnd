@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import "@/styles/styles.css"
 import { useRouter } from "next/navigation";
@@ -128,12 +127,12 @@ export default function RegisterForm() {
 
             const data = await response.json();
 
-            toast.success("Registro exitoso! Redirigiendo...");
+            toast.success(`Registro exitoso! Bienvenido, ${data.name}! Redirigiendo...`);
             // Redirigir usando el router de Next.js
             router.push("/login");
-        } catch (error: any) {
+        } catch (error){
             console.error("Registration error:", error);
-            toast.error(error.message || "Error al registrar. Por favor intenta nuevamente.");
+            toast.error("Error al registrar. Por favor intenta nuevamente.");
         } finally {
             setIsLoading(false);
         }
