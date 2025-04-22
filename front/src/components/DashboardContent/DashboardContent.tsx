@@ -22,10 +22,10 @@ export default function DashboardContent() {
     }, [token, user, refreshAppointments]);
     
     let params: string[] = ["/login", "Inicie sesion primero"]
-         if (!user?.service) params = ["/provider-edit", "Ofrecer un servicio"]
-    else if (user?.service && user?.service.status == "pending") params = ["/dashboard", "Su solicitud está en revisión"]
-    else if (user?.service && user?.service.status == "cancelled") params = ["/provider-edit", "Trate de enviar la solicitud modificada"]
-    else if (user?.service && user?.service.status == "active") params = ["/provider-premium", "Ofrecer un servicio"]
+         if (!user?.serviceProfile) params = ["/provider-edit", "Ofrecer un servicio"]
+    else if (user?.serviceProfile && user?.serviceProfile.status == "pending") params = ["/dashboard", "Su solicitud está en revisión"]
+    else if (user?.serviceProfile && user?.serviceProfile.status == "rejected") params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"]
+    else if (user?.serviceProfile && user?.serviceProfile.status == "active") params = ["/provider-premium", "Ofrecer un servicio"]
 
     return (
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">

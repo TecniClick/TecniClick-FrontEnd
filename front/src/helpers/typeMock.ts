@@ -1,26 +1,38 @@
 export enum UserRole {
-    customer = "customer",
-    provider = "provider",
-    admin = "admin",
-    superadmin = "superadmin"
+    CUSTOMER = 'customer',
+    PROVIDER = 'provider',
+    SUPERADMIN = 'superadmin',
+    ADMIN = 'admin',
 }
 
 export enum SubscriptionStatus {
-    pending = "pending",
-    active = "active",
-    canceled = "canceled"
+    PENDING = 'pending',
+    CANCELLED = 'cancelled',
+    ACTIVE = 'active',
 }
 
 export enum OrderStatus {
-    pending = "pending",
-    active = "active",
-    canceled = "canceled"
+    SUCCEEDED = 'SUCCEEDED',
+    FAILED = 'FAILED',
 }
 
 export enum AppointmentStatus {
-    pending = "Pendiente",
-    confirmed = "Confirmado",
-    canceled = "Cancelado"
+    PENDING = 'pending',
+    CONFIRMED = 'confirmed',
+    RESCHEDULED = 'rescheduled',
+    CANCELLED = 'cancelled',
+    COMPLETED = 'completed',
+}
+
+export enum ServiceProfileStatus {
+    ACTIVE = 'active',
+    PENDING = 'pending',
+    REJECTED = 'rejected',
+}
+
+export enum Subscriptions {
+    FREE = 'free',
+    PREMIUM = 'premium',
 }
 
 export type UserType = {
@@ -31,38 +43,35 @@ export type UserType = {
     phone: string;
     address: string;
     role: UserRole;
-    interests: string[];
     imgUrl: string | null;
-    service: ServiceProfileType | null;
-    appointments: AppointmentType[];
-    reviews: ReviewType[];
-    orders: OrderType[];
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
+    serviceProfile: ServiceProfileType | null;
+    appointments: AppointmentType[];
+    reviews: ReviewType[];
+    interests: CategoryType[];
 }
 
 export type ServiceProfileType = {
     id: string;
-    userName: string;
-    userId: string;
-    appointments: AppointmentType[];
-    reviews: ReviewType[];
-    address: addressType;
     serviceTitle: string;
-    rating: number;
-    category: CategoryType;
-    description: string;
+    userName: string;
+    address: addressType;
+    rating: number | null;
+    description: string | null;
     appointmentPrice: number;
-    images: mediaType[];
-    subscription: SubscriptionType;
-    orders: OrderType[];
+    phone: string;
+    status: ServiceProfileStatus;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
-    user: UserType;
-    phone: number;
-    status: "pending" | "cancelled" | "active";
+    user: UserType | null;
+    subscription: SubscriptionType;
+    appointments: AppointmentType[];
+    reviews: ReviewType[];
+    images: mediaType[];
+    category: CategoryType;
 }
 
 export type ServiceRequestType = {
@@ -78,9 +87,9 @@ export type ServiceRequestType = {
 
 export type addressType = {
     extNumber: string;
-    intNumber: string;
+    intNumber: string | null;
     street: string;
-    neighborhood: string;
+    neighborhood: string | null;
     zipCode: string;
     city: string;
     state: string;
@@ -90,53 +99,58 @@ export type addressType = {
 export type mediaType = {
     id: string;
     imgUrl: string;
+    serviceProfile: ServiceProfileType;
 }
 
 export type CategoryType = {
     id: string;
     name: string;
     description: string;
-    services: ServiceProfileType[];
-    user: UserType[];
+    serviceProfile: ServiceProfileType[];
+    users: UserType[];
 }
 
 export type AppointmentType = {
     id: string;
-    user: UserType;
-    service: ServiceProfileType;
     date: Date;
-    status: AppointmentStatus;
-    note: string;
+    appointmentStatus: AppointmentStatus;
+    additionalNotes: string | null;
+    review: ReviewType;
+    user: UserType;
+    provider: ServiceProfileType;
 }
 
 export type ReviewType = {
     id: string;
-    appointment: AppointmentType;
-    user: UserType;
-    service: ServiceProfileType;
     rating: number;
     comment: string;
     createdAt: Date;
+    deletedAt: Date | null;
+    appointment: AppointmentType;
+    user: UserType;
+    serviceProfile: ServiceProfileType;
 }
 
 export type SubscriptionType = {
     id: string;
-    service: ServiceProfileType;
-    premium: "free" | "premium";
+    subscriptionType: Subscriptions;
     status: SubscriptionStatus;
-    startDate: Date;
-    endDate: Date;
-    createdAt: Date;
+    paymentDate: Date | null;
+    expirationDate: Date | null;
+    createdPremiumAt: Date | null;
+    serviceProfile: ServiceProfileType | null;
+    orders: OrderType[];
 }
 
 export type OrderType = {
     id: string;
-    subscription: SubscriptionType;
-    service: ServiceProfileType;
-    price: number;
-    invoice: number;
+    amount: number | false;
+    paymentIntentId: string;
     status: OrderStatus;
+    invoice: number;
     createdAt: Date;
+    updatedAt: Date;
+    subscription: SubscriptionType | null;
 }
 
   

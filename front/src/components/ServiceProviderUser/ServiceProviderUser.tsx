@@ -124,7 +124,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                 key={index}
                 className="bg-gray-100 p-2 rounded-md shadow-xl border text-tertiary text-sm text-center"
               >
-                {interest}
+                {interest.name}
               </li>
             ))
           ) : (

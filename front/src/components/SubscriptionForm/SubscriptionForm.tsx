@@ -34,16 +34,16 @@ export default function SubscriptionForm() {
       toast.error(error.message || "Error procesando la tarjeta.");
     } else if (paymentMethod && !user) {
       toast.error("Por favor registre y loguee su usuario para concretar la transaccion");
-    } else if (paymentMethod && user && (!user.service || user.service.status != "active")) {
+    } else if (paymentMethod && user && (!user.serviceProfile || user.serviceProfile.status != "active")) {
       toast.error("Por favor registre su usuario como proveedor de servicio para concretar la transaccion");
-    } else if (paymentMethod && user && user.service && user.service.status == "active") {
-      const response = updateServiceProfileToPremium(paymentMethod.id, 1000, user.service.id);
+    } else if (paymentMethod && user && user.serviceProfile && user.serviceProfile.status == "active") {
+      const response = updateServiceProfileToPremium(paymentMethod.id, 1000, user.serviceProfile.id);
       
       toast.promise(response, {
         loading: "Espere mientras registramos el pago...",
         success: (subscription) => {
           
-          updateService({...user.service!, subscription })
+          updateService({...user.serviceProfile!, subscription })
           cardElement.clear();
           return "Se registró exitosamente como Usuario Premium";
         },

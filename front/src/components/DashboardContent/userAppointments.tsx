@@ -10,7 +10,7 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
                         <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
                             <p>Turno ID: {appointment.id}</p>
                             <p>Dia y Hora: {new Date(appointment.date).toLocaleDateString()}</p>
-                            <p>Estado: {appointment.status}</p>
+                            <p>Estado: {appointment.appointmentStatus}</p>
                         </div>
                     ))}
                 </div>

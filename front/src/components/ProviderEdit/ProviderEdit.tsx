@@ -59,28 +59,6 @@ const ProviderEdit = () => {
     }
   }, [data]);
 
-  // const reviews = [
-  //   {
-  //     user: "Laura Gómez",
-  //     comment:
-  //       "Excelente trabajo, llegó puntual y dejó todo funcionando perfecto. Súper recomendado.",
-  //     rating: 5,
-  //   },
-  //   {
-  //     user: "Daniel Ruiz",
-  //     comment:
-  //       "Muy amable y profesional. Solucionó una fuga que otros no pudieron. Lo volveré a contratar.",
-  //     rating: 5,
-  //   },
-  //   {
-  //     user: "Marta Villalba",
-  //     comment: "Buen servicio, pero se tardó un poco más de lo acordado.",
-  //     rating: 3,
-  //   },
-  // ];
-
-  // const promedioRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
-
   const handleAddService = () => {
     const matchedCategory = categories.find(
       (cat) => cat.name.toLowerCase() === newService.toLowerCase()
@@ -364,22 +342,6 @@ const ProviderEdit = () => {
           </div>
         )}
       </section>
-
-      {/* Opiniones */}
-      {/* <section className="p-4">
-        <h3 className="text-lg font-semibold mb-2">Opiniones de clientes</h3>
-        {reviews.map((review, i) => (
-          <div key={i} className="mb-3 p-3 bg-white shadow-sm rounded-md border border-gray-100">
-            <p className="text-sm font-semibold">{review.user}</p>
-            <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
-            <div className="flex text-yellow-500 text-sm">
-              {Array.from({ length: review.rating }, (_, j) => (
-                <FaStar key={j} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </section> */}
 
       {/* Botón guardar */}
       {editing && (
