@@ -28,13 +28,13 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
             const data = await res.json();
 
             // Adaptamos los datos a tu tipo
-            const formattedAppointments: AppointmentType[] = data.map((a: any) => ({
+            const formattedAppointments: AppointmentType[] = data.map((a: AppointmentType) => ({
                 id: a.id,
                 user: a.user,
                 service: a.service,
                 date: new Date(a.date),
-                status: mapStatus(a.appointmentStatus),
-                note: a.additionalNotes,
+                status: mapStatus(a.status),
+                note: a.note,
             }));
 
             setAppointments(formattedAppointments);

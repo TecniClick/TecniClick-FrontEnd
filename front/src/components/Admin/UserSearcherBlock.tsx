@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 type User = {
   id: string
@@ -185,7 +186,7 @@ const UserSearcherBlock = () => {
             </h3>
 
             <div className="flex items-start gap-4 mb-4">
-              <img
+              <Image
                 src={foundUser.imgUrl}
                 alt="Avatar"
                 className="w-16 h-16 rounded-full border border-gray-200 dark:border-gray-600"

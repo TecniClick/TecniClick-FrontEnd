@@ -2,14 +2,18 @@ import ServiceProviderUser from "@/components/ServiceProviderUser/ServiceProvide
 import { getServiceProfileById } from "@/services/profileService";
 import { Metadata } from "next";
 
+interface PageProps {
+  params: Promise<ProductParams>
+}
+
 interface ProductParams {
   id: string;
 }
 
 export async function generateMetadata(
-  { params }: { params: ProductParams }
+  { params }: PageProps
 ): Promise<Metadata> {
-  const user = await getServiceProfileById(params.id);
+  const user = await getServiceProfileById((await params).id);
 
   if (!user) {
     return {
@@ -23,11 +27,10 @@ export async function generateMetadata(
 }
 
 
-const SlugProduct = async ({ params }: { params: ProductParams }) => {
+export default async function SlugProduct ({ params }: { params: Promise<ProductParams> }) {
 
   const { id } = await params;
-  console.log("params:", params);
-  console.log("ID recibido en SlugProduct:", id);
+
 
   const user = await getServiceProfileById(id)
 
@@ -45,5 +48,3 @@ const SlugProduct = async ({ params }: { params: ProductParams }) => {
     </div>
   );
 };
-
-export default SlugProduct;
