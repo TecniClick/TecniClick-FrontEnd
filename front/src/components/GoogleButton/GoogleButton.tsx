@@ -5,7 +5,7 @@ import googleIcon from "../../../public/googleIcon.png"
 
 export default function GoogleButton() {
   const handleLoginWithGoogle = () => {
-    window.location.href = 'http://localhost:3000/auth/google';
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google/callback`;
   };
   return (
     <button
