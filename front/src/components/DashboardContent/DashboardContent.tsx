@@ -8,24 +8,27 @@ import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
 import { useEffect } from "react";
+import { getMyAppointments } from "@/services/appointmentService";
 
 export default function DashboardContent() {
     const { user, token } = useAuth(); // Usamos el contexto de autenticación
     const { appointments, refreshAppointments } = useAppointments();
 
     const isLoggedIn = !!user; // Verificamos si el usuario está autenticado
-    
+
     useEffect(() => {
         if (user && token) {
             refreshAppointments();
         }
     }, [token, user, refreshAppointments]);
-    
-    let params: string[] = ["/login", "Inicie sesion primero"]
-         if (!user?.serviceProfile) params = ["/provider-edit", "Ofrecer un servicio"]
+
+    let params: string[] = ["/login", "Inicie sesión primero"]
+    if (!user?.serviceProfile) params = ["/provider-edit", "Ofrecer un servicio"]
     else if (user?.serviceProfile && user?.serviceProfile.status == "pending") params = ["/dashboard", "Su solicitud está en revisión"]
     else if (user?.serviceProfile && user?.serviceProfile.status == "rejected") params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"]
     else if (user?.serviceProfile && user?.serviceProfile.status == "active") params = ["/provider-premium", "Ofrecer un servicio"]
+
+
 
     return (
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
@@ -71,7 +74,7 @@ export default function DashboardContent() {
                 </div>
             ) : (
                 <h1 className="text-center text-xl mt-20">
-                    Por favor, regístrese e inicie sesión
+                    Por favor, registrese e inicie sesión
                 </h1>
             )}
         </section>
