@@ -9,11 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< Updated upstream
     "@stripe/react-stripe-js": "^3.6.0",
     "@stripe/stripe-js": "^7.1.0",
-=======
->>>>>>> Stashed changes
     "@react-oauth/google": "^0.12.1",
     "@types/next-auth": "^3.13.0",
     "framer-motion": "^12.6.2",
