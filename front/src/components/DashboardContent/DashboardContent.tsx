@@ -8,7 +8,6 @@ import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
 import { useEffect } from "react";
-import { getMyAppointments } from "@/services/appointmentService";
 
 export default function DashboardContent() {
     const { user, token } = useAuth(); // Usamos el contexto de autenticación
@@ -26,7 +25,7 @@ export default function DashboardContent() {
     if (!user?.serviceProfile) params = ["/provider-edit", "Ofrecer un servicio"]
     else if (user?.serviceProfile && user?.serviceProfile.status == "pending") params = ["/dashboard", "Su solicitud está en revisión"]
     else if (user?.serviceProfile && user?.serviceProfile.status == "rejected") params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"]
-    else if (user?.serviceProfile && user?.serviceProfile.status == "active") params = ["/provider-premium", "Ofrecer un servicio"]
+    else if (user?.serviceProfile && user?.serviceProfile.status == "active") params = ["/provider-premium", "Hazte Premium"]
 
 
 
