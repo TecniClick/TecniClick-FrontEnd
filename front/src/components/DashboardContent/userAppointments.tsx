@@ -98,7 +98,11 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
                             {/* encabezado */}
                             <div className="flex flex-row justify-between">
                                 <div>
-                                    <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()}</p>
+                                <p>
+  <strong>Fecha y Hora:</strong>{" "}
+  {new Date(appointment.date).toLocaleDateString()} -{" "}
+  {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+</p>
                                     <p><strong>Estado:</strong> {translateStatus(appointment.appointmentStatus)}</p>
                                 </div>
 

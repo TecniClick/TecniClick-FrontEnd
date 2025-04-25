@@ -26,7 +26,7 @@ export const AppointmentsProvider = ({
     children: React.ReactNode;
 }) => {
     const [appointments, setAppointments] = useState<AppointmentType[]>([]);
-    const { token, user, isLoadingAuth } = useAuth(); // ← añadí isLoadingAuth si lo tenés
+    const { token, user, } = useAuth(); // ← añadí isLoadingAuth si lo tenés
 
     /* ---------------- helpers ---------------- */
     const mapStatus = (statusString: string): AppointmentStatus => {
@@ -80,10 +80,7 @@ export const AppointmentsProvider = ({
 
     /* ---------------- efecto de carga ---------------- */
     useEffect(() => {
-        // mientras AuthContext no terminó de validar sesión, no dispares nada
-        if (isLoadingAuth) return;
-
-        // si token es null / "", limpia y salí
+       // si token es null / "", limpia y salí
         if (!token) {
             setAppointments([]);
             return;
@@ -92,7 +89,7 @@ export const AppointmentsProvider = ({
         // token y user listos → traigo turnos
         fetchAppointments();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoadingAuth, token, user]);
+    }, [token, user]);
 
     /* ---------- acciones cancel / approve / byId ---------- */
     const cancelAppointment = async (id: string) => {
