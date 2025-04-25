@@ -4,6 +4,7 @@ import { StatsBlock } from "@/components/Admin/StatsBlock";
 import { WelcomeBlock } from "@/components/Admin/WelcomeBlock";
 import UserSearcherBlock from "@/components/Admin/UserSearcherBlock";
 import ReviewManagerBlock from "@/components/Admin/ReviewSearcher";
+import AdminProtect from "@/components/RouteProtect/AdminProtect";
 
 export const metadata = {
     title: "Perfil de Administrador | TecniClick",
@@ -11,6 +12,7 @@ export const metadata = {
   
 export default function AdminDashboard() {
     return (
+        <AdminProtect>
         <div className="p-6 space-y-6">
             <h1 className="text-3xl font-bold">Panel de Administración</h1>
             
@@ -55,5 +57,6 @@ export default function AdminDashboard() {
                 </div>
             </div>
         </div>
+        </AdminProtect>
     )
 }

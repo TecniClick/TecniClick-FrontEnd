@@ -100,7 +100,7 @@ const ServicesPage: React.FC = () => {
         </select>
 
         <select
-          className="border p-2 rounded-lg w-full sm:w-auto dark:bg-tertiary dark:text-secondary"
+          className="border p-2 rounded-lg w-full sm:w-auto oscuro"
           onChange={(e) => setSortPrice(e.target.value || null)}
           value={sortPrice || ""}
         >
@@ -120,7 +120,7 @@ const ServicesPage: React.FC = () => {
       <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filteredServices.length > 0 ? (
           filteredServices.map((service) => (
-            <li key={service.id} className="bg-secondary dark:bg-tertiary dark:text-secondary border p-4 rounded-lg shadow-lg">
+            <li key={service.id} className="oscuro border p-4 rounded-lg shadow-lg">
               <Link href={`/services/${service.id}`}>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image
@@ -153,8 +153,8 @@ const ServicesPage: React.FC = () => {
             </li>
           ))
         ) : (
-          <div className="bg-secondary p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
-            <p className="text-tertiary">No hay profesionales disponibles aún en esta categoría.</p>
+          <div className="oscuro p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
+            <p>No hay profesionales disponibles aún en esta categoría.</p>
           </div>
         )}
       </ul>

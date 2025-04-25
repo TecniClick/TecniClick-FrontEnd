@@ -22,6 +22,7 @@
     .borders { @apply border-tertiary dark:border-senary; }
     .buttons { @apply text-center bg-primary hover:bg-quaternary dark:bg-septenary dark:hover:bg-quinary text-secondary rounded-md; }
     .impunts { @apply bg-senary dark:bg-primary border borders outline-quaternary dark:outline-quinary; }
+    .impunts-2 { @apply p-1 rounded-md shadow-md shadow-gray-300 dark:shadow-gray-500; }
     
 }
 

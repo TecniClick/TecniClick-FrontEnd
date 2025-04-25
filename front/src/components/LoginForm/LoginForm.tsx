@@ -7,6 +7,8 @@ import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "@/styles/styles.css"
 import GoogleButton from "../GoogleButton/GoogleButton";
+import logoContraste from "../../../public/logoContraste.png";
+import logo from "../../../public/logo.png";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -67,14 +69,21 @@ const LoginForm = () => {
         <main className="w-full min-h-[calc(100vh-89px)] flex flex-col md:flex-row justify-center items-center gap-4 md:gap-16 px-4 sm:px-8 md:px-16 py-8 text-primary dark:bg-primary">
             <form
                 onSubmit={handleSubmit}
-                className="relative bg-secondary dark:bg-tertiary dark:text-secondary p-4 flex flex-col items-center h-fit rounded-md w-full md:w-2/3 lg:w-1/2 xl:w-2/5 max-w-md"
+                className="relative oscuro shadow-xl p-4 flex flex-col items-center h-fit rounded-md w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 max-w-md"
             >
                 <div className="flex items-center justify-center relative w-1/2 md:w-2/4 h-24">
                     <Image
-                        src="/logoContraste.png"
-                        alt="Logo de la página"
+                        src={logoContraste}
+                        alt="logo claro"
                         fill
-                        className="!relative object-contain pb-4 dark:bg-secondary dark:rounded-md"
+                        className="!relative object-contain pb-4 block dark:hidden"
+                        priority
+                    />
+                    <Image
+                        src={logo}
+                        alt="logo oscuro"
+                        fill
+                        className="!relative object-contain pb-4 hidden dark:block"
                         priority
                     />
                 </div>
@@ -89,7 +98,7 @@ const LoginForm = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="ejemplo@gmail.com"
-                                className={`input-login w-full ${error ? "border-red-500" : ""}`}
+                                className={`impunts p-1 rounded-md shadow-md w-full ${error ? "border-quinary" : ""}`}
                                 required
                             />
                         </div>
@@ -105,7 +114,7 @@ const LoginForm = () => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="*******"
-                                    className={`input-login w-full ${error ? "border-red-500" : ""}`}
+                                    className={`impunts p-1 rounded-md shadow-md w-full ${error ? "border-quinary" : ""}`}
                                     required
                                 />
                                 <div
@@ -121,7 +130,7 @@ const LoginForm = () => {
 
                     {/* Errores */}
                     {error && (
-                        <div className="mt-2 text-red-500 text-sm text-center">
+                        <div className="mt-2 text-quinary text-sm text-center">
                             {error}
                         </div>
                     )}
@@ -130,7 +139,7 @@ const LoginForm = () => {
                 {/* Botón de Enviar */}
                 <button
                     type="submit"
-                    className={`mt-6 py-2 w-full sm:w-4/5 bg-primary dark:bg-quinary rounded-md text-secondary hover:bg-opacity-90 transition-colors ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+                    className={`mt-6 py-2 w-full sm:w-4/5 buttons transition-colors ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
                     disabled={isLoading}
                 >
                     {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}

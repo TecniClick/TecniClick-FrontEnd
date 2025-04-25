@@ -161,7 +161,7 @@ export default function Home() {
             Nuestros usuarios encuentran 10 veces más profesionales que en cualquier otro lugar.
           </p>
           <div className="w-full sm:w-auto flex flex-col items-center justify-center">
-            <div className="h-64 sm:h-auto sm:w-full aspect-[5/2] relative">
+            <div className="w-full aspect-[5/2] relative">
               <Image
                 src={customer}
                 alt="customer"

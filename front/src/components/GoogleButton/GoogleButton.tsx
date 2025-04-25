@@ -11,7 +11,7 @@ export default function GoogleButton() {
     <button
       type="button"
       onClick={handleLoginWithGoogle}
-      className="flex flex-row gap-1 px-1 border-2 shadow-md rounded font-semibold">
+      className="flex flex-row gap-1 py-1 px-8 text-black bg-senary shadow-md shadow-gray-300 dark:shadow-gray-500 rounded font-semibold">
       Iniciar sesión con
       <Image
         src={googleIcon}
