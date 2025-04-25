@@ -8,9 +8,7 @@ export const metadata = {
 export default function Page() {
   return (
     <RouteProtect>
-      <div className="dark:bg-tertiary py-8">
-        <AppointmentForm />
-      </div>
+      <AppointmentForm />
     </RouteProtect>
   );
 }

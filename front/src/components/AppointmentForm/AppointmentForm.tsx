@@ -78,7 +78,7 @@ const AppointmentForm = () => {
     }
 
     return (
-        <div className="max-w-md mx-auto mt-10 space-y-6">
+        <div className="max-w-2xl mx-auto mt-[15vh] p-4 oscuro shadow-2xl rounded-md space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
                 <h2 className="text-2xl font-semibold">Reservar Turno</h2>
 
@@ -86,7 +86,7 @@ const AppointmentForm = () => {
                     <label className="block text-sm font-medium">Fecha y hora</label>
                     <input
                         type="datetime-local"
-                        className="w-full p-2 border rounded dark:text-tertiary"
+                        className="w-full impunts impunts-2 dark:bg-gradient-to-r dark:from-40% dark:from-primary dark:via-50% dark:via-blue-950 dark:to-100% dark:to-senary "
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                         required
@@ -96,7 +96,7 @@ const AppointmentForm = () => {
                 <div>
                     <label className="block text-sm font-medium">Indica tu problema o consulta</label>
                     <textarea
-                        className="w-full p-2 border rounded dark:text-tertiary"
+                        className="w-full impunts impunts-2"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     />
@@ -111,7 +111,7 @@ const AppointmentForm = () => {
                         Volver atrás
                     </button>
 
-                    <button type="submit" className="bg-primary dark:bg-quinary text-white px-4 py-2 rounded">
+                    <button type="submit" className="buttons px-4 py-2 rounded">
                         Confirmar turno
                     </button>
                 </div>

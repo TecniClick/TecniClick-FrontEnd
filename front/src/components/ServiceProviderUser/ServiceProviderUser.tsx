@@ -49,7 +49,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   };
 
   return (
-    <div className="bg-secondary pb-8 w-3/4 dark:bg-tertiary mx-auto px-4 sm:px-6">
+    <div className="bg-secondary pb-8 w-3/4 dark:bg-tertiary shadow-2xl mx-auto px-4 sm:px-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 py-6 border-b border-gray-200 items-center justify-center">
         <div

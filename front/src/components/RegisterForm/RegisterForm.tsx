@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import "@/styles/styles.css"
 import { useRouter } from "next/navigation";
 import GoogleButton from "../GoogleButton/GoogleButton";
+import logoContraste from "../../../public/logoContraste.png";
+import logo from "../../../public/logo.png";
 
 interface FormData {
     fullName: string;
@@ -140,13 +142,23 @@ export default function RegisterForm() {
 
     return (
         <main className="w-full min-h-[calc(100vh-89px)] flex flex-col md:flex-row justify-center items-center gap-4 md:gap-16 px-4 sm:px-8 md:px-16 py-8 text-primary dark:bg-primary">
-            <form onSubmit={handleSubmit} className="bg-secondary dark:bg-tertiary dark:text-secondary p-4 flex flex-col items-center rounded-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3">
+            <form
+                onSubmit={handleSubmit}
+                className="oscuro shadow-xl p-4 flex flex-col items-center rounded-md w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 max-w-md"
+            >
                 <div className="flex items-center justify-center relative w-1/2 mb-4 md:w-2/4 h-24">
                     <Image
-                        src="/logoContraste.png"
-                        alt="Logo de la pagina"
+                        src={logoContraste}
+                        alt="logo claro"
                         fill
-                        className="!relative object-contain pb-4 dark:bg-secondary dark:rounded-md"
+                        className="!relative object-contain pb-4 block dark:hidden"
+                        priority
+                    />
+                    <Image
+                        src={logo}
+                        alt="logo oscuro"
+                        fill
+                        className="!relative object-contain pb-4 hidden dark:block"
                         priority
                     />
                 </div>
@@ -162,9 +174,9 @@ export default function RegisterForm() {
                                 value={formData.fullName}
                                 onChange={handleChange}
                                 placeholder="Juan Pérez"
-                                className={`input-login ${errors.fullName ? 'border-red-500' : ''}`}
+                                className={`impunts p-1 rounded-md shadow-md ${errors.fullName ? 'border-quinary' : ''}`}
                             />
-                            {errors.fullName && <span className="text-red-500 text-xs mt-1">{errors.fullName}</span>}
+                            {errors.fullName && <span className="text-quinary text-xs mt-1">{errors.fullName}</span>}
                         </div>
                     </div>
 
@@ -178,9 +190,9 @@ export default function RegisterForm() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="ejemplo@gmail.com"
-                                className={`input-login ${errors.email ? 'border-red-500' : ''}`}
+                                className={`impunts p-1 rounded-md shadow-md ${errors.email ? 'border-quinary' : ''}`}
                             />
-                            {errors.email && <span className="text-red-500 text-xs mt-1">{errors.email}</span>}
+                            {errors.email && <span className="text-quinary text-xs mt-1">{errors.email}</span>}
                         </div>
                     </div>
 
@@ -194,9 +206,9 @@ export default function RegisterForm() {
                                 value={formData.phone}
                                 onChange={handleChange}
                                 placeholder="1234567890"
-                                className={`input-login ${errors.phone ? 'border-red-500' : ''}`}
+                                className={`impunts p-1 rounded-md shadow-md ${errors.phone ? 'border-quinary' : ''}`}
                             />
-                            {errors.phone && <span className="text-red-500 text-xs mt-1">{errors.phone}</span>}
+                            {errors.phone && <span className="text-quinary text-xs mt-1">{errors.phone}</span>}
                         </div>
                     </div>
 
@@ -211,7 +223,7 @@ export default function RegisterForm() {
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="******"
-                                    className={`input-login ${errors.password ? 'border-red-500' : ''}`}
+                                    className={`flex flex-1 impunts p-1 rounded-md shadow-md relative ${errors.password ? 'border-quinary' : ''}`}
                                 />
                                 <div
                                     className="pl-2 cursor-pointer"
@@ -220,7 +232,7 @@ export default function RegisterForm() {
                                     {showPassword.password ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
                                 </div>
                             </div>
-                            {errors.password && <span className="text-red-500 text-xs mt-1">{errors.password}</span>}
+                            {errors.password && <span className="text-quinary text-xs mt-1">{errors.password}</span>}
                         </div>
                     </div>
 
@@ -235,7 +247,7 @@ export default function RegisterForm() {
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     placeholder="******"
-                                    className={`input-login ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                                    className={`flex flex-1 impunts p-1 rounded-md shadow-md ${errors.confirmPassword ? 'border-quinary' : ''}`}
                                 />
                                 <div
                                     className="pl-2 cursor-pointer"
@@ -244,7 +256,7 @@ export default function RegisterForm() {
                                     {showPassword.confirmPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
                                 </div>
                             </div>
-                            {errors.confirmPassword && <span className="text-red-500 text-xs mt-1">{errors.confirmPassword}</span>}
+                            {errors.confirmPassword && <span className="text-quinary text-xs mt-1">{errors.confirmPassword}</span>}
                         </div>
                     </div>
 
@@ -258,15 +270,15 @@ export default function RegisterForm() {
                                 value={formData.address}
                                 onChange={handleChange}
                                 placeholder="Calle 123, Ciudad"
-                                className={`input-login ${errors.address ? 'border-red-500' : ''}`}
+                                className={`impunts p-1 rounded-md shadow-md ${errors.address ? 'border-quinary' : ''}`}
                             />
-                            {errors.address && <span className="text-red-500 text-xs mt-1">{errors.address}</span>}
+                            {errors.address && <span className="text-quinary text-xs mt-1">{errors.address}</span>}
                         </div>
                     </div>
                 </div>
 
                 <button
-                    className={`mt-4 py-2 w-full sm:w-4/5 bg-primary dark:bg-quinary rounded-md text-secondary ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    className={`mt-4 py-2 w-full sm:w-4/5 buttons ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     type="submit"
                     disabled={isLoading}
                 >
