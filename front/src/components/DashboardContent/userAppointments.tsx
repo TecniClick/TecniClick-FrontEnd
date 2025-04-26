@@ -12,10 +12,8 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
 
     const isProvider = user?.serviceProfile?.status === "active";
 
-    /** estado principal que se renderiza */
     const [appointmentsState, setAppointmentsState] = useState<AppointmentType[]>([]);
 
-    /** ---------- helpers ---------- */
     const getStatusPriority = (s: AppointmentStatus) =>
         s === AppointmentStatus.CONFIRMED ? 1 :
             s === AppointmentStatus.COMPLETED ? 2 :
@@ -36,7 +34,6 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
                     s === AppointmentStatus.CANCELLED ? "Cancelado" :
                         s === AppointmentStatus.COMPLETED ? "Completado" : "Desconocido";
 
-    /** ---------- cargar / enriquecer turnos ---------- */
     useEffect(() => {
         const load = async () => {
             if (!isProvider) {
@@ -44,7 +41,6 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
                 return;
             }
 
-            // para proveedores traemos la versión completa
             const enriched = await Promise.all(
                 appointments.map(async (appt) => {
                     try {
@@ -61,7 +57,6 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
         load();
     }, [appointments, isProvider, getAppointmentById]);
 
-    /** ---------- cancelar turno ---------- */
     const handleCancel = (id: string) =>
         toast.warning("¿Seguro que quieres cancelar este turno?", {
             action: {
@@ -84,7 +79,6 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
             },
         });
 
-    /** ---------- render ---------- */
     return (
         <div className="w-full bg-quaternary/40 dark:bg-quinary/40 p-4 rounded-2xl border borders shadow-md">
             <h2 className="text-lg font-bold mb-3 border-b pb-1">

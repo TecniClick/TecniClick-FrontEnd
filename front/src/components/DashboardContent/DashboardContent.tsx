@@ -10,10 +10,10 @@ import ServiceButton from "./ServiceButton";
 import { useEffect } from "react";
 
 export default function DashboardContent() {
-    const { user, token } = useAuth(); // Usamos el contexto de autenticación
+    const { user, token } = useAuth();
     const { appointments, refreshAppointments } = useAppointments();
 
-    const isLoggedIn = !!user; // Verificamos si el usuario está autenticado
+    const isLoggedIn = !!user;
 
     useEffect(() => {
         if (user && token) {
@@ -33,7 +33,7 @@ export default function DashboardContent() {
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
             {isLoggedIn ? (
                 <div className="max-w-6xl mx-auto flex flex-col gap-8 items-center">
-                    {/* Imagen + nombre */}
+                    
                     <div className="flex flex-col items-center gap-4">
                         <UserImage
                             imgUrl={user?.imgUrl ?? undefined}
@@ -44,12 +44,12 @@ export default function DashboardContent() {
                         </h1>
                     </div>
 
-                    {/* Botón de servicios (solo si está logueado por backend) */}
+                    
                     {user && (
                         <ServiceButton params={params} />
                     )}
 
-                    {/* Info + Intereses */}
+                    
                     <div className="flex flex-wrap gap-6 w-full justify-center">
                         <div className="flex-1">
                             <UserInfo
@@ -66,7 +66,6 @@ export default function DashboardContent() {
                         )}
                     </div>
 
-                    {/* Turnos */}
                     <div className="w-full">
                         <UserAppointments appointments={appointments || []} />
                     </div>

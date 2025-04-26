@@ -96,7 +96,6 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                   toast.error("Debes iniciar sesión para poder reservar un turno!");
                   return;
                 }
-                console.log("userId enviado al link:", id);
                 router.push(`/appointments?id=${id}`);
               }}
             />
