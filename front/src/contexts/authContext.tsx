@@ -15,8 +15,10 @@ interface AuthContextType {
     loading: boolean;
     login: (token: string, user: UserType) => Promise<void>;
     logout: () => void;
-    updateService: (service: ServiceProfileType) => void
+    updateService: (service: ServiceProfileType) => void;
+    setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -47,14 +49,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (jwtToken: string, userData: UserType) => {
         try {
             localStorage.setItem("token", jwtToken);
-            localStorage.setItem("user", JSON.stringify(userData));
             setToken(jwtToken);
-            setUser(userData);
-        } catch (error) {
-            console.error("Error en login:", error);
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userData.id}`, {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            });
+
+            if (!res.ok) throw new Error("Error al obtener datos actualizados del usuario");
+
+            const updatedUser = await res.json();
+
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            setUser(updatedUser);
+        } catch {
             logout();
         }
     };
+
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -64,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateService = (serviceProfile: ServiceProfileType) => {
-        if (user) setUser({...user, serviceProfile})
+        if (user) setUser({ ...user, serviceProfile })
     }
 
     const value: AuthContextType = {
@@ -74,8 +85,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         login,
         logout,
-        updateService
+        updateService,
+        setUser,
     };
+
 
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

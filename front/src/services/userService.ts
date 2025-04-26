@@ -1,5 +1,6 @@
 import { UserType } from "@/helpers/typeMock";
 import { usersMock } from "@/helpers/dataMock";
+import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const MODE = process.env.NEXT_PUBLIC_MODE;
@@ -27,7 +28,7 @@ export const getUserById = async (id: string): Promise<UserType | null> => {
         if (MODE === "developer") {
             return usersMock.find((user) => user.id === id) || null;
         } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/users/${id}`, { cache: "no-cache" });  {/* service-profile/{id} */}
+            const response = await fetch(`${API_URL}/users/${id}`, { cache: "no-cache" }); {/* service-profile/{id} */ }
             if (!response.ok) throw new Error("No se pudo obtener el usuario");
             return await response.json();
         }
@@ -58,29 +59,43 @@ export const getUserByEmail = async (email: string): Promise<UserType | null> =>
     return null;
 }
 
-export const updateUser = async (id: string, user: UserType): Promise<boolean> => {
-    // TODO: Implementar la lógica para actualizar el perfil del usuario por id
+export const updateUser = async (
+    id: string,
+    phone: number,
+    address: string,
+    token: string
+) => {
     try {
-        if (MODE === "developer") {
-            // ! Mock
-            return true;
-        } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/users/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
-            return await response.json() || false;
-        }
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
+        const updatedData = {
+            phone,
+            address,
+        };
 
-    return false;
-}
+        const response = await fetch(`${API_URL}/users/update/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(updatedData),
+        });
+
+        if (!response.ok) {
+            throw new Error('No se pudo actualizar la información del usuario');
+        }
+
+        const result = await response.json();
+
+        toast.success("Datos actualizados correctamente.");
+        return result;
+    } catch (err) {
+        toast.error("Hubo un error al actualizar los datos.");
+        console.error(err);
+    }
+};
+
+
+
 
 export const deleteUser = async (id: string): Promise<boolean> => {
     // TODO: Implementar la lógica para eliminar el perfil del usuario por id

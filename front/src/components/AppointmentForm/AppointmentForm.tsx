@@ -19,7 +19,12 @@ const AppointmentForm = () => {
             toast.error("Proveedor no encontrado.");
             router.push("/");
         }
-    }, [providerId, router]);
+
+        if (user && (!user.phone || !user.address)) {
+            toast.error("Faltan datos importantes en tu perfil. Por favor, actualiza tu información.");
+            router.push(`/update-user?id=${user.id}`);
+        }
+    }, [providerId, user, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

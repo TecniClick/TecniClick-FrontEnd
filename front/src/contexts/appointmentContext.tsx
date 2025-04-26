@@ -16,19 +16,14 @@ interface AppointmentsContextType {
     getAppointmentById: (id: string) => Promise<AppointmentType | undefined>;
 }
 
-const AppointmentsContext = createContext<AppointmentsContextType | undefined>(
-    undefined
-);
+const AppointmentsContext = createContext<AppointmentsContextType | undefined>(undefined);
 
-export const AppointmentsProvider = ({
-    children,
-}: {
-    children: React.ReactNode;
-}) => {
+export const AppointmentsProvider = ({ children }: { children: React.ReactNode }) => {
     const [appointments, setAppointments] = useState<AppointmentType[]>([]);
-    const { token, user, } = useAuth(); // ← añadí isLoadingAuth si lo tenés
+    const { token, user } = useAuth();
+    const [loading, setLoading] = useState(false);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-    /* ---------------- helpers ---------------- */
     const mapStatus = (statusString: string): AppointmentStatus => {
         switch (statusString) {
             case "pending":
@@ -42,29 +37,21 @@ export const AppointmentsProvider = ({
             case "completed":
                 return AppointmentStatus.COMPLETED;
             default:
-                console.warn(
-                    `Estado desconocido: ${statusString}. Se asignará el estado 'pending'`
-                );
                 return AppointmentStatus.PENDING;
         }
     };
 
-    /* ---------------- fetch principal ---------------- */
     const fetchAppointments = async () => {
-        if (!token || !user) {
-            setAppointments([]); // limpie si está deslog
-            return;
-        }
-
+        if (loading || !token || !user || isDataLoaded) return;
+        setLoading(true);
         try {
-            const raw =
-                user.serviceProfile?.status === "active"
-                    ? await getMyProvidedAppointments() // proveedor
-                    : await getMyAppointments(); // cliente
+            const raw = user.serviceProfile?.status === "active"
+                ? await getMyProvidedAppointments()
+                : await getMyAppointments();
 
             const data: AppointmentType[] = raw.map((a: any) => ({
                 id: a.id,
-                user: a.users ?? a.user, // users para proveedor, user para cliente
+                user: a.users ?? a.user,
                 provider: a.provider,
                 date: new Date(a.date),
                 appointmentStatus: mapStatus(a.appointmentStatus),
@@ -73,25 +60,24 @@ export const AppointmentsProvider = ({
             }));
 
             setAppointments(data);
+            setIsDataLoaded(true);
         } catch (err) {
             console.error("Error cargando turnos:", err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    /* ---------------- efecto de carga ---------------- */
     useEffect(() => {
-       // si token es null / "", limpia y salí
-        if (!token) {
-            setAppointments([]);
-            return;
-        }
-
-        // token y user listos → traigo turnos
+        if (!token || !user || isDataLoaded) return;
         fetchAppointments();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token, user]);
+    }, [token, user?.id, isDataLoaded]);
 
-    /* ---------- acciones cancel / approve / byId ---------- */
+    useEffect(() => {
+        setAppointments([]);
+        setIsDataLoaded(false);
+    }, [user?.id]);
+
     const cancelAppointment = async (id: string) => {
         if (!token) return;
         try {
@@ -102,6 +88,7 @@ export const AppointmentsProvider = ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
+            setIsDataLoaded(false);
             await fetchAppointments();
         } catch (err) {
             console.error("Error cancelando turno:", err);
@@ -118,25 +105,21 @@ export const AppointmentsProvider = ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
+            setIsDataLoaded(false);
             await fetchAppointments();
         } catch (err) {
             console.error("Error confirmando turno:", err);
         }
     };
 
-    const getAppointmentById = async (
-        id: string
-    ): Promise<AppointmentType | undefined> => {
+    const getAppointmentById = async (id: string): Promise<AppointmentType | undefined> => {
         if (!token) return;
         try {
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/appointments/${id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (!res.ok) {
-                console.error("Error al obtener el turno:", await res.text());
-                return;
-            }
+            if (!res.ok) return;
             const data = await res.json();
             return {
                 id: data.id,
