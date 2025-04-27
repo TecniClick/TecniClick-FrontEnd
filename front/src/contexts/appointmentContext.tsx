@@ -12,7 +12,7 @@ interface AppointmentsContextType {
     appointments: AppointmentType[];
     refreshAppointments: () => Promise<void>;
     cancelAppointment: (id: string) => Promise<void>;
-    approveAppointment: (id: string) => Promise<void>;
+    completeAppointment: (id: string) => Promise<void>;
     getAppointmentById: (id: string) => Promise<AppointmentType | undefined>;
 }
 
@@ -95,11 +95,11 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
         }
     };
 
-    const approveAppointment = async (id: string) => {
+    const completeAppointment = async (id: string) => {
         if (!token) return;
         try {
             await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/appointments/confirm/${id}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/appointments/complete/${id}`,
                 {
                     method: "PATCH",
                     headers: { Authorization: `Bearer ${token}` },
@@ -141,8 +141,8 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
                 appointments,
                 refreshAppointments: fetchAppointments,
                 cancelAppointment,
-                approveAppointment,
                 getAppointmentById,
+                completeAppointment,
             }}
         >
             {children}
