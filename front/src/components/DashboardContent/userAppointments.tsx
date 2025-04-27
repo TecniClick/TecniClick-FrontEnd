@@ -1,18 +1,22 @@
-"use client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AppointmentType, AppointmentStatus } from "@/helpers/typeMock";
 import { useAuth } from "@/contexts/authContext";
 import { useAppointments } from "@/contexts/appointmentContext";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaCheck, FaStar } from "react-icons/fa";
+import { createReview } from "@/services/reviewServices";
+import StarRating from "../StartRating/StartRating";
 
 export default function UserAppointments({ appointments }: { appointments: AppointmentType[] }) {
-    const { user } = useAuth();
-    const { cancelAppointment, getAppointmentById } = useAppointments();
-
-    const isProvider = user?.serviceProfile?.status === "active";
+    const { user, token } = useAuth();
+    const { cancelAppointment, getAppointmentById, completeAppointment } = useAppointments();
+    const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
+    const [rating, setRating] = useState<number>(0);
+    const [comment, setComment] = useState<string>("");
 
     const [appointmentsState, setAppointmentsState] = useState<AppointmentType[]>([]);
+
+    const isProvider = user?.serviceProfile?.status === "active";
 
     const getStatusPriority = (s: AppointmentStatus) =>
         s === AppointmentStatus.CONFIRMED ? 1 :
@@ -23,8 +27,7 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
         [...arr].sort((a, b) => {
             const pa = getStatusPriority(a.appointmentStatus);
             const pb = getStatusPriority(b.appointmentStatus);
-            return pa !== pb ? pa - pb
-                : new Date(a.date).getTime() - new Date(b.date).getTime();
+            return pa !== pb ? pa - pb : new Date(a.date).getTime() - new Date(b.date).getTime();
         });
 
     const translateStatus = (s: AppointmentStatus) =>
@@ -36,11 +39,6 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
 
     useEffect(() => {
         const load = async () => {
-            if (!isProvider) {
-                setAppointmentsState(orderArray(appointments));
-                return;
-            }
-
             const enriched = await Promise.all(
                 appointments.map(async (appt) => {
                     try {
@@ -55,7 +53,7 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
         };
 
         load();
-    }, [appointments, isProvider, getAppointmentById]);
+    }, [appointments, getAppointmentById]);
 
     const handleCancel = (id: string) =>
         toast.warning("¿Seguro que quieres cancelar este turno?", {
@@ -79,6 +77,89 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
             },
         });
 
+    const handleComplete = (id: string) =>
+        toast.info("¿Marcar este turno como completado?", {
+            action: {
+                label: "Sí, completar",
+                onClick: async () => {
+                    try {
+                        await completeAppointment(id);
+                        setAppointmentsState((prev) =>
+                            orderArray(
+                                prev.map((a) =>
+                                    a.id === id ? { ...a, appointmentStatus: AppointmentStatus.COMPLETED } : a
+                                )
+                            )
+                        );
+                        toast.success("Turno completado correctamente");
+                    } catch {
+                        toast.error("Hubo un error al completar el turno");
+                    }
+                },
+            },
+        });
+
+    const handleOpenReviewModal = (appointment: AppointmentType) => {
+        setSelectedAppointment(appointment);
+        setRating(0);
+        setComment("");
+    };
+
+    const handleCloseReviewModal = () => {
+        setSelectedAppointment(null);
+        setRating(0);
+        setComment("");
+    };
+
+    const handleSubmitReview = async () => {
+        if (rating < 1 || rating > 5) {
+            toast.error("Por favor, selecciona un puntaje válido entre 1 y 5.");
+            return;
+        }
+
+        if (!comment.trim()) {
+            toast.error("Por favor, ingresa un comentario.");
+            return;
+        }
+
+        if (!token) {
+            console.error("Token no disponible.");
+            return;
+        }
+
+        try {
+            const updatedAppointment = await createReview(selectedAppointment?.id ?? "", { rating, comment }, token);
+
+            // Actualiza el estado para reflejar que la reseña ya ha sido enviada
+            setAppointmentsState((prev) =>
+                orderArray(
+                    prev.map((a) =>
+                        a.id === selectedAppointment?.id
+                            ? {
+                                ...a,
+                                review: {
+                                    id: "new-review-id",
+                                    createdAt: new Date(),
+                                    deletedAt: null,
+                                    appointment: selectedAppointment,
+                                    rating,
+                                    comment,
+                                    user: selectedAppointment?.user ?? null,
+                                    serviceProfile: selectedAppointment?.provider ?? null,
+                                },
+                            }
+                            : a
+                    )
+                )
+            );
+
+            toast.success("¡Reseña enviada correctamente!");
+            handleCloseReviewModal();  // Cierra el modal después de enviar la reseña
+        } catch (error) {
+            toast.error("Hubo un error al enviar la reseña.");
+        }
+    };
+
     return (
         <div className="w-full bg-quaternary/40 dark:bg-quinary/40 p-4 rounded-2xl border borders shadow-md">
             <h2 className="text-lg font-bold mb-3 border-b pb-1">
@@ -89,20 +170,32 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
                 <div className="space-y-2">
                     {appointmentsState.map((appointment) => (
                         <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
-                            {/* encabezado */}
                             <div className="flex flex-row justify-between">
                                 <div>
-                                <p>
-  <strong>Fecha y Hora:</strong>{" "}
-  {new Date(appointment.date).toLocaleDateString()} -{" "}
-  {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-</p>
+                                    <p>
+                                        <strong>Fecha y Hora:</strong>{" "}
+                                        {new Date(appointment.date).toLocaleDateString()} -{" "}
+                                        {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                    </p>
                                     <p><strong>Estado:</strong> {translateStatus(appointment.appointmentStatus)}</p>
                                 </div>
 
                                 <div className="flex gap-2 mt-2">
+                                    {appointment.appointmentStatus !== AppointmentStatus.CANCELLED &&
+                                        appointment.appointmentStatus !== AppointmentStatus.COMPLETED && (
+                                            <button
+                                                className="px-4 py-1 bg-green-600 text-white rounded"
+                                                onClick={() => handleComplete(appointment.id)}
+                                                title="Completar turno"
+                                            >
+                                                <FaCheck />
+                                            </button>
+                                        )}
+
                                     {appointment.appointmentStatus === AppointmentStatus.CANCELLED ? (
                                         <span className="text-red-500 font-semibold">Turno cancelado</span>
+                                    ) : appointment.appointmentStatus === AppointmentStatus.COMPLETED ? (
+                                        <span className="text-green-500 font-semibold">Turno completado</span>
                                     ) : (
                                         <button
                                             className="px-4 py-1 bg-red-600 text-white rounded"
@@ -115,20 +208,80 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
                                 </div>
                             </div>
 
-                            {/* datos visibles solo a proveedores */}
                             {isProvider && (
                                 <>
                                     <p><strong>Cliente:</strong> {appointment.user?.name ?? "—"}</p>
                                     <p><strong>Dirección:</strong> {appointment.user?.address ?? "—"}</p>
                                     <p><strong>Teléfono:</strong> {appointment.user?.phone ?? "—"}</p>
                                     <p><strong>Notas adicionales:</strong> {appointment.additionalNotes || "—"}</p>
+                                    <p className="flex gap-1 items-baseline "><strong>Estrellas:</strong> {appointment.review?.rating || "—"} <FaStar style={{ color: 'yellow' }} /></p>
+                                    <p ><strong>Comentario:</strong> {appointment.review?.comment || "—"}</p>
                                 </>
+                            )}
+
+                            {!isProvider && appointment.appointmentStatus === AppointmentStatus.COMPLETED && !appointment.review && (
+                                <div className="mt-2">
+                                    <button
+                                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                        onClick={() => handleOpenReviewModal(appointment)}
+                                    >
+                                        Dejar Reseña
+                                    </button>
+                                </div>
+                            )}
+
+                            {!isProvider && appointment.appointmentStatus === AppointmentStatus.COMPLETED && appointment.review && (
+                                <div className="mt-2">
+                                    <button
+                                        disabled
+                                        className="px-4 py-2 bg-gray-400 text-white rounded cursor-not-allowed"
+                                    >
+                                        Ya has dejado una reseña
+                                    </button>
+                                </div>
                             )}
                         </div>
                     ))}
                 </div>
             ) : (
                 <p className="text-sm italic">Aún no tienes turnos agendados.</p>
+            )}
+
+            {selectedAppointment && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
+                    <div className="bg-white p-6 rounded-lg shadow-xl w-[90%] sm:w-[400px]">
+                        <h3 className="font-semibold text-xl mb-4">Deja una reseña</h3>
+
+                        <div className="mb-3">
+                            <label className="block text-sm font-medium">Calificación</label>
+                            <StarRating rating={rating} onChange={(newRating) => setRating(newRating)} />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="block text-sm font-medium">Comentario</label>
+                            <textarea
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                className="w-full border p-2 rounded"
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={handleCloseReviewModal}
+                                className="px-4 py-2 bg-gray-400 text-white rounded"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleSubmitReview}
+                                className="px-4 py-2 bg-blue-600 text-white rounded"
+                            >
+                                Enviar Reseña
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

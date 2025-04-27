@@ -57,21 +57,21 @@ export const getMyAppointments = async (): Promise<AppointmentType[]> => {
 export const getMyProvidedAppointments = async (): Promise<AppointmentType[]> => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No se encontró token en localStorage");
-  
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/providerappt`, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
-      }
-    );
-  
-    if (!res.ok) {
-      throw new Error(`Error ${res.status}: ${res.statusText}`);
     }
-  
+    );
+
+    if (!res.ok) {
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+    }
+
     return res.json();
-  };
+};
 
 export const cancelAppointment = async (id: string, token: string) => {
     try {
@@ -112,22 +112,23 @@ export const getAppointmentById = async (id: string) => {
     }
 };
 
-// export const approveAppointment = async (id: string, token: string) => {
-//     try {
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/approve/${id}`, {
-//             method: 'PATCH',
-//             headers: {
-//                 'Authorization': `Bearer ${token}`,
-//             },
-//         });
+export const completeAppointment = async (id: string, token: string) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/complete/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
 
-//         if (!response.ok) {
-//             throw new Error('Error al aprobar el turno');
-//         }
+        if (!response.ok) {
+            throw new Error('No se pudo completar el turno.');
+        }
 
-//         return await response.json();
-//     } catch (error) {
-//         console.error('Error al aprobar el turno:', error);
-//         throw error;
-//     }
-// };
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al completar el turno:', error);
+        throw error;
+    }
+};

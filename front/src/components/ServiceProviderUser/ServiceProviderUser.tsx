@@ -78,7 +78,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                 key={i}
                 className={`text-yellow-400 ${i < Math.round(promedioRating)
                   ? "opacity-100"
-                  : "opacity-80"
+                  : "opacity-40"
                   }`}
               />
             ))}
@@ -172,15 +172,15 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           reviews.map((review, i) => (
             <div
               key={i}
-              className="mb-3 p-3 bg-white shadow-sm rounded-md border border-gray-100"
+              className="mb-3 p-3 bg-white shadow-lg rounded-md border border-tertiary"
             >
-              <p className="text-sm font-semibold">{review.user.name}</p>
-              <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
               <div className="flex text-yellow-500 text-sm">
                 {Array.from({ length: review.rating }, (_, j) => (
                   <FaStar key={j} />
                 ))}
               </div>
+              <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
+              <p className="text-sm text-gray-600 mb-1">{new Date(review.createdAt).toLocaleDateString()}</p>
             </div>
           ))
         ) : (
