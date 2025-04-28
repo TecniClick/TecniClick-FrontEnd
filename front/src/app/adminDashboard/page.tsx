@@ -1,6 +1,6 @@
+// AdminDashboard.tsx
 import CreateCategoryBlock from "@/components/Admin/CreateCategory";
 import PendingRequests from "@/components/Admin/PendingRequests";
-import { StatsBlock } from "@/components/Admin/StatsBlock";
 import { WelcomeBlock } from "@/components/Admin/WelcomeBlock";
 import UserSearcherBlock from "@/components/Admin/UserSearcherBlock";
 import UserTableBlock from "@/components/Admin/UserTableBlock";
@@ -17,43 +17,41 @@ export default function AdminDashboard() {
   return (
     <AdminProtect>
       <div className="p-6 space-y-6">
-        {/* Fila 1: Encabezado y Estadísticas */}
+        {/* Primera Fila: Welcome + Acciones Rápidas */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 flex flex-col gap-6">
             <WelcomeBlock />
+            <div className="space-y-6">
+              <CreateCategoryBlock />
+              <CreateAdminBlock />
+            </div>
           </div>
           <div className="lg:col-span-3">
-            <StatsBlock />
+            <AdminStats />
           </div>
         </div>
 
-        {/* Fila 2: Estadísticas Avanzadas */}
+        {/* Segunda Fila: Solicitudes Pendientes */}
         <div className="grid grid-cols-1 gap-6">
-          <AdminStats />
+          <PendingRequests />
         </div>
 
-        {/* Fila 3: Gestión Rápida */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <PendingRequests />
-          </div>
-          <div className="lg:col-span-1 space-y-6">
-            <CreateCategoryBlock />
-            <CreateAdminBlock />
-          </div>
-        </div>
-
-        {/* Fila 4: Gestión de Usuarios */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
-            <UserSearcherBlock />
-          </div>
-          <div className="lg:col-span-3">
-            <UserTableBlock />
+        {/* Tercera Fila: Gestión de Usuarios */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Gestión de Usuarios</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-1">
+                <UserSearcherBlock />
+              </div>
+              <div className="lg:col-span-3">
+                <UserTableBlock />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Fila 5: Reseñas y Moderación */}
+        {/* Cuarta Fila: Moderación de Reviews */}
         <div className="grid grid-cols-1 gap-6">
           <ReviewSearchModalBlock />
         </div>

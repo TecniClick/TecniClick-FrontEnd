@@ -22,10 +22,16 @@ ChartJS.register(
 )
 
 type StatsData = {
-  summary?: {
+  summary: {
     totalUsers: number
     activeUsers: number
+    inactiveUsers: number
     totalServices: number
+    activeServices: number
+    pendingServices: number
+    rejectedServices: number
+    approvalRate: number
+    totalAppointments: number
     pendingAppointments: number
   }
   services?: {
@@ -35,7 +41,7 @@ type StatsData = {
 }
 
 export default function AdminStats() {
-  const [stats, setStats] = useState<StatsData>({})
+  const [stats, setStats] = useState<StatsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -98,6 +104,8 @@ export default function AdminStats() {
     )
   }
 
+  if (!stats) return null
+
   // Preparar datos para gráficos
   const serviceCategories = stats.services?.map(item => item.category || 'Sin categoría') || []
   const serviceCounts = stats.services?.map(item => item.count) || []
@@ -122,32 +130,90 @@ export default function AdminStats() {
         </div>
       </div>
 
-      {/* Tarjetas de Resumen */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <StatCard 
-          title="Usuarios Totales" 
-          value={stats.summary?.totalUsers || 0}
-          trend="up"
-          icon="👥"
-        />
-        <StatCard 
-          title="Usuarios Activos" 
-          value={stats.summary?.activeUsers || 0}
-          trend="stable"
-          icon="✅"
-        />
-        <StatCard 
-          title="Servicios" 
-          value={stats.summary?.totalServices || 0}
-          trend="up"
-          icon="🛠️"
-        />
-        <StatCard 
-          title="Citas Pendientes" 
-          value={stats.summary?.pendingAppointments || 0}
-          trend="down"
-          icon="⏳"
-        />
+      {/* Sección de Usuarios */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Usuarios</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatCard 
+            title="Total de Usuarios" 
+            value={stats.summary.totalUsers}
+            trend="up"
+            icon="👥"
+          />
+          <StatCard 
+            title="Usuarios Activos" 
+            value={stats.summary.activeUsers}
+            trend="stable"
+            icon="✅"
+          />
+          <StatCard 
+            title="Usuarios Inactivos" 
+            value={stats.summary.inactiveUsers}
+            trend={stats.summary.inactiveUsers > 0 ? "down" : "stable"}
+            icon="❌"
+          />
+        </div>
+      </div>
+
+      {/* Sección de Servicios */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Servicios</h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <StatCard 
+            title="Total de Servicios" 
+            value={stats.summary.totalServices}
+            trend="up"
+            icon="🛠️"
+          />
+          <StatCard 
+            title="Servicios Activos" 
+            value={stats.summary.activeServices}
+            trend="up"
+            icon="✔️"
+          />
+          <StatCard 
+            title="Servicios Pendientes" 
+            value={stats.summary.pendingServices}
+            trend={stats.summary.pendingServices > 0 ? "down" : "stable"}
+            icon="⏳"
+          />
+          <StatCard 
+            title="Servicios Rechazados" 
+            value={stats.summary.rejectedServices}
+            trend={stats.summary.rejectedServices > 0 ? "down" : "stable"}
+            icon="✖️"
+          />
+        </div>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <StatCard 
+            title="Tasa de Aprobación" 
+            value={`${stats.summary.approvalRate}%`}
+            trend={stats.summary.approvalRate > 70 ? "up" : "down"}
+            icon="📈"
+            fullWidth
+          />
+        </div>
+      </div>
+
+      {/* Sección de Citas */}
+      <div className="mb-8">
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Citas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <StatCard 
+            title="Total de Citas" 
+            value={stats.summary.totalAppointments}
+            trend="up"
+            icon="📅"
+            fullWidth
+          />
+          <StatCard 
+            title="Citas Pendientes" 
+            value={stats.summary.pendingAppointments}
+            trend={stats.summary.pendingAppointments > 0 ? "down" : "stable"}
+            icon="⏳"
+            fullWidth
+          />
+        </div>
       </div>
 
       {/* Gráficos */}
@@ -237,12 +303,14 @@ const StatCard = ({
   title, 
   value, 
   trend, 
-  icon 
+  icon,
+  fullWidth = false
 }: {
   title: string
-  value: number
+  value: number | string
   trend?: 'up' | 'down' | 'stable'
   icon: string
+  fullWidth?: boolean
 }) => {
   const trendColors = {
     up: 'text-green-500',
@@ -251,7 +319,7 @@ const StatCard = ({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-700">
+    <div className={`bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-700 ${fullWidth ? 'md:col-span-2' : ''}`}>
       <div className="flex justify-between">
         <div>
           <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
