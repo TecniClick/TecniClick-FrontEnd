@@ -7,7 +7,7 @@ import { FormEvent } from "react";
 import { useAuth } from "@/contexts/authContext";
 
 export default function SubscriptionForm() {
-  const { user, updateService } = useAuth()
+  const { user, updateService, token } = useAuth()
   const stripe = useStripe();
   const elements = useElements();
 
@@ -36,8 +36,8 @@ export default function SubscriptionForm() {
       toast.error("Por favor registre y loguee su usuario para concretar la transaccion");
     } else if (paymentMethod && user && (!user.serviceProfile || user.serviceProfile.status != "active")) {
       toast.error("Por favor registre su usuario como proveedor de servicio para concretar la transaccion");
-    } else if (paymentMethod && user && user.serviceProfile && user.serviceProfile.status == "active") {
-      const response = updateServiceProfileToPremium(paymentMethod.id, 1000, user.serviceProfile.id);
+    } else if (token && paymentMethod && user && user.serviceProfile && user.serviceProfile.status == "active") {
+      const response = updateServiceProfileToPremium(paymentMethod.id, 1000, token);
       
       toast.promise(response, {
         loading: "Espere mientras registramos el pago...",

@@ -130,6 +130,7 @@ export const updateServiceProfileToPremium = async (id: string, amount: number, 
         // if (MODE === "developer") {
         //     return servicesMock.find((s) => s.id === service.id) || null;
         // } else if (MODE === "production") {
+            console.log("Enviando a create-intent:", { id, amount, token });
             const res = await fetch(`${API_URL}/orders/create-intent`, {
                 method: "POST",
                 headers: {
@@ -140,7 +141,8 @@ export const updateServiceProfileToPremium = async (id: string, amount: number, 
             });
 
             const response = await res.json();
-
+            console.log(response);
+            
             if (res.status !== 201) {
                 throw new Error(response.message);
             }
