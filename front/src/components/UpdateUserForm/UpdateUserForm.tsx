@@ -9,8 +9,8 @@ const UpdateUserForm = () => {
     const router = useRouter();
     const { user, token, setUser } = useAuth();
 
-    const [phone, setPhone] = useState(user?.phone || "");
-    const [address, setAddress] = useState(user?.address || "");
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,7 +26,7 @@ const UpdateUserForm = () => {
                 setUser(response);
                 localStorage.setItem("user", JSON.stringify(response));
                 toast.success("Datos actualizados correctamente.");
-                router.push(`/appointments?id=${user.id}`);
+                router.back();
             }
         } catch (err) {
             toast.error("Hubo un error al actualizar los datos.");
@@ -37,12 +37,13 @@ const UpdateUserForm = () => {
     return (
         <div className="max-w-2xl mx-auto mt-[15vh] p-4">
             <h2 className="text-2xl font-semibold">Actualizar datos de usuario</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 border p-4 rounded-md shadow-md">
                 <div>
                     <label className="block text-sm font-medium">Teléfono</label>
                     <input
                         type="text"
-                        className="w-full dark:text-tertiary"
+                        className="w-full dark:text-tertiary border rounded-md"
+                        placeholder="Ej: 1234567890"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
@@ -53,7 +54,8 @@ const UpdateUserForm = () => {
                     <label className="block text-sm font-medium">Dirección</label>
                     <input
                         type="text"
-                        className="w-full dark:text-tertiary"
+                        className="w-full dark:text-tertiary border rounded-md"
+                        placeholder="Ej: Calle Falsa 123"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         required

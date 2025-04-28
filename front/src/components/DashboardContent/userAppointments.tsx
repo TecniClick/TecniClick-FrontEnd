@@ -7,9 +7,9 @@ import { FaTimes, FaCheck, FaStar } from "react-icons/fa";
 import { createReview } from "@/services/reviewServices";
 import StarRating from "../StartRating/StartRating";
 
-export default function UserAppointments({ appointments }: { appointments: AppointmentType[] }) {
+export default function UserAppointments() {
     const { user, token } = useAuth();
-    const { cancelAppointment, getAppointmentById, completeAppointment } = useAppointments();
+    const { appointments, cancelAppointment, getAppointmentById, completeAppointment } = useAppointments();
     const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
     const [rating, setRating] = useState<number>(0);
     const [comment, setComment] = useState<string>("");
@@ -130,7 +130,6 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
         try {
             const updatedAppointment = await createReview(selectedAppointment?.id ?? "", { rating, comment }, token);
 
-            // Actualiza el estado para reflejar que la reseña ya ha sido enviada
             setAppointmentsState((prev) =>
                 orderArray(
                     prev.map((a) =>
@@ -154,7 +153,7 @@ export default function UserAppointments({ appointments }: { appointments: Appoi
             );
 
             toast.success("¡Reseña enviada correctamente!");
-            handleCloseReviewModal();  // Cierra el modal después de enviar la reseña
+            handleCloseReviewModal();
         } catch (error) {
             toast.error("Hubo un error al enviar la reseña.");
         }

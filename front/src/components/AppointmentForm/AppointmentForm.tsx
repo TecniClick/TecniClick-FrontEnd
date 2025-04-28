@@ -20,7 +20,10 @@ const AppointmentForm = () => {
             router.push("/");
         }
 
-        if (user && (!user.phone || !user.address)) {
+        if (user && (
+            !user.phone || user.phone === "0" ||
+            !user.address || user.address === "Dirección no especificada"
+        )) {
             toast.error("Faltan datos importantes en tu perfil. Por favor, actualiza tu información.");
             router.push(`/update-user?id=${user.id}`);
         }
@@ -61,13 +64,11 @@ const AppointmentForm = () => {
             additionalNotes: notes,
         };
 
-        console.log("Token:", token);
-        console.log("Payload:", payload);
-
         try {
             const response = await newAppointment(payload, token!);
             if (response) {
                 toast.success("Turno creado con éxito. Te llegará un correo con los detalles.");
+                router.refresh()
                 router.push("/dashboard");
             } else {
                 toast.error("Hubo un error al crear el turno.");

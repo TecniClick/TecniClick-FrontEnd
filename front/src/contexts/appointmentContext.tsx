@@ -6,13 +6,21 @@ import { useAuth } from "./authContext";
 import {
     getMyAppointments,
     getMyProvidedAppointments,
+    newAppointment,
 } from "@/services/appointmentService";
+
+interface NewAppointmentPayload {
+    date: string;
+    providerId: string;
+    additionalNotes?: string;
+}
 
 interface AppointmentsContextType {
     appointments: AppointmentType[];
     refreshAppointments: () => Promise<void>;
     cancelAppointment: (id: string) => Promise<void>;
     completeAppointment: (id: string) => Promise<void>;
+    createAppointment: (newAppointmentPayload: NewAppointmentPayload) => Promise<void>;
     getAppointmentById: (id: string) => Promise<AppointmentType | undefined>;
 }
 
@@ -43,7 +51,7 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
 
     const fetchAppointments = async () => {
         if (loading || !token || !user || isDataLoaded) return;
-        setLoading(true);
+        setLoading(false);
         try {
             const raw = user.serviceProfile?.status === "active"
                 ? await getMyProvidedAppointments()
@@ -60,7 +68,7 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
             }));
 
             setAppointments(data);
-            setIsDataLoaded(true);
+            setIsDataLoaded(false);
         } catch (err) {
             console.error("Error cargando turnos:", err);
         } finally {
@@ -112,6 +120,19 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
         }
     };
 
+    const createAppointment = async (newAppointmentPayload: NewAppointmentPayload) => {
+        if (!token) return;
+        try {
+            const newAppointmentData = await newAppointment(newAppointmentPayload, token);
+
+            setAppointments((prevAppointments) => [...prevAppointments, newAppointmentData]);
+            setIsDataLoaded(false); 
+            await fetchAppointments();
+        } catch (err) {
+            console.error("Error creando turno:", err);
+        }
+    };
+
     const getAppointmentById = async (id: string): Promise<AppointmentType | undefined> => {
         if (!token) return;
         try {
@@ -141,8 +162,9 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
                 appointments,
                 refreshAppointments: fetchAppointments,
                 cancelAppointment,
-                getAppointmentById,
                 completeAppointment,
+                createAppointment,
+                getAppointmentById,
             }}
         >
             {children}

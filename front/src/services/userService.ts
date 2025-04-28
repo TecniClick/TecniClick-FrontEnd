@@ -66,10 +66,11 @@ export const updateUser = async (
     token: string
 ) => {
     try {
-        const updatedData = {
-            phone,
-            address,
-        };
+        const updatedData: { phone?: number; address: string } = { address };
+
+        if (phone && phone !== 0) {
+            updatedData.phone = phone;
+        }
 
         const response = await fetch(`${API_URL}/users/update/${id}`, {
             method: 'PATCH',
@@ -93,6 +94,7 @@ export const updateUser = async (
         console.error(err);
     }
 };
+
 
 
 
