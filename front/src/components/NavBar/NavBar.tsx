@@ -10,7 +10,7 @@ const NavBar = () => {
   return (
     <>
       {/* NavBar para pantallas medianas y grandes */}
-      <nav className="hidden md:flex mx-6 lg:mx-36">
+      <nav className="hidden md:flex mx-5 lg:mx-36">
         <ul className="flex flex-row justify-between items-center text-secondary font-semibold w-full">
           <Link href="/" className="w-16 h-full justify-center">
             <button className="w-full h-full relative">

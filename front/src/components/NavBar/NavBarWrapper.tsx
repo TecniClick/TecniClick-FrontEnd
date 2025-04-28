@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import NavBar from "./NavBar";
 
 const NavBarWrapper = () => {

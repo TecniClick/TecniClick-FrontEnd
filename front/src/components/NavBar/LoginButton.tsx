@@ -1,21 +1,30 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { MouseEvent } from "react"
+import { MouseEvent, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { IoSearch } from "react-icons/io5";
-import { MdLogin, MdLogout } from "react-icons/md";
+import { MdAdminPanelSettings, MdLogin, MdLogout } from "react-icons/md";
 import { FaUser, FaUserPlus } from "react-icons/fa";
 import logo from "../../../public/logo.png";
 import { useAuth } from "@/contexts/authContext"
 import { useRouter } from "next/navigation"
 import { BsEnvelopePaperFill } from "react-icons/bs"
 import { RiFilePaper2Fill } from "react-icons/ri"
+import { UserRole } from "@/helpers/typeMock"
 
 const LoginButton = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
+  const [ isAdmin, setIsAdmin ] = useState<boolean>(false)
   const router = useRouter();
+
+  useEffect(() => {
+      if (!user) setIsAdmin(false)
+ else if (user.role == UserRole.CUSTOMER || user.role == UserRole.PROVIDER) setIsAdmin(false)
+ else if (user.role == UserRole.ADMIN || user.role == UserRole.SUPERADMIN) setIsAdmin(true)
+  })
 
   const logoutHandler = (event: MouseEvent) => {
     event.preventDefault();
@@ -38,7 +47,9 @@ const LoginButton = () => {
       {isAuthenticated ? (
         <div className="hidden md:flex flex-1 justify-evenly items-center">
           <Link href="/services" className="btn-hundido">Buscar Servicios</Link>
-          <Link href="/contact" className="btn-hundido">Contacto</Link>
+          {!isAdmin ? (
+            <Link href="/contact" className="btn-hundido">Contacto</Link>)
+         : (<Link href="/adminDashboard" className="btn-hundido">Perfil de Administrador</Link>)}
           <Link href="/dashboard" className="btn-hundido">Perfil</Link>
           <button
             onClick={(event) => logoutHandler(event)}
@@ -73,9 +84,13 @@ const LoginButton = () => {
 
         {isAuthenticated ? (
           <>
+          {!isAdmin ? (
             <Link className="hover:text-quaternary transition" href="/contact">
               <BsEnvelopePaperFill size={30} />
-            </Link>
+            </Link>)
+          : (<Link className="hover:text-quaternary transition" href="/adminDashboard">
+              <MdAdminPanelSettings size={30} />
+            </Link>)}
             <Link className="hover:text-quaternary transition" href="/dashboard">
               <FaUser size={30} />
             </Link>

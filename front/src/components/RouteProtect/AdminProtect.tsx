@@ -4,6 +4,7 @@
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/authContext";
+import { UserRole } from "@/helpers/typeMock";
 
 const AdminProtect = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, loading, user } = useAuth();
@@ -17,7 +18,7 @@ const AdminProtect = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isClient && !loading && (!isAuthenticated || !user)) {
       router.push("/login");
-    } else if (user && (user.role == "customer" || user.role == "provider")) {
+    } else if (user && (user.role == UserRole.CUSTOMER || user.role == UserRole.PROVIDER)) {
       router.push("/dashboard");
     }
   }, [isClient, isAuthenticated, loading, user]);
