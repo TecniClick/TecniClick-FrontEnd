@@ -59,6 +59,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             const updatedUser = await res.json();
 
+            if (updatedUser.phone === 0) {
+                updatedUser.phone = undefined;
+            }
+
             localStorage.setItem("user", JSON.stringify(updatedUser));
             setUser(updatedUser);
         } catch {

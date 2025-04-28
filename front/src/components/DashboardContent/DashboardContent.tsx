@@ -33,7 +33,7 @@ export default function DashboardContent() {
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
             {isLoggedIn ? (
                 <div className="max-w-6xl mx-auto flex flex-col gap-8 items-center">
-                    
+
                     <div className="flex flex-col items-center gap-4">
                         <UserImage
                             imgUrl={user?.imgUrl ?? undefined}
@@ -44,18 +44,18 @@ export default function DashboardContent() {
                         </h1>
                     </div>
 
-                    
+
                     {user && (
                         <ServiceButton params={params} />
                     )}
 
-                    
+
                     <div className="flex flex-wrap gap-6 w-full justify-center">
                         <div className="flex-1">
                             <UserInfo
                                 email={user?.email ?? ""}
-                                phone={user?.phone ?? "No especificado"}
-                                address={user?.address ?? "No especificado"}
+                                phone={user?.phone !== "0" ? user?.phone : "No especificado"}
+                                address={user?.address !== "Dirección no especificada" ? user?.address : "No especificado"}
                             />
                         </div>
 
@@ -67,7 +67,7 @@ export default function DashboardContent() {
                     </div>
 
                     <div className="w-full">
-                        <UserAppointments appointments={appointments || []} />
+                        <UserAppointments/>
                     </div>
                 </div>
             ) : (

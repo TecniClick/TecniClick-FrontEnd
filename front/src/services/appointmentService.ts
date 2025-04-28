@@ -23,15 +23,24 @@ export const newAppointment = async (
         body: JSON.stringify(payload),
     });
 
-    const data = await response.json(); // ✅ solo una vez
+    const data = await response.json();
     console.log("Respuesta del servidor:", data);
 
     if (!response.ok) {
         throw new Error(data.message || "Error al crear el turno");
     }
 
-    return data;
+    return {
+        id: data.id,
+        user: data.user,  // o `users`, depende de tu backend
+        provider: data.provider,
+        date: new Date(data.date),
+        appointmentStatus: data.appointmentStatus,
+        additionalNotes: data.additionalNotes,
+        review: data.review,
+    };
 };
+
 
 
 export const getMyAppointments = async (): Promise<AppointmentType[]> => {
