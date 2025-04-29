@@ -1,6 +1,7 @@
 'use client';
 import { useState } from "react";
 import { toast } from "sonner";
+import emailjs from "emailjs-com";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ title: "", description: "", subject: "Consultas", email: "" });
@@ -11,11 +12,11 @@ export default function ContactPage() {
   };
 
   const validateEmail = (email: string) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!form.title || !form.description || !form.email) {
@@ -28,15 +29,42 @@ export default function ContactPage() {
       return;
     }
 
-    toast.success("Mensaje enviado correctamente! En breve nos pondremos en contacto contigo.");
-    setForm({ title: "", description: "", subject: "Consultas", email: "" });
+    // Verificamos si las variables de entorno están definidas
+    const serviceId = process.env.NEXT_PUBLIC_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      toast.error("Faltan las configuraciones de correo. Por favor, revisa las variables de entorno.");
+      return;
+    }
+
+    try {
+      const result = await emailjs.send(
+        serviceId, // Ahora las variables son seguras y no son undefined
+        templateId,
+        {
+          from_name: form.email,
+          subject: form.subject,
+          title: form.title,
+          message: form.description,
+        },
+        publicKey
+      );
+      console.log('Email enviado:', result.text);
+      toast.success("Mensaje enviado correctamente! En breve nos pondremos en contacto contigo.");
+      setForm({ title: "", description: "", subject: "Consultas", email: "" });
+    } catch (error) {
+      console.error('Error al enviar email:', error);
+      toast.error("Hubo un error al enviar el mensaje. Intenta de nuevo.");
+    }
   };
 
   return (
     <div className="container mx-auto my-8 p-4 bg-primary rounded">
       <h4 className="text-2xl text-center text-secondary font-bold mb-4">¿Tenes alguna consulta?<br />¿Necesitas reportar algún problema?</h4>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-tertiary">
-        <select 
+        <select
           name="subject"
           value={form.subject}
           onChange={handleChange}

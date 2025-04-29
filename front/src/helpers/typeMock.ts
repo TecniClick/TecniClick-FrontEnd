@@ -153,4 +153,11 @@ export type OrderType = {
     subscription: SubscriptionType | null;
 }
 
+export type UpdateUserDto = {
+    name?: string;
+    email?: string;
+    phone?: number;
+    address?: string;
+}
+
   
