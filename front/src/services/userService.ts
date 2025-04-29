@@ -95,10 +95,6 @@ export const updateUser = async (
     }
 };
 
-
-
-
-
 export const deleteUser = async (id: string): Promise<boolean> => {
     // TODO: Implementar la lógica para eliminar el perfil del usuario por id
     try {
@@ -118,3 +114,36 @@ export const deleteUser = async (id: string): Promise<boolean> => {
 
     return false;
 }
+
+interface UpdateUserDto {
+    name?: string;
+    email?: string;
+    phone?: number;
+    address?: string;
+}
+
+export const updateUserDashboard = async (id: string, userData: UpdateUserDto, token: string): Promise<UpdateUserDto> => {
+    try {
+        const response = await fetch(`${API_URL}/users/update/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            // Capturamos el mensaje de error en caso de que la respuesta no sea ok (ej. 409)
+            const errorData = await response.json();
+            console.error('Error del servidor:', errorData);
+            throw new Error(errorData.message || 'Error al actualizar el perfil');
+        }
+
+        const updatedUser = await response.json();
+        return updatedUser;
+    } catch (error) {
+        console.error('Fallo la actualización del perfil:', error);
+        throw error;
+    }
+};

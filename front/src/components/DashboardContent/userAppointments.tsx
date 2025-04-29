@@ -194,7 +194,7 @@ export default function UserAppointments() {
                                     {appointment.appointmentStatus === AppointmentStatus.CANCELLED ? (
                                         <span className="text-red-500 font-semibold">Turno cancelado</span>
                                     ) : appointment.appointmentStatus === AppointmentStatus.COMPLETED ? (
-                                        <span className="text-green-500 font-semibold">Turno completado</span>
+                                        <span className="text-green-600 font-semibold">Turno completado</span>
                                     ) : (
                                         <button
                                             className="px-4 py-1 bg-red-600 text-white rounded"
