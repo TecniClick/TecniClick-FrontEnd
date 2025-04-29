@@ -3,6 +3,16 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
+type ServiceProfile = {
+  serviceTitle?: string
+  description?: string
+  appointmentPrice?: number
+  status?: string
+  category?: {
+    name?: string
+  }
+} | null
+
 type User = {
   id: string
   name?: string | null
@@ -11,12 +21,12 @@ type User = {
   imgUrl?: string | null
   deletedAt?: string | null
   createdAt: string
+  serviceProfile?: ServiceProfile
 }
 
 const ITEMS_PER_PAGE = 5
 
 const UserTableBlock = () => {
-  const [searchTerm, setSearchTerm] = useState('')
   const [allUsers, setAllUsers] = useState<User[]>([])
   const [currentUsers, setCurrentUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -42,8 +52,15 @@ const UserTableBlock = () => {
         }
       )
 
-      if (response.status === 401) throw new Error('Unauthorized')
-      if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`)
+      if (response.status === 401) {
+        localStorage.removeItem('token')
+        router.push('/login')
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
 
       const users = await response.json()
       const processedUsers = users.map((user: User) => ({
@@ -51,7 +68,8 @@ const UserTableBlock = () => {
         name: user.name || 'Sin nombre',
         email: user.email || 'Sin email',
         role: user.role || 'customer',
-        imgUrl: user.imgUrl || null
+        imgUrl: user.imgUrl || null,
+        serviceProfile: user.serviceProfile || null
       }))
       
       setAllUsers(processedUsers)
@@ -59,12 +77,7 @@ const UserTableBlock = () => {
 
     } catch (err) {
       if (err instanceof Error) {
-        if (err.message === 'Unauthorized') {
-          localStorage.removeItem('token')
-          router.push('/login')
-        } else {
-          setError(err.message)
-        }
+        setError(err.message)
       } else {
         setError('Error desconocido al cargar usuarios')
       }
@@ -74,25 +87,12 @@ const UserTableBlock = () => {
   }
 
   const updatePaginatedUsers = (users: User[], page: number) => {
-    const filteredUsers = users.filter(user => {
-      const searchTermLower = searchTerm.toLowerCase()
-      const nameLower = user.name?.toLowerCase() || ''
-      const emailLower = user.email?.toLowerCase() || ''
-      const roleLower = user.role?.toLowerCase() || ''
-
-      return (
-        nameLower.includes(searchTermLower) ||
-        emailLower.includes(searchTermLower) ||
-        roleLower.includes(searchTermLower)
-      )
-    })
-
-    const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE)
+    const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE)
     setTotalPages(totalPages > 0 ? totalPages : 1)
     setCurrentPage(page > totalPages ? 1 : page)
 
     const startIndex = (page - 1) * ITEMS_PER_PAGE
-    const paginatedUsers = filteredUsers.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+    const paginatedUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE)
     setCurrentUsers(paginatedUsers)
   }
 
@@ -112,8 +112,15 @@ const UserTableBlock = () => {
         }
       )
 
-      if (response.status === 401) throw new Error('Unauthorized')
-      if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`)
+      if (response.status === 401) {
+        localStorage.removeItem('token')
+        router.push('/login')
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
 
       setAllUsers(prev => prev.map(user => 
         user.id === selectedUser.id ? { ...user, deletedAt: new Date().toISOString() } : user
@@ -133,36 +140,23 @@ const UserTableBlock = () => {
   }
 
   useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      updatePaginatedUsers(allUsers, 1)
-    }, 300)
-
-    return () => clearTimeout(debounceTimer)
-  }, [searchTerm])
-
-  useEffect(() => {
     fetchUsers()
   }, [])
+
+  const formatPrice = (price?: number) => {
+    return price?.toLocaleString('es-ES', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    }) || '$0.00'
+  }
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
       <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Gestión de Usuarios Activos</h2>
       <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-        Busca y administra usuarios activos en la plataforma
+        Administra usuarios activos en la plataforma
       </p>
-
-      <div className="relative mb-4">
-        <input
-          type="text"
-          placeholder="Buscar por nombre, email o rol..."
-          className="w-full p-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <span className="absolute left-3 top-2.5 text-gray-400">
-          🔍
-        </span>
-      </div>
 
       {error && (
         <p className="text-red-500 text-sm mb-4">{error}</p>
@@ -194,7 +188,6 @@ const UserTableBlock = () => {
                           onError={(e) => {
                             const target = e.target as HTMLImageElement
                             target.src = '/default-avatar.png'
-                            target.onerror = null
                           }}
                         />
                       ) : (
@@ -206,16 +199,21 @@ const UserTableBlock = () => {
                       )}
                       <div>
                         <p className="font-medium text-gray-800 dark:text-white">
-                          {user.name || 'Sin nombre'}
+                          {user.name}
                         </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {user.email || 'Sin email'}
+                          {user.email}
                         </p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">
                     {user.role === 'provider' ? 'Prestador' : 'Cliente'}
+                    {user.role === 'provider' && user.serviceProfile && (
+                      <span className="block text-xs text-gray-500 dark:text-gray-400">
+                        {user.serviceProfile.serviceTitle}
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                     {new Date(user.createdAt).toLocaleDateString()}
@@ -276,11 +274,28 @@ const UserTableBlock = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
             <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Confirmar Desactivación</h3>
             <p className="mb-4 text-gray-600 dark:text-gray-300">
-              ¿Estás seguro de desactivar al usuario <strong>{selectedUser.name || 'Sin nombre'}</strong> ({selectedUser.role === 'provider' ? 'Prestador' : 'Cliente'})?
+              ¿Estás seguro de desactivar al usuario <strong>{selectedUser.name}</strong> ({selectedUser.role === 'provider' ? 'Prestador' : 'Cliente'})?
             </p>
             <div className="bg-yellow-50 dark:bg-gray-700 p-3 rounded mb-4">
-              <p className="text-sm"><strong>Email:</strong> {selectedUser.email || 'Sin email'}</p>
+              <p className="text-sm"><strong>Email:</strong> {selectedUser.email}</p>
               <p className="text-sm"><strong>Registro:</strong> {new Date(selectedUser.createdAt).toLocaleDateString()}</p>
+              
+              {selectedUser.role === 'provider' && selectedUser.serviceProfile && (
+                <div className="mt-2 pt-2 border-t border-yellow-200 dark:border-gray-600">
+                  <p className="text-sm font-semibold">Información del Servicio:</p>
+                  <p className="text-sm"><strong>Servicio:</strong> {selectedUser.serviceProfile.serviceTitle || 'No especificado'}</p>
+                  <p className="text-sm"><strong>Categoría:</strong> {selectedUser.serviceProfile.category?.name || 'No especificada'}</p>
+                  <p className="text-sm"><strong>Precio por cita:</strong> {formatPrice(selectedUser.serviceProfile.appointmentPrice)}</p>
+                  <p className="text-sm"><strong>Estado del perfil:</strong> {selectedUser.serviceProfile.status || 'No especificado'}</p>
+                  {selectedUser.serviceProfile.description && (
+                    <p className="text-sm mt-1">
+                      <strong>Descripción:</strong> {selectedUser.serviceProfile.description.length > 50 
+                        ? `${selectedUser.serviceProfile.description.substring(0, 50)}...` 
+                        : selectedUser.serviceProfile.description}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex justify-end space-x-4">
               <button

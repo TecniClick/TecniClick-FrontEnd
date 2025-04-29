@@ -1,12 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Doughnut, Bar } from 'react-chartjs-2'
+import { Doughnut } from 'react-chartjs-2'
 import { 
   Chart as ChartJS, 
-  ArcElement, 
-  BarElement,
-  CategoryScale,
-  LinearScale,
+  ArcElement,
   Tooltip, 
   Legend 
 } from 'chart.js'
@@ -14,9 +11,6 @@ import Image from 'next/image'
 
 ChartJS.register(
   ArcElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
   Tooltip,
   Legend
 )
@@ -38,6 +32,10 @@ type StatsData = {
     category: string
     count: number
   }[]
+  roles?: {
+    clients: number
+    providers: number
+  }
 }
 
 export default function AdminStats() {
@@ -48,7 +46,7 @@ export default function AdminStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [summaryRes, servicesRes] = await Promise.all([
+        const [summaryRes, servicesRes, rolesRes] = await Promise.all([
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/stats/summary`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -58,16 +56,22 @@ export default function AdminStats() {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
+          }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/stats/usersbyrole`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
           })
         ])
 
-        if (!summaryRes.ok || !servicesRes.ok) {
+        if (!summaryRes.ok || !servicesRes.ok || !rolesRes.ok) {
           throw new Error('Error al cargar estadísticas')
         }
 
         setStats({
           summary: await summaryRes.json(),
-          services: await servicesRes.json()
+          services: await servicesRes.json(),
+          roles: await rolesRes.json()
         })
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -106,9 +110,11 @@ export default function AdminStats() {
 
   if (!stats) return null
 
-  // Preparar datos para gráficos
+  // Datos para gráficos
   const serviceCategories = stats.services?.map(item => item.category || 'Sin categoría') || []
   const serviceCounts = stats.services?.map(item => item.count) || []
+  const roleLabels = ['Clientes', 'Prestadores']
+  const roleData = stats.roles ? [stats.roles.clients, stats.roles.providers] : [0, 0]
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
@@ -218,6 +224,7 @@ export default function AdminStats() {
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Gráfico de categorías de servicios */}
         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
           <h3 className="font-medium text-gray-800 dark:text-white mb-4">
             Distribución de Servicios
@@ -253,40 +260,44 @@ export default function AdminStats() {
           </div>
         </div>
 
+        {/* Gráfico de distribución de roles */}
         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
           <h3 className="font-medium text-gray-800 dark:text-white mb-4">
-            Servicios por Categoría
+            Distribución de Roles
           </h3>
           <div className="h-64">
-            <Bar
+            <Doughnut
               data={{
-                labels: serviceCategories,
+                labels: roleLabels,
                 datasets: [{
-                  label: 'Cantidad',
-                  data: serviceCounts,
-                  backgroundColor: '#3B82F6',
-                  borderRadius: 4
+                  data: roleData,
+                  backgroundColor: [
+                    '#3B82F6', // Azul para clientes
+                    '#10B981'  // Verde para prestadores
+                  ],
+                  borderWidth: 1
                 }]
               }}
               options={{
                 maintainAspectRatio: false,
-                responsive: true,
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      color: '#E5E7EB'
-                    },
-                    ticks: {
-                      color: '#6B7280'
+                plugins: {
+                  legend: {
+                    position: 'right',
+                    labels: {
+                      color: '#6B7280',
+                      font: {
+                        size: 12
+                      }
                     }
                   },
-                  x: {
-                    grid: {
-                      display: false
-                    },
-                    ticks: {
-                      color: '#6B7280'
+                  tooltip: {
+                    callbacks: {
+                      label: function(context) {
+                        const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
+                        const value = context.raw as number
+                        const percentage = Math.round((value / total) * 100)
+                        return `${context.label}: ${value} (${percentage}%)`
+                      }
                     }
                   }
                 }
@@ -299,6 +310,7 @@ export default function AdminStats() {
   )
 }
 
+// Componente StatCard sin cambios
 const StatCard = ({ 
   title, 
   value, 
