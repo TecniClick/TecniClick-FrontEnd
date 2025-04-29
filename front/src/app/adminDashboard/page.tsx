@@ -1,4 +1,3 @@
-// AdminDashboard.tsx
 import CreateCategoryBlock from "@/components/Admin/CreateCategory";
 import PendingRequests from "@/components/Admin/PendingRequests";
 import { WelcomeBlock } from "@/components/Admin/WelcomeBlock";
@@ -8,6 +7,9 @@ import CreateAdminBlock from "@/components/Admin/CreateAdminBlock";
 import AdminStats from "@/components/Admin/AdminStats";
 import AdminProtect from "@/components/RouteProtect/AdminProtect";
 import ReviewSearchModalBlock from "@/components/Admin/ReviewSearcher";
+import ServiceProfileReviewsTable from "@/components/Admin/ServiceProfileReviewsTable";
+import UpgradeUserToAdminBlock from "@/components/Admin/UpgradeUserToAdminBlock";
+import ReactivateUsersTable from "@/components/Admin/ReactivateUsersTable";
 
 export const metadata = {
   title: "Panel de Administración | TecniClick",
@@ -41,8 +43,9 @@ export default function AdminDashboard() {
           <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
             <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Gestión de Usuarios</h2>
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 space-y-6">
                 <UserSearcherBlock />
+                <UpgradeUserToAdminBlock />
               </div>
               <div className="lg:col-span-3">
                 <UserTableBlock />
@@ -53,7 +56,27 @@ export default function AdminDashboard() {
 
         {/* Cuarta Fila: Moderación de Reviews */}
         <div className="grid grid-cols-1 gap-6">
-          <ReviewSearchModalBlock />
+          <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Moderación de Reviews</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-1">
+                <ReviewSearchModalBlock />
+              </div>
+              <div className="lg:col-span-3">
+                <ServiceProfileReviewsTable />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quinta Fila: Reactivación de Usuarios */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Reactivación de Usuarios</h2>
+            <div className="grid grid-cols-1 gap-6">
+              <ReactivateUsersTable />
+            </div>
+          </div>
         </div>
       </div>
     </AdminProtect>

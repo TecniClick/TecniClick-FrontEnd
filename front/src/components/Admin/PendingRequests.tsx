@@ -228,7 +228,7 @@ const PendingRequests = () => {
             <div className="space-y-4 text-gray-800 dark:text-white">
               <div className="flex items-start gap-4">
                 <Image
-                  src={selectedRequest.user?.imgUrl || 'https://www.shutterstock.com/image-vector/default-avatar-profile-social-media-600nw-1920331226.jpg'}
+                  src={selectedRequest.user?.imgUrl}
                   alt={selectedRequest.user?.name || selectedRequest.userName}
                   className="w-16 h-16 rounded-full object-cover"
                 />
