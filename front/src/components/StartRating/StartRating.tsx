@@ -1,4 +1,3 @@
-import { useState } from 'react';
 
 const StarRating = ({ rating, onChange }: { rating: number, onChange: (rating: number) => void }) => {
     const stars = [1, 2, 3, 4, 5]; // Representa las estrellas del 1 al 5
