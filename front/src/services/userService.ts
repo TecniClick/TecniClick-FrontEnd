@@ -23,21 +23,15 @@ export const getUsers = async (): Promise<UserType[]> => {
     return [];
 }
 
-export const getUserById = async (id: string): Promise<UserType | null> => {
+export const getUserById = async (id: string): Promise<UserType> => {
     try {
-        if (MODE === "developer") {
-            return usersMock.find((user) => user.id === id) || null;
-        } else if (MODE === "production") {
-            const response = await fetch(`${API_URL}/users/${id}`, { cache: "no-cache" }); {/* service-profile/{id} */ }
-            if (!response.ok) throw new Error("No se pudo obtener el usuario");
-            return await response.json();
-        }
+        const response = await fetch(`${API_URL}/users/${id}`, { cache: "no-cache" }); {/* service-profile/{id} */ }
+        if (!response.ok) throw new Error("No se pudo obtener el usuario");
+        return await response.json();
     } catch (error) {
         console.error(error);
-        return null;
+        throw error
     }
-
-    return null;
 };
 
 
