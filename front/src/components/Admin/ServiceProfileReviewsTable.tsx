@@ -8,9 +8,12 @@ type Review = {
   rating: number
   comment: string
   createdAt: string
+  deletedAt: string | null
   user: {
+    id: string
     name: string
     imgUrl?: string | null
+    email: string
   }
 }
 
@@ -39,13 +42,16 @@ const ServiceProfileReviewsTable = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [selectedProfile, setSelectedProfile] = useState<ServiceProfile | null>(null)
   const [expandedReviews, setExpandedReviews] = useState<Record<string, boolean>>({})
+  const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null)
   const router = useRouter()
 
   const fetchServiceProfiles = async () => {
     setIsLoading(true)
     setError(null)
+    setSuccess(null)
     
     try {
       const response = await fetch(
@@ -100,12 +106,67 @@ const ServiceProfileReviewsTable = () => {
     }))
   }
 
+  const handleDeleteReview = async (reviewId: string) => {
+    setDeletingReviewId(reviewId)
+    setError(null)
+    setSuccess(null)
+    
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
+        { 
+          method: 'DELETE',
+          headers: { 
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+
+      if (response.status === 401) {
+        localStorage.removeItem('token')
+        router.push('/login')
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      setSuccess('Review eliminado permanentemente')
+      
+      // Actualización optimista
+      setAllProfiles(prevProfiles => 
+        prevProfiles.map(profile => ({
+          ...profile,
+          reviews: profile.reviews.filter(review => review.id !== reviewId)
+        }))
+      )
+      
+      updatePaginatedProfiles(allProfiles, currentPage)
+
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('Error al eliminar el review')
+      }
+    } finally {
+      setDeletingReviewId(null)
+      setTimeout(fetchServiceProfiles, 1000)
+    }
+  }
+
   useEffect(() => {
     fetchServiceProfiles()
   }, [])
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString()
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
   }
 
   const renderStars = (rating: number) => {
@@ -128,7 +189,15 @@ const ServiceProfileReviewsTable = () => {
       </p>
 
       {error && (
-        <p className="text-red-500 text-sm mb-4">{error}</p>
+        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-4 p-3 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded">
+          {success}
+        </div>
       )}
 
       <div className="overflow-x-auto">
@@ -203,28 +272,41 @@ const ServiceProfileReviewsTable = () => {
                           <h4 className="font-medium text-gray-800 dark:text-white">Reviews:</h4>
                           {profile.reviews.map((review) => (
                             <div key={review.id} className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow">
-                              <div className="flex items-center gap-3 mb-2">
-                                {review.user.imgUrl ? (
-                                  <Image 
-                                    src={review.user.imgUrl}
-                                    width={24}
-                                    height={24}
-                                    className="rounded-full"
-                                    alt={`Avatar de ${review.user.name}`}
-                                  />
-                                ) : (
-                                  <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
-                                    <span className="text-xs font-medium text-gray-600">
-                                      {review.user.name?.charAt(0).toUpperCase() || '?'}
-                                    </span>
-                                  </div>
-                                )}
-                                <p className="font-medium text-gray-800 dark:text-white">
-                                  {review.user.name}
-                                </p>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">
-                                  {formatDate(review.createdAt)}
-                                </span>
+                              <div className="flex justify-between items-start mb-2">
+                                <div className="flex items-center gap-3">
+                                  {review.user.imgUrl ? (
+                                    <Image 
+                                      src={review.user.imgUrl}
+                                      width={24}
+                                      height={24}
+                                      className="rounded-full"
+                                      alt={`Avatar de ${review.user.name}`}
+                                    />
+                                  ) : (
+                                    <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                                      <span className="text-xs font-medium text-gray-600">
+                                        {review.user.name?.charAt(0).toUpperCase() || '?'}
+                                      </span>
+                                    </div>
+                                  )}
+                                  <p className="font-medium text-gray-800 dark:text-white">
+                                    {review.user.name}
+                                  </p>
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                                    {formatDate(review.createdAt)}
+                                  </span>
+                                </div>
+                                <button
+                                  onClick={() => handleDeleteReview(review.id)}
+                                  disabled={deletingReviewId === review.id}
+                                  className={`px-2 py-1 text-xs rounded-md ${
+                                    deletingReviewId === review.id 
+                                      ? 'bg-gray-400 text-white' 
+                                      : 'bg-red-600 hover:bg-red-700 text-white'
+                                  }`}
+                                >
+                                  {deletingReviewId === review.id ? 'Eliminando...' : 'Eliminar'}
+                                </button>
                               </div>
                               <div className="flex items-center gap-2 mb-1">
                                 {renderStars(review.rating)}
