@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useUserContext } from '@/contexts/UserContext'
 
 type ServiceProfile = {
   serviceTitle?: string
@@ -27,6 +28,7 @@ type User = {
 const ITEMS_PER_PAGE = 5
 
 const UserTableBlock = () => {
+  const { usersUpdated, triggerUsersUpdate } = useUserContext()
   const [allUsers, setAllUsers] = useState<User[]>([])
   const [currentUsers, setCurrentUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -122,10 +124,8 @@ const UserTableBlock = () => {
         throw new Error(`Error ${response.status}: ${response.statusText}`)
       }
 
-      setAllUsers(prev => prev.map(user => 
-        user.id === selectedUser.id ? { ...user, deletedAt: new Date().toISOString() } : user
-      ))
-      updatePaginatedUsers(allUsers, currentPage)
+      // Notificar a otros componentes que se actualicen
+      triggerUsersUpdate()
       setShowDeleteConfirmation(false)
 
     } catch (err) {
@@ -141,7 +141,7 @@ const UserTableBlock = () => {
 
   useEffect(() => {
     fetchUsers()
-  }, [])
+  }, [usersUpdated]) // Se ejecuta cuando usersUpdated cambia
 
   const formatPrice = (price?: number) => {
     return price?.toLocaleString('es-ES', {
