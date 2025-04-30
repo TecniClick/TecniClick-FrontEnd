@@ -1,4 +1,4 @@
-import { ServiceProfileType, ServiceRequestType, SubscriptionType } from "@/helpers/typeMock";
+import { galleriesType, ServiceProfileType, ServiceRequestType, SubscriptionType } from "@/helpers/typeMock";
 import { servicesMock } from "@/helpers/dataMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -78,29 +78,97 @@ export const getServiceProfileByCategory = async (categoryId: string): Promise<S
     return allServices.filter(service => service.category?.id === categoryId);
 };
 
-export const createServiceProfile = async (token: string, service: ServiceRequestType): Promise<ServiceProfileType> => {
+export const createServiceProfile = async (
+    token: string,
+    service: ServiceRequestType,
+    profilePicture: File, // Ahora esto es un File
+    images: galleriesType // { id_document: File[], certificate: File[], gallery: File[] }
+  ): Promise<ServiceProfileType> => {
     try {
-        const res = await fetch(`${API_URL}/service-profile/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(service),
+      // 1. Crear perfil
+      const providerRes = await fetch(`${API_URL}/service-profile/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(service),
+      });
+  
+      const provider = await providerRes.json();
+      const serviceProfileId = provider.id;
+  
+      // 2. Cargar foto de perfil
+      const pictureForm = new FormData();
+      pictureForm.append("file", profilePicture);
+  
+      const uploadPicture = fetch(`${API_URL}/media/profile-picture/${serviceProfileId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: pictureForm,
+      });
+  
+      // 3. Función utilitaria para construir una carga condicional
+      const uploadFiles = (files: File[], type: string) => {
+        if (!files || files.length === 0) return null;
+  
+        const form = new FormData();
+        files.forEach(file => form.append("files", file));
+  
+        return fetch(`${API_URL}/media/upload/${serviceProfileId}?type=${type}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: form,
         });
-
-        const response = await res.json();
-
-        if (res.status !== 201) {
-            throw new Error(response.message);
+      };
+  
+      const idDocumentsPromise = uploadFiles(images.id_document, "id_document"); // obligatorio
+      const certificatePromise = images.certificate.length > 0
+        ? uploadFiles(images.certificate, "certificate")
+        : null;
+      const galleryPromise = images.gallery.length > 0
+        ? uploadFiles(images.gallery, "gallery")
+        : null;
+  
+      // 4. Enviar todo en paralelo
+      const uploads = [
+        { name: "profilePicture", promise: uploadPicture },
+        { name: "id_document", promise: idDocumentsPromise },
+        { name: "certificate", promise: certificatePromise },
+        { name: "gallery", promise: galleryPromise },
+      ].filter((u): u is { name: string; promise: Promise<Response> } => u.promise !== null);
+      
+      const results = await Promise.allSettled(uploads.map(u => u.promise));
+      
+      const errors: string[] = [];
+      
+      results.forEach((result, index) => {
+        const name = uploads[index].name;
+      
+        if (result.status === "rejected") {
+          errors.push(`Falló la carga de ${name}: ${result.reason}`);
+        } else if (!result.value.ok) {
+          errors.push(`Falló la carga de ${name}: ${result.value.statusText}`);
         }
-
-        return response;
+      });
+      
+      if (errors.length > 0) {
+        console.error(errors.join("\n"));
+        // Opcional: hacer rollback aquí (ej: DELETE /service-profile/${serviceProfileId})
+        throw new Error(`Error al cargar archivos:\n${errors.join("\n")}`);
+      }      
+  
+      return provider;
+  
     } catch (error) {
-        console.error("Error al crear el perfil de servicio:", error);
-        throw error;
+      console.error("Error al crear el perfil de servicio:", error);
+      throw error;
     }
-};
+  };
 
 export const updateServiceProfile = async (service: ServiceProfileType): Promise<ServiceProfileType | null> => {
     try {
@@ -119,9 +187,8 @@ export const updateServiceProfile = async (service: ServiceProfileType): Promise
         }
     } catch (error) {
         console.error(error);
-        return null;
+        throw error;
     }
-
     return null;
 };
 
@@ -130,7 +197,6 @@ export const updateServiceProfileToPremium = async (id: string, amount: number, 
         // if (MODE === "developer") {
         //     return servicesMock.find((s) => s.id === service.id) || null;
         // } else if (MODE === "production") {
-            console.log("Enviando a create-intent:", { id, amount, token });
             const res = await fetch(`${API_URL}/orders/create-intent`, {
                 method: "POST",
                 headers: {
@@ -141,7 +207,6 @@ export const updateServiceProfileToPremium = async (id: string, amount: number, 
             });
 
             const response = await res.json();
-            console.log(response);
             
             if (res.status !== 201) {
                 throw new Error(response.message);

@@ -35,6 +35,12 @@ export enum Subscriptions {
     PREMIUM = 'premium',
 }
 
+export enum MediaTypes {
+    GALLERY = 'gallery',
+    CERTIFICATE = 'certificate',
+    ID_DOCUMENT = 'id_document',
+}
+
 export type UserType = {
     id: string;
     name: string;
@@ -63,6 +69,7 @@ export type ServiceProfileType = {
     appointmentPrice: number;
     phone: string;
     status: ServiceProfileStatus;
+    profilePicture: string;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
@@ -80,9 +87,8 @@ export type ServiceRequestType = {
     address: addressType;
     description: string;
     appointmentPrice: number;
-    category: string;
     phone: number;
-    // images: mediaType[] | undefined;
+    category: string;
 }
 
 export type addressType = {
@@ -99,7 +105,14 @@ export type addressType = {
 export type mediaType = {
     id: string;
     imgUrl: string;
+    type: MediaTypes;
     serviceProfile: ServiceProfileType;
+}
+
+export type galleriesType = {
+    id_document: File[],
+    certificate: File[],
+    gallery: File[],
 }
 
 export type CategoryType = {
