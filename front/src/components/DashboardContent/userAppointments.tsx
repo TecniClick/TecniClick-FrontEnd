@@ -159,91 +159,171 @@ export default function UserAppointments() {
         }
     };
 
+    // Filtrando los turnos por tipo
+    const customerAppointments = appointmentsState.filter(appt => appt.user?.id === user?.id);
+    const providerAppointments = appointmentsState.filter(appt => appt.provider?.id === user?.serviceProfile?.id);
+
     return (
         <div className="w-full bg-quaternary/40 dark:bg-quinary/40 p-4 rounded-2xl border borders shadow-md">
-            <h2 className="text-lg font-bold mb-3 border-b pb-1">
-                {isProvider ? "Turnos que te reservaron" : "Mis turnos agendados"}
-            </h2>
+            {isProvider && (
+                <>
+                    {/* Sección: Turnos que reservaste como cliente */}
+                    <h2 className="text-lg font-bold mb-3 border-b pb-1">Turnos que reservaste</h2>
+                    {customerAppointments.length ? (
+                        <div className="space-y-2">
+                            {customerAppointments.map((appointment) => (
+                                <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
+                                    <div className="flex flex-row justify-between">
+                                        <div>
+                                            <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()} - {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                                            <p><strong>Estado:</strong> {translateStatus(appointment.appointmentStatus)}</p>
+                                        </div>
 
-            {appointmentsState.length ? (
-                <div className="space-y-2">
-                    {appointmentsState.map((appointment) => (
-                        <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
-                            <div className="flex flex-row justify-between">
-                                <div>
-                                    <p>
-                                        <strong>Fecha y Hora:</strong>{" "}
-                                        {new Date(appointment.date).toLocaleDateString()} -{" "}
-                                        {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                    </p>
-                                    <p><strong>Estado:</strong> {translateStatus(appointment.appointmentStatus)}</p>
-                                </div>
-
-                                <div className="flex gap-2 mt-2">
-                                    {appointment.appointmentStatus !== AppointmentStatus.CANCELLED &&
-                                        appointment.appointmentStatus !== AppointmentStatus.COMPLETED && (
+                                        <div className="flex gap-2 mt-2">
+                                            {appointment.appointmentStatus !== AppointmentStatus.CANCELLED && appointment.appointmentStatus !== AppointmentStatus.COMPLETED && (
+                                                <button className="w-8 h-8 flex items-center justify-center bg-green-600 text-white rounded" onClick={() => handleComplete(appointment.id)} title="Completar turno">
+                                                    <FaCheck />
+                                                </button>
+                                            )}
+                                            {appointment.appointmentStatus === AppointmentStatus.CANCELLED ? (
+                                                <span className="text-red-500 font-semibold">Turno cancelado</span>
+                                            ) : appointment.appointmentStatus === AppointmentStatus.COMPLETED ? (
+                                                <span className="text-green-600 font-semibold">Turno completado</span>
+                                            ) : (
+                                                <button className="w-8 h-8 flex items-center justify-center bg-red-600 text-white rounded" onClick={() => handleCancel(appointment.id)} title="Cancelar turno">
+                                                    <FaTimes />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {appointment.appointmentStatus === AppointmentStatus.COMPLETED && !appointment.review && (
+                                        <div className="mt-3">
                                             <button
-                                                className="px-4 py-1 bg-green-600 text-white rounded"
-                                                onClick={() => handleComplete(appointment.id)}
-                                                title="Completar turno"
+                                                onClick={() => handleOpenReviewModal(appointment)}
+                                                className="w-full py-2 bg-yellow-500 text-white rounded-lg"
                                             >
-                                                <FaCheck />
+                                                Deja tu reseña
                                             </button>
-                                        )}
-
-                                    {appointment.appointmentStatus === AppointmentStatus.CANCELLED ? (
-                                        <span className="text-red-500 font-semibold">Turno cancelado</span>
-                                    ) : appointment.appointmentStatus === AppointmentStatus.COMPLETED ? (
-                                        <span className="text-green-600 font-semibold">Turno completado</span>
-                                    ) : (
-                                        <button
-                                            className="px-4 py-1 bg-red-600 text-white rounded"
-                                            onClick={() => handleCancel(appointment.id)}
-                                            title="Cancelar turno"
-                                        >
-                                            <FaTimes />
-                                        </button>
+                                        </div>
+                                    )}
+                                    {appointment.appointmentStatus === AppointmentStatus.COMPLETED && appointment.review && (
+                                        <div className="mt-2">
+                                            <button
+                                                disabled
+                                                className="px-4 py-2 bg-gray-400 text-white rounded cursor-not-allowed"
+                                            >
+                                                Ya has dejado una reseña
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
-                            </div>
-
-                            {isProvider && (
-                                <>
-                                    <p><strong>Cliente:</strong> {appointment.user?.name ?? "—"}</p>
-                                    <p><strong>Dirección:</strong> {appointment.user?.address ?? "—"}</p>
-                                    <p><strong>Teléfono:</strong> {appointment.user?.phone ?? "—"}</p>
-                                    <p><strong>Notas adicionales:</strong> {appointment.additionalNotes || "—"}</p>
-                                    <p className="flex gap-1 items-baseline "><strong>Estrellas:</strong> {appointment.review?.rating || "—"} <FaStar style={{ color: 'yellow' }} /></p>
-                                    <p ><strong>Comentario:</strong> {appointment.review?.comment || "—"}</p>
-                                </>
-                            )}
-
-                            {!isProvider && appointment.appointmentStatus === AppointmentStatus.COMPLETED && !appointment.review && (
-                                <div className="mt-2">
-                                    <button
-                                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                                        onClick={() => handleOpenReviewModal(appointment)}
-                                    >
-                                        Dejar Reseña
-                                    </button>
-                                </div>
-                            )}
-
-                            {!isProvider && appointment.appointmentStatus === AppointmentStatus.COMPLETED && appointment.review && (
-                                <div className="mt-2">
-                                    <button
-                                        disabled
-                                        className="px-4 py-2 bg-gray-400 text-white rounded cursor-not-allowed"
-                                    >
-                                        Ya has dejado una reseña
-                                    </button>
-                                </div>
-                            )}
+                            ))}
                         </div>
-                    ))}
-                </div>
-            ) : (
-                <p className="text-sm italic">Aún no tienes turnos agendados.</p>
+                    ) : (
+                        <p className="text-sm italic">Aún no tienes turnos reservados como cliente.</p>
+                    )}
+
+                    {/* Sección: Turnos que te reservaron como proveedor */}
+                    <h2 className="text-lg font-bold mb-3 border-b pb-1">Turnos que te reservaron</h2>
+                    {providerAppointments.length ? (
+                        <div className="space-y-2">
+                            {providerAppointments.map((appointment) => (
+                                <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
+                                    <div className="flex flex-row justify-between">
+                                        <div>
+                                            <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()} - {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                                            <p><strong>Estado:</strong> {translateStatus(appointment.appointmentStatus)}</p>
+                                            <p><strong>Cliente:</strong> {appointment.user?.name ?? "—"}</p>
+                                            <p><strong>Dirección:</strong> {appointment.user?.address ?? "—"}</p>
+                                            <p><strong>Teléfono:</strong> {appointment.user?.phone ?? "—"}</p>
+                                            <p><strong>Notas adicionales:</strong> {appointment.additionalNotes || "—"}</p>
+                                        </div>
+
+                                        <div className="flex gap-2 mt-2">
+                                            {appointment.appointmentStatus !== AppointmentStatus.CANCELLED && appointment.appointmentStatus !== AppointmentStatus.COMPLETED && (
+                                                <button className="w-8 h-8 flex items-center justify-center bg-green-600 text-white rounded" onClick={() => handleComplete(appointment.id)} title="Completar turno">
+                                                    <FaCheck />
+                                                </button>
+                                            )}
+                                            {appointment.appointmentStatus === AppointmentStatus.CANCELLED ? (
+                                                <span className="text-red-500 font-semibold">Turno cancelado</span>
+                                            ) : appointment.appointmentStatus === AppointmentStatus.COMPLETED ? (
+                                                <span className="text-green-600 font-semibold">Turno completado</span>
+                                            ) : (
+                                                <button className="w-8 h-8 flex items-center justify-center bg-red-600 text-white rounded" onClick={() => handleCancel(appointment.id)} title="Cancelar turno">
+                                                    <FaTimes />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm italic">Aún no te han reservado turnos.</p>
+                    )}
+                </>
+            )}
+
+            {!isProvider && (
+                <>
+                    {/* Sección: Mis turnos agendados como cliente */}
+                    <h2 className="text-lg font-bold mb-3 border-b pb-1">Mis turnos agendados</h2>
+                    {appointmentsState.length ? (
+                        <div className="space-y-2">
+                            {appointmentsState.map((appointment) => (
+                                <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
+                                    <div className="flex flex-row justify-between">
+                                        <div>
+                                            <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()} - {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                                            <p><strong>Estado:</strong> {translateStatus(appointment.appointmentStatus)}</p>
+                                        </div>
+
+                                        <div className="flex gap-2 mt-2">
+                                            {appointment.appointmentStatus !== AppointmentStatus.CANCELLED && appointment.appointmentStatus !== AppointmentStatus.COMPLETED && (
+                                                <button className="px-4 py-1 bg-green-600 text-white rounded" onClick={() => handleComplete(appointment.id)} title="Completar turno">
+                                                    <FaCheck />
+                                                </button>
+                                            )}
+                                            {appointment.appointmentStatus === AppointmentStatus.CANCELLED ? (
+                                                <span className="text-red-500 font-semibold">Turno cancelado</span>
+                                            ) : appointment.appointmentStatus === AppointmentStatus.COMPLETED ? (
+                                                <span className="text-green-600 font-semibold">Turno completado</span>
+                                            ) : (
+                                                <button className="px-4 py-1 bg-red-600 text-white rounded" onClick={() => handleCancel(appointment.id)} title="Cancelar turno">
+                                                    <FaTimes />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {appointment.appointmentStatus === AppointmentStatus.COMPLETED && !appointment.review && (
+                                        <div className="mt-3">
+                                            <button
+                                                onClick={() => handleOpenReviewModal(appointment)}
+                                                className="w-full py-2 bg-yellow-500 text-white rounded-lg"
+                                            >
+                                                Deja tu reseña
+                                            </button>
+                                        </div>
+                                    )}
+                                    {appointment.appointmentStatus === AppointmentStatus.COMPLETED && appointment.review && (
+                                        <div className="mt-2">
+                                            <button
+                                                disabled
+                                                className="px-4 py-2 bg-gray-400 text-white rounded cursor-not-allowed"
+                                            >
+                                                Ya has dejado una reseña
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm italic">Aún no tienes turnos agendados.</p>
+                    )}
+                </>
             )}
 
             {selectedAppointment && (
@@ -282,6 +362,6 @@ export default function UserAppointments() {
                     </div>
                 </div>
             )}
-        </div>
+        </div >
     );
 }

@@ -53,11 +53,12 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
         if (loading || !token || !user || isDataLoaded) return;
         setLoading(false);
         try {
-            const raw = user.serviceProfile?.status === "active"
-                ? await getMyProvidedAppointments()
-                : await getMyAppointments();
+            const [clientAppointmentsRaw, providerAppointmentsRaw] = await Promise.all([
+                getMyAppointments(),
+                getMyProvidedAppointments(),
+            ]);
 
-            const data: AppointmentType[] = raw.map((a: any) => ({
+            const normalize = (a: any): AppointmentType => ({
                 id: a.id,
                 user: a.users ?? a.user,
                 provider: a.provider,
@@ -65,9 +66,14 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
                 appointmentStatus: mapStatus(a.appointmentStatus),
                 additionalNotes: a.additionalNotes,
                 review: a.review,
-            }));
+            });
 
-            setAppointments(data);
+            const allAppointments = [
+                ...clientAppointmentsRaw.map(normalize),
+                ...providerAppointmentsRaw.map(normalize),
+            ];
+
+            setAppointments(allAppointments);
             setIsDataLoaded(false);
         } catch (err) {
             console.error("Error cargando turnos:", err);
@@ -123,10 +129,8 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
     const createAppointment = async (newAppointmentPayload: NewAppointmentPayload) => {
         if (!token) return;
         try {
-            const newAppointmentData = await newAppointment(newAppointmentPayload, token);
-
-            setAppointments((prevAppointments) => [...prevAppointments, newAppointmentData]);
-            setIsDataLoaded(false); 
+            await newAppointment(newAppointmentPayload, token);
+            setIsDataLoaded(false);
             await fetchAppointments();
         } catch (err) {
             console.error("Error creando turno:", err);
