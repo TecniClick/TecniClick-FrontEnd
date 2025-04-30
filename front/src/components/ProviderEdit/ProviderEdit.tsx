@@ -329,7 +329,7 @@ const ProviderEdit = () => {
         )}
         <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2">
           {images?.id_document?.map((file, index) => (
-            <div key={index} className="relative w-full rounded-md overflow-hidden">
+            <div key={index} className="relative w-full aspect-video rounded-md overflow-hidden">
               <Image
                 src={URL.createObjectURL(file)}
                 fill
@@ -369,7 +369,7 @@ const ProviderEdit = () => {
         )}
         <div className="grid grid-cols-2 gap-2">
           {images?.certificate?.map((file, index) => (
-            <div key={index} className="relative w-full aspect-square rounded-md overflow-hidden">
+            <div key={index} className="relative w-full aspect-video rounded-md overflow-hidden">
               <Image
                 src={URL.createObjectURL(file)}
                 fill
@@ -409,7 +409,7 @@ const ProviderEdit = () => {
         )}
         <div className="grid grid-cols-2 gap-2">
           {images?.gallery?.map((file, index) => (
-            <div key={index} className="relative w-full aspect-square rounded-md overflow-hidden">
+            <div key={index} className="relative w-full aspect-video rounded-md overflow-hidden">
               <Image
                 src={URL.createObjectURL(file)}
                 fill
