@@ -219,7 +219,7 @@ const ProviderEdit = () => {
           onChange={(e) => setData({ ...data, title: e.target.value })}
           className="w-full impunts impunts-2"
         />
-        {errors.title && <p className="text-bg-quinary">{errors.title}</p>}
+        {errors.title && <p className="text-quinary">{errors.title}</p>}
       </div>
 
       <div>
@@ -230,7 +230,7 @@ const ProviderEdit = () => {
           onChange={(e) => setData({ ...data, phone: Number(e.target.value) })}
           className="w-full impunts impunts-2"
         />
-        {errors.phone && <p className="text-bg-quinary">{errors.phone}</p>}
+        {errors.phone && <p className="text-quinary">{errors.phone}</p>}
       </div>
 
       <div>
@@ -241,7 +241,7 @@ const ProviderEdit = () => {
           onChange={(e) => setData({ ...data, appointmentPrice: Number(e.target.value) })}
           className="w-full impunts impunts-2"
         />
-        {errors.appointmentPrice && <p className="text-bg-quinary">{errors.appointmentPrice}</p>}
+        {errors.appointmentPrice && <p className="text-quinary">{errors.appointmentPrice}</p>}
       </div>
 
       <div>
@@ -249,9 +249,9 @@ const ProviderEdit = () => {
         <textarea
           value={data.description}
           onChange={(e) => setData({ ...data, description: e.target.value })}
-          className="w-full impunts impunts-2"
+          className="w-full impunts impunts-2 h-[10vh] lg:h-[15vh]"
         />
-        {errors.description && <p className="text-bg-quinary h-[10wh]">{errors.description}</p>}
+        {errors.description && <p className="text-quinary">{errors.description}</p>}
       </div>
 
       <div>
@@ -273,7 +273,7 @@ const ProviderEdit = () => {
               .map((cat) => (
                 <li
                   key={cat.id}
-                  className="cursor-pointer p-2 hover:bg-gray-100 dark:bg-tertiary"
+                  className="cursor-pointer p-2 bg-slate-200 hover:bg-quaternary/40 hover:dark:bg-quinary/40 dark:bg-tertiary"
                   onClick={() => setNewService(cat.name)}
                 >
                   {cat.name}
@@ -302,7 +302,7 @@ const ProviderEdit = () => {
             />
           </div>
         )}
-        {errors.profilePicture && <p className="text-bg-quinary">{errors.profilePicture}</p>}
+        {errors.profilePicture && <p className="text-quinary">{errors.profilePicture}</p>}
       </div>
 
       {/* Uploads por tipo */}
@@ -341,7 +341,7 @@ const ProviderEdit = () => {
             ))}
           </div>
           {type === "id_document" && errors.id_document && (
-            <p className="text-bg-quinary">{errors.id_document}</p>
+            <p className="text-quinary">{errors.id_document}</p>
           )}
         </div>
       ))}

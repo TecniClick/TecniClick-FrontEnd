@@ -2,7 +2,7 @@ import RouteProtect from "@/components/RouteProtect/RouteProtect";
 import UserDashboardEditForm from "@/components/UserDashboardEditForm/UserDashboardEditForm";
 
 export const metadata = {
-  title: "Editar mi perfil| TecniClick",
+  title: "Editar Perfil | TecniClick",
 };
 
 export default function Page() {
