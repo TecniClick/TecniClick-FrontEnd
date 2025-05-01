@@ -84,7 +84,7 @@ const AppointmentForm = () => {
     }
 
     return (
-        <div className="max-w-2xl mx-auto mt-[15vh] p-4 oscuro shadow-2xl rounded-md space-y-6">
+        <div className="max-w-[64rem] mx-auto mt-[15vh] p-4 oscuro shadow-2xl rounded-md space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
                 <h2 className="text-2xl font-semibold">Reservar Turno</h2>
 

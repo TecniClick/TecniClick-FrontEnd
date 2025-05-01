@@ -58,10 +58,10 @@ export default function SubscriptionForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-      <CardElement className="p-2 border-2" />
+      <CardElement className="p-2 border-2 bg-senary rounded-sm" />
       <button
         type="submit"
-        className="w-full bg-primary hover:bg-quaternary text-white py-2 rounded-md mt-4"
+        className="w-full buttons mt-4"
       >
         Suscribirme
       </button>
