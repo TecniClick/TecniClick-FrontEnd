@@ -21,11 +21,37 @@ export default function DashboardContent() {
         }
     }, [token, user, refreshAppointments]);
 
-    let params: string[] = ["/login", "Inicie sesión primero"]
-    if (!user?.serviceProfile) params = ["/provider-edit", "Ofrecer un servicio"]
-    else if (user?.serviceProfile && user?.serviceProfile.status == "pending") params = ["/dashboard", "Su solicitud está en revisión"]
-    else if (user?.serviceProfile && user?.serviceProfile.status == "rejected") params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"]
-    else if (user?.serviceProfile && user?.serviceProfile.status == "active") params = ["/provider-premium", "Hazte Premium"]
+    let params: [string, string] = ["/login", "Inicie sesión primero"];
+
+    if (!user?.serviceProfile) {
+        params = ["/provider-edit", "Ofrecer un servicio"];
+    } else if (user.serviceProfile.status === "pending") {
+        params = ["/dashboard", "Su solicitud está en revisión"];
+    } else if (user.serviceProfile.status === "rejected") {
+        params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"];
+    } else if (
+        user.serviceProfile.status === "active" &&
+        (!user.serviceProfile.subscription || user.serviceProfile.subscription.status !== "active")
+    ) {
+        params = ["/provider-premium", "Hazte Premium"];
+    } else if (
+        user.serviceProfile.subscription?.status === "active" &&
+        user.serviceProfile.subscription.expirationDate
+    ) {
+        const expiration = new Date(user.serviceProfile.subscription.expirationDate);
+        const now = new Date();
+
+        if (expiration < now) {
+            params = ["/provider-premium", "Suscripción vencida, renová tu plan"];
+        } else {
+            const formatted = expiration.toLocaleDateString("es-AR", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            });
+            params = ["/dashboard", `Perfil Premium ✅ - Vence el ${formatted}`];
+        }
+    }
 
 
 
@@ -36,7 +62,7 @@ export default function DashboardContent() {
 
                     <div className="flex flex-col items-center gap-4">
                         <UserImage
-                            imgUrl={user?.imgUrl ?? undefined}
+                            imgUrl={user?.serviceProfile?.profilePicture ?? undefined}
                             name={user?.name ?? "Usuario"}
                         />
                         <h1 className="text-2xl font-semibold text-center">
@@ -67,7 +93,7 @@ export default function DashboardContent() {
                     </div>
 
                     <div className="w-full">
-                        <UserAppointments/>
+                        <UserAppointments />
                     </div>
                 </div>
             ) : (

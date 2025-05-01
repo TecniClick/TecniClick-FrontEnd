@@ -28,13 +28,20 @@ export const createReview = async (
 export const getReviewsByServiceProfile = async (
     serviceProfileId: string
 ): Promise<ReviewType[]> => {
-    const res = await fetch(`${BASE_URL}/service-profile/${serviceProfileId}`, {
-        credentials: "include",
-    });
+    try {
+        const res = await fetch(`${BASE_URL}/service-profile/${serviceProfileId}`);
 
-    if (!res.ok) {
-        throw new Error("Error al obtener las reviews");
+        if (!res.ok) {
+            throw new Error("Error al obtener las reviews");
+        }
+
+        const data = await res.json();
+
+        // Asegura que siempre devuelva un array
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error(error);
+        return []; // Devuelve array vacío si hay error
     }
-
-    return res.json();
 };
+

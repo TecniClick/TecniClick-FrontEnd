@@ -12,6 +12,7 @@ import Image from "next/image";
 import profile from "../../../public/profile.png";
 import Link from "next/link";
 import { useServiceContext } from "@/contexts/serviceContext";
+import { FaStar } from "react-icons/fa";
 
 const ServicesPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -59,7 +60,7 @@ const ServicesPage: React.FC = () => {
         updatedServices = updatedServices.filter(
           (service) => service.rating !== null && service.rating >= minRating
         );
-      }      
+      }
 
       if (sortPrice === "asc") {
         updatedServices = [...updatedServices].sort(
@@ -124,10 +125,11 @@ const ServicesPage: React.FC = () => {
               <Link href={`/services/${service.id}`}>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image
-                    src={profile}
+                    src={service.profilePicture || profile}
                     alt="Foto de perfil"
-                    width={50}
-                    className="rounded-full border-2 border-quaternary dark:border-quinary"
+                    width={100}
+                    height={100}
+                    className="w-12 h-12 object-cover rounded-full border-2 border-quaternary dark:border-quinary"
                   />
                   <h3 className="text-lg font-semibold">{service.serviceTitle}</h3>
                 </div>
@@ -146,8 +148,22 @@ const ServicesPage: React.FC = () => {
                     Precio Base:{" "}
                     <span className="font-bold">${service.appointmentPrice}</span>
                   </p>
-                  <p>Descripción: {service.description}.</p>
-                  <p className="text-sm">Puntuación: {service.rating}</p>
+                  <p>
+                    Descripción:{" "}
+                    {service.description?.length ?? 0 > 80
+                      ? `${service.description?.slice(0, 80)}...`
+                      : service.description ?? "Descripción no disponible"}
+
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-1">
+                    {service.rating
+                      ? Array.from({ length: Math.floor(service.rating) }, (_, i) => (
+                        <FaStar key={i} className="text-yellow-500" />
+                      ))
+                      : <span className="text-gray-500">Sin calificaciones</span>
+                    }
+                  </p>
+
                 </div>
               </Link>
             </li>

@@ -1,36 +1,51 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
-import { ServiceProfileType } from "@/helpers/typeMock";
+import { mediaType, ReviewType, ServiceProfileType } from "@/helpers/typeMock";
 import profile from "../../../public/profile.png";
 import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import AppointmentHandler from "./AppointmentHandler";
+import { getGalleryByProfileId } from "@/services/profileService";
+import { getReviewsByServiceProfile } from "@/services/reviewServices";
 
 const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   userName,
-  user,
-  reviews,
   serviceTitle,
   category,
   description,
-  images,
+  profilePicture,
   appointmentPrice,
   id
 }) => {
   const [modalImageIndex, setModalImageIndex] = useState<number | null>(null);
+  const [fetchedReviews, setFetchedReviews] = useState<ReviewType[]>([]);
+  const [galleryImages, setGalleryImages] = useState<mediaType[]>([]);
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
+
+  useEffect(() => {
+    const fetchGalleryAndReviews = async () => {
+      const images = await getGalleryByProfileId(id);
+      setGalleryImages(images);
+  
+      const reviews = await getReviewsByServiceProfile(id);
+      setFetchedReviews(reviews);
+    };
+  
+    if (id) fetchGalleryAndReviews();
+  }, [id]);
+
   const promedioRating =
-    Array.isArray(reviews) && reviews.length > 0
-      ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+    Array.isArray(fetchedReviews) && fetchedReviews.length > 0
+      ? fetchedReviews.reduce((acc, r) => acc + r.rating, 0) / fetchedReviews.length
       : 0;
 
   const currentImageUrl =
-    modalImageIndex !== null ? images?.[modalImageIndex]?.imgUrl : null;
+    modalImageIndex !== null ? galleryImages?.[modalImageIndex]?.type : null;
 
   const showPrevImage = () => {
     if (modalImageIndex !== null && modalImageIndex > 0) {
@@ -41,8 +56,8 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   const showNextImage = () => {
     if (
       modalImageIndex !== null &&
-      images &&
-      modalImageIndex < images.length - 1
+      galleryImages &&
+      modalImageIndex < galleryImages.length - 1
     ) {
       setModalImageIndex(modalImageIndex + 1);
     }
@@ -57,7 +72,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           onClick={() => setModalImageIndex(-1)} // -1 representa la imagen de perfil
         >
           <Image
-            src={user?.imgUrl || profile}
+            src={profilePicture || profile}
             alt={userName}
             fill
             style={{ objectFit: "cover" }}
@@ -112,47 +127,28 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           </p>
         </section>
       )}
-
-      {/* Servicios */}
-      <section className="py-4">
-        <h3 className="text-lg font-semibold mb-2">Servicios ofrecidos</h3>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {user?.interests?.length ? (
-            user.interests.map((interest, index) => (
-              <li
-                key={index}
-                className="bg-gray-100 p-2 rounded-md shadow-xl border text-tertiary text-sm text-center"
-              >
-                {interest.name}
-              </li>
-            ))
-          ) : (
-            <li className="text-sm text-gray-500">No especificados</li>
-          )}
-        </ul>
-      </section>
-
       {/* Galería */}
       <section className="py-4">
         <h3 className="text-lg font-semibold mb-2">
           Galería de trabajos realizados
         </h3>
         <div
-          className="grid gap-4 p-4 border rounded shadow-xl bg-primary dark:bg-quinary"
-          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}
+          className="grid gap-2 p-4 border rounded shadow-xl bg-primary dark:bg-quinary justify-center place-items-center"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}
         >
-          {images?.length ? (
-            images.map((image, index) => (
+          {galleryImages?.length ? (
+            galleryImages.map((image, index) => (
               <div
                 key={index}
-                className="relative aspect-square rounded-md overflow-hidden cursor-pointer hover:scale-105 transition shadow-sm"
+                className="relative w-56 h-56 rounded-md overflow-hidden cursor-pointer hover:scale-105 transition shadow-sm"
                 onClick={() => setModalImageIndex(index)}
               >
                 <Image
                   src={image.imgUrl}
                   alt={`${userName} - Imagen ${index + 1}`}
                   layout="fill"
-                  className="object-cover"
+                  priority
+                  className="object-fill bg-black"
                 />
               </div>
             ))
@@ -168,19 +164,19 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
       {/* Comentarios */}
       <section className="py-4">
         <h3 className="text-lg font-semibold mb-2">Opiniones de clientes</h3>
-        {Array.isArray(reviews) && reviews.length > 0 ? (
-          reviews.map((review, i) => (
+        {Array.isArray(fetchedReviews) && fetchedReviews.length > 0 ? (
+          fetchedReviews.map((review, i) => (
             <div
               key={i}
-              className="mb-3 p-3 bg-white shadow-lg rounded-md border border-tertiary"
+              className="mb-3 p-3 bg-white dark:bg-quinary shadow-lg rounded-md border border-tertiary"
             >
               <div className="flex text-yellow-500 text-sm">
                 {Array.from({ length: review.rating }, (_, j) => (
                   <FaStar key={j} />
                 ))}
               </div>
-              <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
-              <p className="text-sm text-gray-600 mb-1">{new Date(review.createdAt).toLocaleDateString()}</p>
+              <p className="text-sm text-gray-600 dark:text-white mb-1">{review.comment}</p>
+              <p className="text-sm text-gray-600 dark:text-white mb-1">{new Date(review.createdAt).toLocaleDateString()}</p>
             </div>
           ))
         ) : (
@@ -202,17 +198,16 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
               <Image
                 src={
                   modalImageIndex === -1
-                    ? user?.imgUrl || profile
-                    : currentImageUrl || profile
+                    ? profilePicture || profile
+                    : galleryImages[modalImageIndex]?.imgUrl || profile
                 }
                 alt="Imagen ampliada"
                 fill
-                className="object-cover"
               />
             </div>
 
             {/* Botones de navegación */}
-            {modalImageIndex !== -1 && images?.length > 1 && (
+            {modalImageIndex !== -1 && galleryImages?.length > 1 && (
               <div className="flex justify-between mt-4">
                 <button
                   className="text-sm text-blue-600 hover:underline disabled:opacity-50"
@@ -224,7 +219,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                 <button
                   className="text-sm text-blue-600 hover:underline disabled:opacity-50"
                   onClick={showNextImage}
-                  disabled={modalImageIndex === images.length - 1}
+                  disabled={modalImageIndex === galleryImages.length - 1}
                 >
                   Siguiente
                 </button>

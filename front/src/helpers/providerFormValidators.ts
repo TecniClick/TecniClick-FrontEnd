@@ -49,7 +49,7 @@ const providerFormValidators = (
 
   // Validación para `profilePicture`
   if (!(profilePicture instanceof File)) {
-    errors.profilePicture = "Debes subir una imagen de perfil válida.";
+    errors.profilePicture = "Debes subir una imagen de perfil válida. Solo formatos .jpg, .jpeg y .png.";
   }
 
   return errors;

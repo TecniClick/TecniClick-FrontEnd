@@ -1,9 +1,9 @@
 export default function Benefits() {
     const benefits = [
         "✅ Más visibilidad en la plataforma",
-        "✅ Acceso a clientes verificados",
+        "✅ Perfil destacado en búsquedas",
         "✅ Soporte técnico prioritario",
-        "✅ Herramientas de análisis avanzadas",
+        "✅ Perfil verificado",
     ]
 
     return (
