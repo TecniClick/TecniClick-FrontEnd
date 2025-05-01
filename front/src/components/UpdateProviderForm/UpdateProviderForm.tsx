@@ -10,7 +10,7 @@ import { FaXmark } from "react-icons/fa6";
 import providerFormValidatorsUpdate from "@/helpers/providerFormValidatorsUpdate";
 
 type CategoryType = { id: string; name: string }; // Ajusta según tu tipo real de categorías
-type MediaTypes =  "certificate" | "gallery";
+type MediaTypes = "certificate" | "gallery";
 type addressType = {
     street: string;
     extNumber: string;
@@ -238,8 +238,12 @@ const UpdateProviderForm = () => {
 
             // Aquí utilizamos `updateServiceProfile` directamente
             try {
-                const updatedService = await updateServiceProfile(
-                    user?.serviceProfile?.id!, // Asumimos que el usuario tiene un `id` válido
+                if (!user.serviceProfile?.id) {
+                    toast.error("El perfil de servicio no está disponible.");
+                    return;
+                }
+                await updateServiceProfile(
+                    user.serviceProfile.id!,
                     token,
                     request,
                     profilePicture,
@@ -248,7 +252,7 @@ const UpdateProviderForm = () => {
 
                 toast.success("Servicio actualizado con éxito.");
                 router.push("/dashboard"); // Redirige después de la actualización
-            } catch (error) {
+            } catch {
                 toast.error("Hubo un error al actualizar el servicio.");
             }
         } else {
@@ -347,13 +351,13 @@ const UpdateProviderForm = () => {
                             src={typeof profilePicture === "string" ? profilePicture : URL.createObjectURL(profilePicture)}
                             alt="Imagen de perfil"
                             fill
-                            style={{objectFit: "contain"}}
+                            style={{ objectFit: "contain" }}
                         />
                         <button
                             className="relative top-1 right-1 p-1 cursor-pointer"
                             onClick={() => setProfilePicture(null)}
                         >
-                            <FaXmark size={25} color="#d31f4f"/>
+                            <FaXmark size={25} color="#d31f4f" />
                         </button>
                     </div>
                 ) : (
@@ -381,13 +385,13 @@ const UpdateProviderForm = () => {
                                     src={URL.createObjectURL(file)}
                                     alt={`Imagen ${type}`}
                                     fill
-                                    style={{objectFit: "contain"}}
+                                    style={{ objectFit: "contain" }}
                                 />
                                 <button
                                     className="relative top-1 right-1 p-1 cursor-pointer"
                                     onClick={(e) => removeImage(e, index, type)}
                                 >
-                                    <FaXmark size={25} color="#d31f4f"/>
+                                    <FaXmark size={25} color="#d31f4f" />
                                 </button>
                             </div>
                         ))}

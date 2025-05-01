@@ -90,7 +90,7 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
     useEffect(() => {
         if (!token || !user || isDataLoaded) return;
         fetchAppointments();
-    }, [token, user?.id, isDataLoaded, fetchAppointments]);
+    }, [token, user, isDataLoaded, fetchAppointments]);
 
 
     useEffect(() => {
