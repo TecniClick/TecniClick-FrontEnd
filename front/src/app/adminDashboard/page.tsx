@@ -10,6 +10,7 @@ import ReviewSearchModalBlock from "@/components/Admin/ReviewSearcher";
 import ServiceProfileReviewsTable from "@/components/Admin/ServiceProfileReviewsTable";
 import UpgradeUserToAdminBlock from "@/components/Admin/UpgradeUserToAdminBlock";
 import ReactivateUsersTable from "@/components/Admin/ReactivateUsersTable";
+import { UserProvider } from "@/contexts/UserContext";
 
 export const metadata = {
   title: "Panel de Administración | TecniClick",
@@ -18,6 +19,7 @@ export const metadata = {
 export default function AdminDashboard() {
   return (
     <AdminProtect>
+        <UserProvider>
       <div className="p-6 space-y-6">
         {/* Primera Fila: Welcome + Acciones Rápidas */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -79,6 +81,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+      </UserProvider>
     </AdminProtect>
   );
 }
