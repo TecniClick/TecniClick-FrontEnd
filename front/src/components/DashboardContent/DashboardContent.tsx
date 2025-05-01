@@ -8,10 +8,11 @@ import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function DashboardContent() {
     const { user, token } = useAuth();
-    const { appointments, refreshAppointments } = useAppointments();
+    const { refreshAppointments } = useAppointments();
 
     const isLoggedIn = !!user;
 
@@ -53,8 +54,6 @@ export default function DashboardContent() {
         }
     }
 
-
-
     return (
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
             {isLoggedIn ? (
@@ -70,11 +69,20 @@ export default function DashboardContent() {
                         </h1>
                     </div>
 
-
                     {user && (
-                        <ServiceButton params={params} />
-                    )}
+                        <>
+                            <ServiceButton params={params} />
 
+                            {user?.serviceProfile?.id && (
+                                <Link
+                                    href="/update-provider"
+                                    className="px-6 py-2 rounded-lg bg-quaternary dark:bg-quinary text-white font-semibold hover:scale-105 transition-all text-center"
+                                >
+                                    Editar perfil de servicio
+                                </Link>
+                            )}
+                        </>
+                    )}
 
                     <div className="flex flex-wrap gap-6 w-full justify-center">
                         <div className="flex-1">
@@ -104,4 +112,3 @@ export default function DashboardContent() {
         </section>
     );
 }
-

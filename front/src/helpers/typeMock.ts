@@ -174,3 +174,24 @@ export type UpdateUserDto = {
 }
 
   
+export type UpdateServiceProfileDto = {
+    serviceTitle?: string;
+    userName?: string;
+    address?: AddressDto;
+    description?: string;
+    appointmentPrice?: number;
+    phone?: number;
+    category?: string;
+}
+
+export type AddressDto = {
+    extNumber: string;
+    intNumber?: string;
+    street: string;
+    neighborhood?: string;
+    zipCode: string;
+    city: string;
+    state: string;
+    country: string;
+  }
+  
