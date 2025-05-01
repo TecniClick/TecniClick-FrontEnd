@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useUserContext } from '@/contexts/UserContext'
@@ -39,7 +39,7 @@ const UserTableBlock = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const router = useRouter()
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     
@@ -53,17 +53,17 @@ const UserTableBlock = () => {
           } 
         }
       )
-
+  
       if (response.status === 401) {
         localStorage.removeItem('token')
         router.push('/login')
         return
       }
-
+  
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`)
       }
-
+  
       const users = await response.json()
       const processedUsers = users.map((user: User) => ({
         ...user,
@@ -76,7 +76,7 @@ const UserTableBlock = () => {
       
       setAllUsers(processedUsers)
       updatePaginatedUsers(processedUsers, 1)
-
+  
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
@@ -86,7 +86,7 @@ const UserTableBlock = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [router]) 
 
   const updatePaginatedUsers = (users: User[], page: number) => {
     const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE)
@@ -141,7 +141,7 @@ const UserTableBlock = () => {
 
   useEffect(() => {
     fetchUsers()
-  }, [usersUpdated]) // Se ejecuta cuando usersUpdated cambia
+  }, [fetchUsers,usersUpdated]) // Se ejecuta cuando usersUpdated cambia
 
   const formatPrice = (price?: number) => {
     return price?.toLocaleString('es-ES', {

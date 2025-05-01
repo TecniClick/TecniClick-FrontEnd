@@ -7,7 +7,7 @@ import UserInfo from "./UserInfo";
 import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { getServiceProfileById } from "@/services/profileService";
 import { ServiceProfileType } from "@/helpers/typeMock";
@@ -22,33 +22,33 @@ export default function DashboardContent() {
     const isLoggedIn = !!user;
 
     // Función para cargar el perfil de servicio
-    const loadServiceProfile = async () => {
+    const loadServiceProfile = useCallback(async () => {
         if (!user?.serviceProfile?.id) {
-            setIsLoading(false);
-            return;
+          setIsLoading(false);
+          return;
         }
-
+      
         try {
-            const profile = await getServiceProfileById(user.serviceProfile.id);
-            setServiceProfile(profile);
-            setError(null);
+          const profile = await getServiceProfileById(user.serviceProfile.id);
+          setServiceProfile(profile);
+          setError(null);
         } catch (err) {
-            setError("Error al cargar el perfil de servicio");
-            console.error("Error loading service profile:", err);
+          setError("Error al cargar el perfil de servicio");
+          console.error("Error loading service profile:", err);
         } finally {
-            setIsLoading(false);
+          setIsLoading(false);
         }
-    };
-
-    useEffect(() => {
+      }, [user]); // 'user' como dependencia
+      
+      useEffect(() => {
         if (user && token) {
-            loadServiceProfile();
-            refreshAppointments();
+          loadServiceProfile();
+          refreshAppointments();
         } else {
-            setIsLoading(false);
+          setIsLoading(false);
         }
-    }, [user, token]);
-
+      }, [user, token, loadServiceProfile, refreshAppointments]);
+      
     // Verificación robusta del estado premium con datos del serviceProfile
     const isPremium = serviceProfile?.subscription.status === "active" &&
         serviceProfile?.subscription?.expirationDate &&
@@ -66,8 +66,8 @@ export default function DashboardContent() {
         if (!isPremium) {
             params = ["/provider-premium", "Hazte Premium"];
         } else {
-            const expiration = serviceProfile.subscription.expirationDate 
-                ? new Date(serviceProfile.subscription.expirationDate) 
+            const expiration = serviceProfile.subscription.expirationDate
+                ? new Date(serviceProfile.subscription.expirationDate)
                 : new Date();
             const formatted = expiration.toLocaleDateString("es-AR", {
                 day: "2-digit",

@@ -1,5 +1,4 @@
 import { galleriesType, mediaType, ServiceProfileType, ServiceRequestType, SubscriptionType, UpdateServiceProfileDto } from "@/helpers/typeMock";
-import { servicesMock } from "@/helpers/dataMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const MODE = process.env.NEXT_PUBLIC_MODE;
@@ -7,7 +6,7 @@ const MODE = process.env.NEXT_PUBLIC_MODE;
 export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
   try {
     if (MODE === "developer") {
-      return servicesMock;
+      return [];
     }
 
     if (MODE === "production") {
@@ -19,18 +18,18 @@ export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
       const data = await response.json();
       if (!Array.isArray(data) || data.length === 0) {
         console.warn("Datos inválidos o vacíos, usando mock...");
-        return servicesMock;
+        return [];
       }
 
       return data;
     }
   } catch (error) {
     console.error("Error en la conexión con el backend:", error);
-    return servicesMock;
+    return [];
   }
 
   console.warn("MODE desconocido, devolviendo mock por defecto...");
-  return servicesMock;
+  return [];
 };
 
 export const getServiceProfileById = async (
@@ -44,10 +43,6 @@ export const getServiceProfileById = async (
       typeof window !== "undefined" ? "cliente" : "servidor",
       ")"
     );
-
-    if (MODE === "developer") {
-      return servicesMock.find((service) => service.id === id) || null;
-    }
 
     if (MODE === "production") {
       const response = await fetch(`${API_URL}/service-profile/${id}`, {
@@ -255,9 +250,7 @@ export const updateServiceProfile = async (
 
 export const updateServiceProfileToPremium = async (id: string, amount: number, token: string): Promise<SubscriptionType> => {
   try {
-    // if (MODE === "developer") {
-    //     return servicesMock.find((s) => s.id === service.id) || null;
-    // } else if (MODE === "production") {
+
     const res = await fetch(`${API_URL}/orders/create-intent`, {
       method: "POST",
       headers: {
@@ -282,9 +275,7 @@ export const updateServiceProfileToPremium = async (id: string, amount: number, 
 
 export const deleteServiceProfile = async (id: string): Promise<boolean> => {
   try {
-    if (MODE === "developer") {
-      return servicesMock.some((service) => service.id === id);
-    } else if (MODE === "production") {
+     if (MODE === "production") {
       const response = await fetch(`${API_URL}/services/${id}`, {
         method: "DELETE",
       });
@@ -305,11 +296,7 @@ export const getFilteredServices = async (query: string): Promise<ServiceProfile
   };
 
   try {
-    if (MODE === "developer") {
-      return servicesMock.filter(service =>
-        normalizeString(service.serviceTitle).includes(normalizeString(query))
-      );
-    } else if (MODE === "production") {
+    if (MODE === "production") {
       const response = await fetch(`${API_URL}/services?search=${query}`, { cache: "no-cache" });
       const data = await response.json();
 

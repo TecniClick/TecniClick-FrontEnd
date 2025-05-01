@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { AppointmentType, AppointmentStatus } from "@/helpers/typeMock";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { AppointmentType, AppointmentStatus, RawAppointment, UserType } from "@/helpers/typeMock";
 import { useAuth } from "./authContext";
 import {
     getMyAppointments,
@@ -49,24 +49,29 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
         }
     };
 
-    const fetchAppointments = async () => {
+    const fetchAppointments = useCallback(async () => {
         if (loading || !token || !user || isDataLoaded) return;
-        setLoading(false);
+        setLoading(true);
         try {
             const [clientAppointmentsRaw, providerAppointmentsRaw] = await Promise.all([
                 getMyAppointments(),
                 getMyProvidedAppointments(),
             ]);
-
-            const normalize = (a: any): AppointmentType => ({
-                id: a.id,
-                user: a.users ?? a.user,
-                provider: a.provider,
-                date: new Date(a.date),
-                appointmentStatus: mapStatus(a.appointmentStatus),
-                additionalNotes: a.additionalNotes,
-                review: a.review,
-            });
+            const normalize = (a: unknown): AppointmentType => {
+                if (typeof a === 'object' && a !== null && 'id' in a) {
+                    const raw = a as RawAppointment;
+                    return {
+                        id: raw.id,
+                        user: Array.isArray(raw.users) ? raw.users[0] : raw.user as UserType,
+                        provider: raw.provider,
+                        date: new Date(raw.date),
+                        appointmentStatus: mapStatus(raw.appointmentStatus),
+                        additionalNotes: raw.additionalNotes ?? null,
+                        review: raw.review,
+                    };
+                }
+                throw new Error('Invalid appointment data');
+            };
 
             const allAppointments = [
                 ...clientAppointmentsRaw.map(normalize),
@@ -80,12 +85,13 @@ export const AppointmentsProvider = ({ children }: { children: React.ReactNode }
         } finally {
             setLoading(false);
         }
-    };
+    }, [loading, token, user, isDataLoaded]);
 
     useEffect(() => {
         if (!token || !user || isDataLoaded) return;
         fetchAppointments();
-    }, [token, user?.id, isDataLoaded]);
+    }, [token, user?.id, isDataLoaded, fetchAppointments]);
+
 
     useEffect(() => {
         setAppointments([]);

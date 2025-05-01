@@ -1,7 +1,6 @@
 import CreateCategoryBlock from "@/components/Admin/CreateCategory";
 import PendingRequests from "@/components/Admin/PendingRequests";
 import { WelcomeBlock } from "@/components/Admin/WelcomeBlock";
-import UserSearcherBlock from "@/components/Admin/UserSearcherBlock";
 import UserTableBlock from "@/components/Admin/UserTableBlock";
 import CreateAdminBlock from "@/components/Admin/CreateAdminBlock";
 import AdminStats from "@/components/Admin/AdminStats";

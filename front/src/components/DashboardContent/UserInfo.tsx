@@ -1,4 +1,3 @@
-import { useAuth } from "@/contexts/authContext";
 import Link from "next/link";
 
 export default function UserInfo({
@@ -10,7 +9,6 @@ export default function UserInfo({
   phone: string;
   address: string;
 }) {
-  const { user } = useAuth();
   return (
     <div className="w-full bg-quaternary/40 dark:bg-quinary/40 p-4 rounded-2xl border borders shadow-md">
       <div className="flex items-baseline justify-between mb-4 border-b">

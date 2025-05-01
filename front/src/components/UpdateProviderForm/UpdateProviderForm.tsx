@@ -73,9 +73,7 @@ const UpdateProviderForm = () => {
     });
     const [profilePicture, setProfilePicture] = useState<File | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
-
     const profileInputRef = useRef<HTMLInputElement | null>(null);
-    const idDocumentInputRef = useRef<HTMLInputElement | null>(null);
     const certificateInputRef = useRef<HTMLInputElement | null>(null);
     const galleryInputRef = useRef<HTMLInputElement | null>(null);
 

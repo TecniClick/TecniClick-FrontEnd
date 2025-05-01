@@ -9,6 +9,7 @@ import "@/styles/styles.css"
 import GoogleButton from "../GoogleButton/GoogleButton";
 import logoContraste from "../../../public/logoContraste.png";
 import logo from "../../../public/logo.png";
+import { toast } from "sonner";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ const LoginForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     const router = useRouter();
-    //handler
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -35,7 +36,7 @@ const LoginForm = () => {
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.message || "Error al iniciar sesión");
+                toast.error(errorData.message || "Error al iniciar sesión");
             }
 
             const { token, userId } = await res.json();
@@ -57,6 +58,7 @@ const LoginForm = () => {
             }
 
             await login(token, user);
+            toast.success("Login exitoso!¡Bienvenido!")
             router.push("/");
 
         } catch (error) {
@@ -68,8 +70,7 @@ const LoginForm = () => {
         } finally {
             setIsLoading(false);
         }
-
-
+    }
 
         return (
             <main className="w-full min-h-[calc(100vh-89px)] flex flex-col md:flex-row justify-center items-center gap-4 md:gap-16 px-4 sm:px-8 md:px-16 py-8 text-primary dark:bg-primary">
@@ -166,6 +167,5 @@ const LoginForm = () => {
             </main>
         );
     }
-}
 
     export default LoginForm;

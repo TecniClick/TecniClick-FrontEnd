@@ -1,7 +1,5 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
-
 type AdminFormData = {
   name: string
   email: string
@@ -24,7 +22,6 @@ const CreateAdminBlock = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  const router = useRouter()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target

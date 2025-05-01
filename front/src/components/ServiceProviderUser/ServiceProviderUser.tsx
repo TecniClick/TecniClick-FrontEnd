@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import AppointmentHandler from "./AppointmentHandler";
 import { getGalleryByProfileId } from "@/services/profileService";
 import { getReviewsByServiceProfile } from "@/services/reviewServices";
+import verifiedIcon from "../../../public/verified.png";
 
 const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   userName,
@@ -18,13 +19,15 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   description,
   profilePicture,
   appointmentPrice,
-  id
+  id,
+  subscription,
 }) => {
   const [modalImageIndex, setModalImageIndex] = useState<number | null>(null);
   const [fetchedReviews, setFetchedReviews] = useState<ReviewType[]>([]);
   const [galleryImages, setGalleryImages] = useState<mediaType[]>([]);
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const isPremium = subscription?.status === "active";
 
 
   useEffect(() => {
@@ -64,7 +67,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   };
 
   return (
-    <div className="bg-secondary pb-8 w-3/4 dark:bg-tertiary shadow-2xl mx-auto px-4 sm:px-6">
+    <div className="bg-secondary pb-8 w-3/4 dark:bg-tertiary rounded shadow-2xl mx-auto px-4 sm:px-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 py-6 border-b border-senbg-senary items-center justify-center">
         <div
@@ -79,7 +82,17 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           />
         </div>
         <div className="text-center sm:text-left">
+          <div className="flex gap-2">
           <h2 className="text-2xl font-bold">{userName}</h2>
+          {isPremium && (
+            <Image
+            src={verifiedIcon}
+            alt="Verificado"
+            width={30}
+            height={18}
+            />
+          )}
+          </div>
           <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1 capitalize">
             {serviceTitle || "Sin servicio"} - {category.name}
           </p>
@@ -103,7 +116,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           </div>
 
           <div className="mt-4 sm:mt-2">
-          
+
             <AppointmentHandler
               isAuthenticated={isAuthenticated}  // Pasar el estado de autenticación
               onClick={(event) => {
@@ -159,8 +172,6 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           )}
         </div>
       </section>
-¿¿
-
 
       {/* Comentarios */}
       <section className="py-4">

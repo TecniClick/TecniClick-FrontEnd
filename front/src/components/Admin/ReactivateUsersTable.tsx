@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserContext } from '@/contexts/UserContext'
 
@@ -22,7 +22,7 @@ const ReactivateUsersTable = () => {
   const [reactivatingId, setReactivatingId] = useState<string | null>(null)
   const router = useRouter()
 
-  const fetchInactiveUsers = async () => {
+  const fetchInactiveUsers = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -31,7 +31,7 @@ const ReactivateUsersTable = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
-      
+
       if (!res.ok) {
         if (res.status === 401) {
           localStorage.removeItem('token')
@@ -40,7 +40,7 @@ const ReactivateUsersTable = () => {
         }
         throw new Error(`Error ${res.status}: ${res.statusText}`)
       }
-      
+
       const data = await res.json()
       setUsers(data)
     } catch (err) {
@@ -49,13 +49,13 @@ const ReactivateUsersTable = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
   const handleReactivate = async (userId: string) => {
     setError(null)
     setSuccess(null)
     setReactivatingId(userId)
-    
+
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/reactivate/${userId}`, {
         method: 'PATCH',
@@ -73,18 +73,18 @@ const ReactivateUsersTable = () => {
       // Actualización optimista
       const reactivatedUser = users.find(user => user.id === userId)
       setUsers(prev => prev.filter(user => user.id !== userId))
-      
-      setSuccess(reactivatedUser 
+
+      setSuccess(reactivatedUser
         ? `Usuario ${reactivatedUser.name} reactivado con éxito`
         : 'Usuario reactivado con éxito'
       )
-      
+
       // Notificar a otros componentes
       triggerUsersUpdate()
 
     } catch (err) {
-      setError(err instanceof Error 
-        ? err.message 
+      setError(err instanceof Error
+        ? err.message
         : 'Error al reactivar el usuario'
       )
       // Recargar datos si hay error
@@ -96,12 +96,12 @@ const ReactivateUsersTable = () => {
 
   useEffect(() => {
     fetchInactiveUsers()
-  }, [usersUpdated])
+  }, [fetchInactiveUsers,usersUpdated])
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Usuarios Desactivados</h2>
-      
+
       {error && (
         <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded">
           {error}
@@ -138,11 +138,10 @@ const ReactivateUsersTable = () => {
                   <td className="py-3 px-4 text-gray-800 dark:text-gray-200">{user.name}</td>
                   <td className="py-3 px-4 text-gray-800 dark:text-gray-200">{user.email}</td>
                   <td className="py-3 px-4">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      user.role === 'provider' 
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' 
+                    <span className={`px-2 py-1 text-xs rounded-full ${user.role === 'provider'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                         : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-                    }`}>
+                      }`}>
                       {user.role === 'provider' ? 'Proveedor' : 'Cliente'}
                     </span>
                   </td>
@@ -157,9 +156,8 @@ const ReactivateUsersTable = () => {
                     <button
                       onClick={() => handleReactivate(user.id)}
                       disabled={reactivatingId === user.id}
-                      className={`px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm ${
-                        reactivatingId === user.id ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
+                      className={`px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm ${reactivatingId === user.id ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
                     >
                       {reactivatingId === user.id ? 'Reactivando...' : 'Reactivar'}
                     </button>

@@ -173,7 +173,7 @@ export type UpdateUserDto = {
     address?: string;
 }
 
-  
+
 export type UpdateServiceProfileDto = {
     serviceTitle?: string;
     userName?: string;
@@ -193,5 +193,16 @@ export type AddressDto = {
     city: string;
     state: string;
     country: string;
-  }
-  
+}
+
+
+export type RawAppointment = {
+    id: string;
+    user?: UserType; // Cambiado de any a User
+    users?: UserType[]; // Cambiado de any a User[]
+    provider: ServiceProfileType; // Cambiado de any a Provider
+    date: string;
+    appointmentStatus: string;
+    additionalNotes?: string;
+    review: ReviewType; // Cambiado de any a Review
+};

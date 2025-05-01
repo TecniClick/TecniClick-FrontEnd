@@ -1,5 +1,4 @@
 import { UserType } from "@/helpers/typeMock";
-import { usersMock } from "@/helpers/dataMock";
 import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -8,10 +7,7 @@ const MODE = process.env.NEXT_PUBLIC_MODE;
 export const getUsers = async (): Promise<UserType[]> => {
     // TODO: Implementar la lógica para obtener todos los usuarios
     try {
-        if (MODE === "developer") {
-            // ! Mock
-            return usersMock;
-        } else if (MODE === "production") {
+        if (MODE === "production") {
             const response = await fetch(`${API_URL}/users`, { cache: "no-cache" });
             return await response.json() || [];
         }
@@ -38,10 +34,7 @@ export const getUserById = async (id: string): Promise<UserType> => {
 export const getUserByEmail = async (email: string): Promise<UserType | null> => {
     // TODO: Implementar la lógica para obtener el perfil del usuario por email
     try {
-        if (MODE === "developer") {
-            // ! Mock
-            return usersMock.find((user) => user.email === email) || null;
-        } else if (MODE === "production") {
+        if (MODE === "production") {
             const response = await fetch(`${API_URL}/users/${email}`, { cache: "no-cache" });
             return await response.json() || null;
         }

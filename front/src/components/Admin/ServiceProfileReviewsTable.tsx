@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
@@ -43,41 +43,36 @@ const ServiceProfileReviewsTable = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  const [selectedProfile, setSelectedProfile] = useState<ServiceProfile | null>(null)
   const [expandedReviews, setExpandedReviews] = useState<Record<string, boolean>>({})
   const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null)
   const router = useRouter()
 
-  const fetchServiceProfiles = async () => {
+  const fetchServiceProfiles = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     setSuccess(null)
-    
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/service-profile/active`,
-        { 
-          headers: { 
+        {
+          headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
-          } 
+          }
         }
       )
-
       if (response.status === 401) {
         localStorage.removeItem('token')
         router.push('/login')
         return
       }
-
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`)
       }
-
       const profiles = await response.json()
       setAllProfiles(profiles)
       updatePaginatedProfiles(profiles, 1)
-
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
@@ -87,7 +82,7 @@ const ServiceProfileReviewsTable = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [router])
 
   const updatePaginatedProfiles = (profiles: ServiceProfile[], page: number) => {
     const totalPages = Math.ceil(profiles.length / ITEMS_PER_PAGE)
@@ -110,13 +105,13 @@ const ServiceProfileReviewsTable = () => {
     setDeletingReviewId(reviewId)
     setError(null)
     setSuccess(null)
-    
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
-        { 
+        {
           method: 'DELETE',
-          headers: { 
+          headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }
@@ -134,15 +129,15 @@ const ServiceProfileReviewsTable = () => {
       }
 
       setSuccess('Review eliminado permanentemente')
-      
+
       // Actualización optimista
-      setAllProfiles(prevProfiles => 
+      setAllProfiles(prevProfiles =>
         prevProfiles.map(profile => ({
           ...profile,
           reviews: profile.reviews.filter(review => review.id !== reviewId)
         }))
       )
-      
+
       updatePaginatedProfiles(allProfiles, currentPage)
 
     } catch (err) {
@@ -159,7 +154,7 @@ const ServiceProfileReviewsTable = () => {
 
   useEffect(() => {
     fetchServiceProfiles()
-  }, [])
+  }, [fetchServiceProfiles])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
@@ -219,7 +214,7 @@ const ServiceProfileReviewsTable = () => {
                     <td className="px-4 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         {profile.profilePicture ? (
-                          <Image 
+                          <Image
                             src={profile.profilePicture}
                             width={32}
                             height={32}
@@ -275,7 +270,7 @@ const ServiceProfileReviewsTable = () => {
                               <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-3">
                                   {review.user.imgUrl ? (
-                                    <Image 
+                                    <Image
                                       src={review.user.imgUrl}
                                       width={24}
                                       height={24}
@@ -299,11 +294,10 @@ const ServiceProfileReviewsTable = () => {
                                 <button
                                   onClick={() => handleDeleteReview(review.id)}
                                   disabled={deletingReviewId === review.id}
-                                  className={`px-2 py-1 text-xs rounded-md ${
-                                    deletingReviewId === review.id 
-                                      ? 'bg-gray-400 text-white' 
+                                  className={`px-2 py-1 text-xs rounded-md ${deletingReviewId === review.id
+                                      ? 'bg-gray-400 text-white'
                                       : 'bg-red-600 hover:bg-red-700 text-white'
-                                  }`}
+                                    }`}
                                 >
                                   {deletingReviewId === review.id ? 'Eliminando...' : 'Eliminar'}
                                 </button>
