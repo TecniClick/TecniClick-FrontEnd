@@ -73,7 +73,6 @@ const ProviderEdit = () => {
     state: "Estado / Provincia",
     country: "País",
   };
-  
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -146,6 +145,25 @@ const ProviderEdit = () => {
       return;
     }
 
+    // 🎯 Validaciones de tipo MIME
+    const profilePictureValid = profilePicture
+      ? /^(image\/(jpeg|png|webp)|video\/(mp4|mov|avi))$/.test(profilePicture.type)
+      : false;
+
+    const allDocumentsValid = [...images.id_document, ...images.gallery, ...images.certificate].every(
+      (file) => /^(image\/(jpeg|png|webp)|application\/pdf|video\/(mp4|mov|avi))$/.test(file.type)
+    );
+
+    if (!profilePictureValid) {
+      toast.error("La imagen de perfil tiene un formato no permitido.");
+      return;
+    }
+
+    if (!allDocumentsValid) {
+      toast.error("Uno o más archivos tienen formatos no válidos. Aceptados: jpg, png, webp, pdf, mp4, mov, avi.");
+      return;
+    }
+
     if (
       token &&
       user &&
@@ -183,7 +201,6 @@ const ProviderEdit = () => {
       toast.warning("Rellena todos los campos obligatorios.");
     }
   };
-
   return (
     <form className="bg-quaternary/40 dark:bg-quinary/40 space-y-4 p-4">
       <div>
