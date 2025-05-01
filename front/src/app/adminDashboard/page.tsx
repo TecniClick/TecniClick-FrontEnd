@@ -46,7 +46,6 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Gestión de Usuarios</h2>
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-1 space-y-6">
-                <UserSearcherBlock />
                 <UpgradeUserToAdminBlock />
               </div>
               <div className="lg:col-span-3">

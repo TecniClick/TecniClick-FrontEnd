@@ -5,7 +5,7 @@ import {
 } from "@/services/profileService";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { CategoryType, ServiceProfileType } from "@/helpers/typeMock";
+import { CategoryType, ServiceProfileStatus, ServiceProfileType } from "@/helpers/typeMock";
 import { getCategories } from "@/services/categoryService";
 import Image from "next/image";
 import profile from "../../../public/profile.png";
@@ -130,87 +130,89 @@ const ServicesPage: React.FC = () => {
         </button>
       </div>
 
-      <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredServices.length > 0 ? (
-          filteredServices.map((service) => {
-            const isPremium = service.subscription?.status === "active";
+       <ul className="grid gap-4 mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {filteredServices.length > 0 ? (
+        filteredServices.map((service) => {
+          const isPremium = service.subscription?.status === "active";
+          const isActive = service.status === ServiceProfileStatus.ACTIVE;
 
-            return (
-              <li
-                key={service.id}
-                className={`relative border p-4 rounded-lg shadow-lg transition duration-300 ${
-                  isPremium
-                    ? "bg-yellow-400 text-white border-yellow-300 animate-pulse"
-                    : "oscuro"
-                }`}
-              >
-                {isPremium && (
-                  <span className="absolute top-2 right-2 bg-yellow-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">
-                    ⭐ Premium
-                  </span>
-                )}
+          if (!isActive) return null;
 
-                <Link href={`/services/${service.id}`}>
-                  <div className="flex items-center gap-2 cursor-pointer">
-                    <Image
-                      src={service.profilePicture || profile}
-                      alt="Foto de perfil"
-                      width={100}
-                      height={100}
-                      className="w-12 h-12 object-cover rounded-full border-2 border-quaternary dark:border-quinary"
-                    />
-                    <h3 className="text-lg font-semibold flex items-center gap-1">
-                      {service.serviceTitle}
-                      {isPremium && (
-                        <Image
-                          src={verifiedIcon}
-                          alt="Verificado"
-                          width={18}
-                          height={18}
-                        />
-                      )}
-                    </h3>
-                  </div>
-                  <div className="p-1">
-                    <p>
-                      Profesional:{" "}
-                      <span className="font-bold">{service.userName}</span>
-                    </p>
-                    <p>
-                      Categoría:{" "}
-                      <span className="font-bold">
-                        {service.category?.name || "No disponible"}
-                      </span>
-                    </p>
-                    <p>
-                      Precio Base:{" "}
-                      <span className="font-bold">${service.appointmentPrice}</span>
-                    </p>
-                    <p>
-                      Descripción:{" "}
-                      {service.description?.length ?? 0 > 80
-                        ? `${service.description?.slice(0, 80)}...`
-                        : service.description ?? "Descripción no disponible"}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-1">
-                      {service.rating
-                        ? Array.from({ length: Math.floor(service.rating) }, (_, i) => (
-                            <FaStar key={i} className="text-yellow-500" />
-                          ))
-                        : <span className="text-gray-500">Sin calificaciones</span>
-                      }
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            );
-          })
-        ) : (
-          <div className="oscuro p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
-            <p>No hay profesionales disponibles aún en esta categoría.</p>
-          </div>
-        )}
-      </ul>
+          return (
+            <li
+              key={service.id}
+              className={`relative border p-4 rounded-lg shadow-lg transition duration-300 ${
+                isPremium
+                  ? "bg-yellow-400 text-white border-yellow-300 animate-pulse"
+                  : "oscuro"
+              }`}
+            >
+              {isPremium && (
+                <span className="absolute top-2 right-2 bg-yellow-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">
+                  ⭐ Premium
+                </span>
+              )}
+
+              <Link href={`/services/${service.id}`}>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <Image
+                    src={service.profilePicture || profile}
+                    alt="Foto de perfil"
+                    width={100}
+                    height={100}
+                    className="w-12 h-12 object-cover rounded-full border-2 border-quaternary dark:border-quinary"
+                  />
+                  <h3 className="text-lg font-semibold flex items-center gap-1">
+                    {service.serviceTitle}
+                    {isPremium && (
+                      <Image
+                        src={verifiedIcon}
+                        alt="Verificado"
+                        width={18}
+                        height={18}
+                      />
+                    )}
+                  </h3>
+                </div>
+                <div className="p-1">
+                  <p>
+                    Profesional:{" "}
+                    <span className="font-bold">{service.userName}</span>
+                  </p>
+                  <p>
+                    Categoría:{" "}
+                    <span className="font-bold">
+                      {service.category?.name || "No disponible"}
+                    </span>
+                  </p>
+                  <p>
+                    Precio Base:{" "}
+                    <span className="font-bold">${service.appointmentPrice}</span>
+                  </p>
+                  <p>
+                    Descripción:{" "}
+                    {service.description?.length ?? 0 > 80
+                      ? `${service.description?.slice(0, 80)}...`
+                      : service.description ?? "Descripción no disponible"}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-1">
+                    {service.rating
+                      ? Array.from({ length: Math.floor(service.rating) }, (_, i) => (
+                          <FaStar key={i} className="text-yellow-500" />
+                        ))
+                      : <span className="text-gray-500">Sin calificaciones</span>}
+                  </p>
+                </div>
+              </Link>
+            </li>
+          );
+        })
+      ) : (
+        <div className="oscuro p-4 border rounded-lg shadow-lg text-center flex items-center justify-center col-span-full">
+          <p>No hay profesionales disponibles aún en esta categoría.</p>
+        </div>
+      )}
+    </ul>
     </div>
   );
 };

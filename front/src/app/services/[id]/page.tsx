@@ -35,7 +35,7 @@ export default async function SlugProduct ({ params }: { params: Promise<Product
   const user = await getServiceProfileById(id)
 
   return (
-    <div className="mx-[4%]">
+    <div className="mx-[4%] xl:mt-[5vh] 2xl:mt-[10vh]">
       {user ? (
         <div className="flex justify-center items-center">
           <ServiceProviderUser {...user}

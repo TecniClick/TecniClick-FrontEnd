@@ -1,5 +1,6 @@
 import Image from "next/image";
 import logoContraste from "../../../public/logoContraste.png";
+import logo from "../../../public/logo.png";
 
 export const metadata = {
     title: "Términos y Condiciones | TecniClick",
@@ -95,11 +96,22 @@ export default function Terms() {
                     </p>
                 </div>
             </div>
-            <Image
-                src={logoContraste}
-                alt="logo"
-                className="mx-auto w-48 sm:w-64 dark:bg-secondary rounded my-4"
-            />
+            <div className="flex items-center justify-center relative mt-[5vh] w-full h-24 md:h-32 2xl:h-48">
+                <Image
+                    src={logoContraste}
+                    alt="logo claro"
+                    fill
+                    className="!relative object-contain pb-4 block dark:hidden"
+                    priority
+                />
+                <Image
+                    src={logo}
+                    alt="logo oscuro"
+                    fill
+                    className="!relative object-contain pb-4 hidden dark:block"
+                    priority
+                />
+            </div>
         </section>
     )
 }

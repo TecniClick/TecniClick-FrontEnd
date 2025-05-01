@@ -44,14 +44,14 @@ export default function UserDashboardEditForm() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto mt-[15vh] p-4">
-            <h2 className="text-2xl font-semibold">Actualizar datos de usuario</h2>
-            <form onSubmit={handleSubmit} className="space-y-4 border p-4 rounded-md shadow-md">
+        <div className="max-w-[64rem] mx-auto mt-[15vh] p-4">
+            <h2 className="text-2xl font-semibold w-full text-center">Actualizar datos de usuario</h2>
+            <form onSubmit={handleSubmit} className="space-y-4 oscuro shadow-2xl p-4 rounded-md">
                 <div>
                     <label className="block text-sm font-medium">Correo electrónico</label>
                     <input
                         type="email"
-                        className="w-full dark:text-tertiary border rounded-md"
+                        className="w-full impunts impunts-2"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
@@ -61,7 +61,7 @@ export default function UserDashboardEditForm() {
                     <label className="block text-sm font-medium">Teléfono</label>
                     <input
                         type="text"
-                        className="w-full dark:text-tertiary border rounded-md"
+                        className="w-full max-w-[64rem] impunts impunts-2"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
@@ -71,7 +71,7 @@ export default function UserDashboardEditForm() {
                     <label className="block text-sm font-medium">Dirección</label>
                     <input
                         type="text"
-                        className="w-full dark:text-tertiary border rounded-md"
+                        className="w-full max-w-[64rem] impunts impunts-2"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                     />

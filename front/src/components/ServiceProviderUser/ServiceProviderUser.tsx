@@ -44,8 +44,8 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
       ? fetchedReviews.reduce((acc, r) => acc + r.rating, 0) / fetchedReviews.length
       : 0;
 
-  const currentImageUrl =
-    modalImageIndex !== null ? galleryImages?.[modalImageIndex]?.type : null;
+  // const currentImageUrl =
+  //   modalImageIndex !== null ? galleryImages?.[modalImageIndex]?.type : null;
 
   const showPrevImage = () => {
     if (modalImageIndex !== null && modalImageIndex > 0) {
@@ -66,9 +66,9 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   return (
     <div className="bg-secondary pb-8 w-3/4 dark:bg-tertiary shadow-2xl mx-auto px-4 sm:px-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 py-6 border-b border-gray-200 items-center justify-center">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 py-6 border-b border-senbg-senary items-center justify-center">
         <div
-          className="w-24 h-24 rounded-full overflow-hidden bg-gray-300 relative cursor-pointer hover:scale-105 transition"
+          className="w-24 h-24 rounded-full overflow-hidden bg-senary relative cursor-pointer hover:scale-105 transition"
           onClick={() => setModalImageIndex(-1)} // -1 representa la imagen de perfil
         >
           <Image
@@ -93,16 +93,17 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                 key={i}
                 className={`text-yellow-400 ${i < Math.round(promedioRating)
                   ? "opacity-100"
-                  : "opacity-40"
+                  : "opacity-50"
                   }`}
               />
             ))}
-            <span className="ml-2 text-sm text-gray-600">
+            <span className="ml-2 text-sm text-tertiary dark:text-senary">
               {promedioRating.toFixed(1)} / 5
             </span>
           </div>
 
           <div className="mt-4 sm:mt-2">
+          
             <AppointmentHandler
               isAuthenticated={isAuthenticated}  // Pasar el estado de autenticación
               onClick={(event) => {
@@ -152,7 +153,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
               </div>
             ))
           ) : (
-            <p className="text-sm text-gray-500 col-span-full text-center">
+            <p className="text-sm text-senary col-span-full text-center">
               El profesional no ha publicado imágenes
             </p>
           )}
@@ -168,19 +169,19 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           fetchedReviews.map((review, i) => (
             <div
               key={i}
-              className="mb-3 p-3 bg-white dark:bg-quinary shadow-lg rounded-md border border-tertiary"
+              className="mb-3 p-3 bg-secondary dark:bg-quinary shadow-lg rounded-md border border-tertiary"
             >
               <div className="flex text-yellow-500 text-sm">
                 {Array.from({ length: review.rating }, (_, j) => (
                   <FaStar key={j} />
                 ))}
               </div>
-              <p className="text-sm text-gray-600 dark:text-white mb-1">{review.comment}</p>
-              <p className="text-sm text-gray-600 dark:text-white mb-1">{new Date(review.createdAt).toLocaleDateString()}</p>
+              <p className="text-sm text-tertiary dark:text-secondary mb-1">{review.comment}</p>
+              <p className="text-sm text-tertiary dark:text-secondary mb-1">{new Date(review.createdAt).toLocaleDateString()}</p>
             </div>
           ))
         ) : (
-          <p className="text-sm text-gray-500">No hay reseñas disponibles.</p>
+          <p className="text-sm text-tertiary dark:text-senary">No hay reseñas disponibles.</p>
         )}
       </section>
 
@@ -191,7 +192,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           onClick={() => setModalImageIndex(null)}
         >
           <div
-            className="bg-white p-4 rounded-lg max-w-sm w-full relative"
+            className="bg-secondary p-4 rounded-lg max-w-sm w-full relative"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-square bg-gray-300 rounded-md overflow-hidden">
