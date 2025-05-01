@@ -61,14 +61,14 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="container mx-auto my-8 p-4 bg-primary rounded">
-      <h4 className="text-2xl text-center text-secondary font-bold mb-4">¿Tenes alguna consulta?<br />¿Necesitas reportar algún problema?</h4>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-tertiary">
+    <div className="container mx-auto my-8 p-4 rounded-md border-2 border-quaternary dark:border-quinary">
+      <h4 className="text-2xl text-center font-bold mb-4">¿Tenes alguna consulta?<br />¿Necesitas reportar algún problema?</h4>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <select
           name="subject"
           value={form.subject}
           onChange={handleChange}
-          className="border p-2 rounded text-tertiary"
+          className="impunts impunts-2"
         >
           <option value="Consultas">Consulta</option>
           <option value="Reportes">Reporte</option>
@@ -80,7 +80,7 @@ export default function ContactPage() {
           placeholder="Tu email"
           value={form.email}
           onChange={handleChange}
-          className="border p-2 rounded"
+          className="impunts impunts-2"
         />
         <input
           type="text"
@@ -88,18 +88,18 @@ export default function ContactPage() {
           placeholder="Título"
           value={form.title}
           onChange={handleChange}
-          className="border p-2 rounded"
+          className="impunts impunts-2"
         />
         <textarea
           name="description"
           placeholder="Describe tu mensaje"
           value={form.description}
           onChange={handleChange}
-          className="border p-2 rounded"
+          className="impunts impunts-2 h-[20vh]"
         />
         <button
           type="submit"
-          className="bg-secondary w-1/2 mx-auto text-primary font-bold py-2 rounded hover:bg-quaternary"
+          className="w-1/2 mx-auto font-bold py-2 buttons"
         >
           Enviar Mensaje
         </button>
