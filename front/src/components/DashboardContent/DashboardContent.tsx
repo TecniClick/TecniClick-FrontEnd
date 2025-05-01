@@ -7,44 +7,68 @@ import UserInfo from "./UserInfo";
 import UserInterests from "./UserInterests";
 import UserAppointments from "./userAppointments";
 import ServiceButton from "./ServiceButton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getServiceProfileById } from "@/services/profileService";
+import { ServiceProfileType } from "@/helpers/typeMock";
 
 export default function DashboardContent() {
     const { user, token } = useAuth();
     const { refreshAppointments } = useAppointments();
+    const [isLoading, setIsLoading] = useState(true);
+    const [serviceProfile, setServiceProfile] = useState<ServiceProfileType | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const isLoggedIn = !!user;
 
+    // Función para cargar el perfil de servicio
+    const loadServiceProfile = async () => {
+        if (!user?.serviceProfile?.id) {
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const profile = await getServiceProfileById(user.serviceProfile.id);
+            setServiceProfile(profile);
+            setError(null);
+        } catch (err) {
+            setError("Error al cargar el perfil de servicio");
+            console.error("Error loading service profile:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (user && token) {
+            loadServiceProfile();
             refreshAppointments();
+        } else {
+            setIsLoading(false);
         }
-    }, [token, user, refreshAppointments]);
+    }, [user, token]);
+
+    // Verificación robusta del estado premium con datos del serviceProfile
+    const isPremium = serviceProfile?.subscription.status === "active" &&
+        serviceProfile?.subscription?.expirationDate &&
+        new Date(serviceProfile.subscription.expirationDate) > new Date();
 
     let params: [string, string] = ["/login", "Inicie sesión primero"];
 
-    if (!user?.serviceProfile) {
+    if (!serviceProfile) {
         params = ["/provider-edit", "Ofrecer un servicio"];
-    } else if (user.serviceProfile.status === "pending") {
+    } else if (serviceProfile.status === "pending") {
         params = ["/dashboard", "Su solicitud está en revisión"];
-    } else if (user.serviceProfile.status === "rejected") {
+    } else if (serviceProfile.status === "rejected") {
         params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"];
-    } else if (
-        user.serviceProfile.status === "active" &&
-        (!user.serviceProfile.subscription || user.serviceProfile.subscription.status !== "active")
-    ) {
-        params = ["/provider-premium", "Hazte Premium"];
-    } else if (
-        user.serviceProfile.subscription?.status === "active" &&
-        user.serviceProfile.subscription.expirationDate
-    ) {
-        const expiration = new Date(user.serviceProfile.subscription.expirationDate);
-        const now = new Date();
-
-        if (expiration < now) {
-            params = ["/provider-premium", "Suscripción vencida, renová tu plan"];
+    } else if (serviceProfile.status === "active") {
+        if (!isPremium) {
+            params = ["/provider-premium", "Hazte Premium"];
         } else {
+            const expiration = serviceProfile.subscription.expirationDate 
+                ? new Date(serviceProfile.subscription.expirationDate) 
+                : new Date();
             const formatted = expiration.toLocaleDateString("es-AR", {
                 day: "2-digit",
                 month: "long",
@@ -54,14 +78,29 @@ export default function DashboardContent() {
         }
     }
 
+    if (isLoading) {
+        return (
+            <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white flex justify-center items-center">
+                <div className="text-center">Cargando...</div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white flex justify-center items-center">
+                <div className="text-center text-red-500">{error}</div>
+            </section>
+        );
+    }
+
     return (
         <section className="w-full min-h-screen bg-background px-6 py-10 md:px-[10%] dark:text-white">
             {isLoggedIn ? (
                 <div className="max-w-6xl mx-auto flex flex-col gap-8 items-center">
-
                     <div className="flex flex-col items-center gap-4">
                         <UserImage
-                            imgUrl={user?.serviceProfile?.profilePicture ?? undefined}
+                            imgUrl={serviceProfile?.profilePicture ?? user?.serviceProfile?.profilePicture ?? undefined}
                             name={user?.name ?? "Usuario"}
                         />
                         <h1 className="text-2xl font-semibold text-center">
@@ -73,12 +112,16 @@ export default function DashboardContent() {
                         <>
                             <ServiceButton params={params} />
 
-                            {user?.serviceProfile?.id && (
+                            {/* Mostrar botón solo si tenemos un serviceProfile activo */}
+                            {serviceProfile?.status === "active" && (
                                 <Link
-                                    href="/update-provider"
+                                    href={{
+                                        pathname: "/update-provider",
+                                        query: { serviceProfileId: serviceProfile.id }
+                                    }}
                                     className="px-6 py-2 rounded-lg bg-quaternary dark:bg-quinary text-white font-semibold hover:scale-105 transition-all text-center"
                                 >
-                                    Editar perfil de servicio
+                                    {isPremium ? "Editar perfil premium" : "Editar perfil de servicio"}
                                 </Link>
                             )}
                         </>
