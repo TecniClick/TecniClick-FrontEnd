@@ -47,7 +47,7 @@ export default function SubscriptionForm() {
           
           updateService({...user.serviceProfile!, subscription })
           cardElement.clear();
-          router.push("/dashboard")
+          router.push("/")
           return "Se registró exitosamente como Usuario Premium";
         },
         error: (data) =>

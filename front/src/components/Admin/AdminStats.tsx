@@ -17,10 +17,8 @@ ChartJS.register(
 
 type StatsData = {
   summary: {
-    totalUsers: number
     activeUsers: number
     inactiveUsers: number
-    totalServices: number
     activeServices: number
     pendingServices: number
     rejectedServices: number
@@ -68,12 +66,29 @@ export default function AdminStats() {
           throw new Error('Error al cargar estadísticas')
         }
 
+        const summaryData = await summaryRes.json()
+        const servicesData = await servicesRes.json()
+        const rolesData = await rolesRes.json()
+
+        // Verificación de datos
+        if (!summaryData.activeUsers || !summaryData.totalAppointments) {
+          console.warn('Datos potencialmente incorrectos recibidos:', summaryData)
+        }
+
         setStats({
-          summary: await summaryRes.json(),
-          services: await servicesRes.json(),
-          roles: await rolesRes.json()
+          summary: {
+            ...summaryData,
+            // Forzar números para evitar NaN
+            activeUsers: summaryData.activeUsers || 0,
+            inactiveUsers: summaryData.inactiveUsers || 0,
+            totalAppointments: summaryData.totalAppointments || 0,
+            pendingAppointments: summaryData.pendingAppointments || 0
+          },
+          services: servicesData,
+          roles: rolesData
         })
       } catch (err) {
+        console.error('Error fetching stats:', err)
         setError(err instanceof Error ? err.message : 'Error desconocido')
       } finally {
         setLoading(false)
@@ -103,7 +118,13 @@ export default function AdminStats() {
   if (error) {
     return (
       <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 text-red-500 dark:text-red-400">
-        Error: {error}
+        <p>Error: {error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Reintentar
+        </button>
       </div>
     )
   }
@@ -120,43 +141,44 @@ export default function AdminStats() {
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-          Estadísticas Generales
+          Panel de Administración
         </h2>
         <div className="flex items-center space-x-2">
-          <Image 
-            src="/icons/chart.svg" 
-            width={20} 
-            height={20} 
-            alt="Estadísticas" 
-            className="dark:invert"
-          />
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            Actualizado en tiempo real
+            Actualizado: {new Date().toLocaleTimeString()}
           </span>
+          <button 
+            onClick={() => window.location.reload()}
+            className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            <Image 
+              src="/icons/refresh.svg" 
+              width={20} 
+              height={20} 
+              alt="Actualizar" 
+              className="dark:invert"
+            />
+          </button>
         </div>
       </div>
 
       {/* Sección de Usuarios */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Usuarios</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard 
-            title="Total de Usuarios" 
-            value={stats.summary.totalUsers}
-            trend="up"
-            icon="👥"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <StatCard 
             title="Usuarios Activos" 
             value={stats.summary.activeUsers}
-            trend="stable"
-            icon="✅"
+            trend={stats.summary.activeUsers > 0 ? "up" : "stable"}
+            icon="👤"
+            description="Usuarios con cuentas activas"
           />
           <StatCard 
             title="Usuarios Inactivos" 
             value={stats.summary.inactiveUsers}
             trend={stats.summary.inactiveUsers > 0 ? "down" : "stable"}
-            icon="❌"
+            icon="🚫"
+            description="Cuentas desactivadas"
           />
         </div>
       </div>
@@ -164,41 +186,40 @@ export default function AdminStats() {
       {/* Sección de Servicios */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Servicios</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <StatCard 
-            title="Total de Servicios" 
-            value={stats.summary.totalServices}
-            trend="up"
-            icon="🛠️"
-          />
-          <StatCard 
-            title="Servicios Activos" 
+            title="Aprobados" 
             value={stats.summary.activeServices}
-            trend="up"
+            trend={stats.summary.activeServices > 0 ? "up" : "stable"}
             icon="✔️"
+            description="Servicios activos"
           />
           <StatCard 
-            title="Servicios Pendientes" 
+            title="Pendientes" 
             value={stats.summary.pendingServices}
             trend={stats.summary.pendingServices > 0 ? "down" : "stable"}
             icon="⏳"
+            description="En revisión"
           />
           <StatCard 
-            title="Servicios Rechazados" 
+            title="Rechazados" 
             value={stats.summary.rejectedServices}
             trend={stats.summary.rejectedServices > 0 ? "down" : "stable"}
             icon="✖️"
+            description="No aprobados"
           />
         </div>
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <StatCard 
-            title="Tasa de Aprobación" 
-            value={`${stats.summary.approvalRate}%`}
-            trend={stats.summary.approvalRate > 70 ? "up" : "down"}
-            icon="📈"
-            fullWidth
-          />
-        </div>
+        {stats.summary.activeServices > 0 && (
+          <div className="mt-4">
+            <StatCard 
+              title="Tasa de Aprobación" 
+              value={`${stats.summary.approvalRate}%`}
+              trend={stats.summary.approvalRate > 70 ? "up" : stats.summary.approvalRate > 30 ? "stable" : "down"}
+              icon="📊"
+              fullWidth
+            />
+          </div>
+        )}
       </div>
 
       {/* Sección de Citas */}
@@ -208,26 +229,25 @@ export default function AdminStats() {
           <StatCard 
             title="Total de Citas" 
             value={stats.summary.totalAppointments}
-            trend="up"
+            trend={stats.summary.totalAppointments > 0 ? "up" : "stable"}
             icon="📅"
-            fullWidth
+            description="Todas las citas registradas"
           />
           <StatCard 
-            title="Citas Pendientes" 
+            title="Pendientes" 
             value={stats.summary.pendingAppointments}
             trend={stats.summary.pendingAppointments > 0 ? "down" : "stable"}
-            icon="⏳"
-            fullWidth
+            icon="🔄"
+            description="Citas por confirmar"
           />
         </div>
       </div>
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de categorías de servicios */}
         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
           <h3 className="font-medium text-gray-800 dark:text-white mb-4">
-            Distribución de Servicios
+            Distribución de Servicios por Categoría
           </h3>
           <div className="h-64">
             <Doughnut
@@ -236,10 +256,9 @@ export default function AdminStats() {
                 datasets: [{
                   data: serviceCounts,
                   backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
-                    '#9966FF', '#FF9F40', '#8AC24A', '#EA80FC'
+                    '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
+                    '#8B5CF6', '#EC4899', '#14B8A6', '#F97316'
                   ],
-                  borderWidth: 1
                 }]
               }}
               options={{
@@ -247,52 +266,10 @@ export default function AdminStats() {
                 plugins: {
                   legend: {
                     position: 'right',
-                    labels: {
-                      color: '#6B7280',
-                      font: {
-                        size: 12
-                      }
-                    }
-                  }
-                }
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Gráfico de distribución de roles */}
-        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-800 dark:text-white mb-4">
-            Distribución de Roles
-          </h3>
-          <div className="h-64">
-            <Doughnut
-              data={{
-                labels: roleLabels,
-                datasets: [{
-                  data: roleData,
-                  backgroundColor: [
-                    '#3B82F6', // Azul para clientes
-                    '#10B981'  // Verde para prestadores
-                  ],
-                  borderWidth: 1
-                }]
-              }}
-              options={{
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    position: 'right',
-                    labels: {
-                      color: '#6B7280',
-                      font: {
-                        size: 12
-                      }
-                    }
                   },
                   tooltip: {
                     callbacks: {
-                      label: function(context) {
+                      label: (context) => {
                         const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
                         const value = context.raw as number
                         const percentage = Math.round((value / total) * 100)
@@ -305,25 +282,58 @@ export default function AdminStats() {
             />
           </div>
         </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+          <h3 className="font-medium text-gray-800 dark:text-white mb-4">
+            Distribución de Usuarios
+          </h3>
+          <div className="h-64">
+            <Doughnut
+              data={{
+                labels: roleLabels,
+                datasets: [{
+                  data: roleData,
+                  backgroundColor: ['#3B82F6', '#10B981'],
+                }]
+              }}
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'right',
+                  }
+                }
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-// Componente StatCard sin cambios
+// Componente StatCard mejorado
 const StatCard = ({ 
   title, 
   value, 
   trend, 
   icon,
+  description,
   fullWidth = false
 }: {
   title: string
   value: number | string
   trend?: 'up' | 'down' | 'stable'
   icon: string
+  description?: string
   fullWidth?: boolean
 }) => {
+  const trendIcons = {
+    up: '↑',
+    down: '↓',
+    stable: '→'
+  }
+
   const trendColors = {
     up: 'text-green-500',
     down: 'text-red-500',
@@ -331,14 +341,24 @@ const StatCard = ({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 border border-gray-100 dark:border-gray-700 ${fullWidth ? 'md:col-span-2' : ''}`}>
-      <div className="flex justify-between">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 ${fullWidth ? 'md:col-span-2' : ''}`}>
+      <div className="flex justify-between items-start">
         <div>
           <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
           <p className="text-2xl font-bold mt-1">{value}</p>
+          {description && (
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+              {description}
+            </p>
+          )}
         </div>
-        <div className={`text-2xl ${trend ? trendColors[trend] : ''}`}>
-          {icon}
+        <div className="flex items-center space-x-1">
+          {trend && (
+            <span className={`text-sm ${trendColors[trend]}`}>
+              {trendIcons[trend]}
+            </span>
+          )}
+          <span className="text-2xl">{icon}</span>
         </div>
       </div>
     </div>
