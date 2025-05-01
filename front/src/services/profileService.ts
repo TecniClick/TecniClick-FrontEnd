@@ -186,7 +186,7 @@ export const createServiceProfile = async (
 };
 
 export const updateServiceProfile = async (
-  id: string,
+  serviceProfileId: string,
   token: string,
   data: UpdateServiceProfileDto,
   profilePicture?: File,
@@ -194,7 +194,8 @@ export const updateServiceProfile = async (
 ): Promise<ServiceProfileType> => {
   try {
     // 1. Actualizar los campos base
-    const res = await fetch(`${API_URL}/service-profile/update/${id}`, {
+    console.log('Actualizando perfil de servicio con ID:', serviceProfileId); 
+    const res = await fetch(`${API_URL}/service-profile/update/${serviceProfileId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -212,7 +213,7 @@ export const updateServiceProfile = async (
     if (profilePicture) {
       const formData = new FormData();
       formData.append('file', profilePicture);
-      const pictureRes = await fetch(`${API_URL}/media/profile-picture/${id}`, {
+      const pictureRes = await fetch(`${API_URL}/media/profile-picture/${serviceProfileId}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -227,7 +228,7 @@ export const updateServiceProfile = async (
     const uploadFiles = (files: File[], type: string) => {
       const form = new FormData();
       files.forEach((file) => form.append('files', file));
-      return fetch(`${API_URL}/media/upload/${id}?type=${type}`, {
+      return fetch(`${API_URL}/media/upload/${serviceProfileId}?type=${type}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: form,

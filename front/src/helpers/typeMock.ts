@@ -180,7 +180,7 @@ export type UpdateServiceProfileDto = {
     address?: AddressDto;
     description?: string;
     appointmentPrice?: number;
-    phone?: string;
+    phone?: number;
     category?: string;
 }
 
