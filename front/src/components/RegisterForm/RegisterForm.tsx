@@ -129,15 +129,22 @@ export default function RegisterForm() {
 
             const data = await response.json();
 
-            toast.success(`Registro exitoso! Bienvenido, ${data.name}! Redirigiendo...`);
+            // Asegúrate de que `data.createdUser.name` esté disponible
+            if (data.createdUser?.name) {
+                toast.success(`Registro exitoso! Bienvenido, ${data.createdUser.name}! Redirigiendo...`);
+            } else {
+                toast.success("Registro exitoso! Redirigiendo...");
+            }
+
             // Redirigir usando el router de Next.js
             router.push("/login");
-        } catch (error){
+        } catch (error) {
             console.error("Registration error:", error);
             toast.error("Error al registrar. Por favor intenta nuevamente.");
         } finally {
             setIsLoading(false);
         }
+
     };
 
     return (
