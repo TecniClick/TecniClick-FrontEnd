@@ -5,11 +5,13 @@ import { toast } from "sonner";
 import { updateServiceProfileToPremium } from "@/services/profileService";
 import { FormEvent } from "react";
 import { useAuth } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
 
 export default function SubscriptionForm() {
   const { user, updateService, token } = useAuth()
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -33,9 +35,9 @@ export default function SubscriptionForm() {
     if (error) {
       toast.error(error.message || "Error procesando la tarjeta.");
     } else if (paymentMethod && !user) {
-      toast.error("Por favor registre y loguee su usuario para concretar la transaccion");
+      toast.error("Por favor registre y loguee su usuario para concretar la transacción");
     } else if (paymentMethod && user && (!user.serviceProfile || user.serviceProfile.status != "active")) {
-      toast.error("Por favor registre su usuario como proveedor de servicio para concretar la transaccion");
+      toast.error("Por favor registre su usuario como proveedor de servicio para concretar la transacción");
     } else if (token && paymentMethod && user && user.serviceProfile && user.serviceProfile.status == "active") {
       const response = updateServiceProfileToPremium(paymentMethod.id, 1000, token);
       
@@ -45,6 +47,7 @@ export default function SubscriptionForm() {
           
           updateService({...user.serviceProfile!, subscription })
           cardElement.clear();
+          router.push("/dashboard")
           return "Se registró exitosamente como Usuario Premium";
         },
         error: (data) =>
