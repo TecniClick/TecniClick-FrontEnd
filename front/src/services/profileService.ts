@@ -1,4 +1,4 @@
-import { galleriesType, mediaType, ServiceProfileType, ServiceRequestType, SubscriptionType } from "@/helpers/typeMock";
+import { galleriesType, mediaType, ServiceProfileType, ServiceRequestType, SubscriptionType, UpdateServiceProfileDto } from "@/helpers/typeMock";
 import { servicesMock } from "@/helpers/dataMock";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -185,27 +185,72 @@ export const createServiceProfile = async (
   }
 };
 
-
-export const updateServiceProfile = async (service: ServiceProfileType): Promise<ServiceProfileType | null> => {
+export const updateServiceProfile = async (
+  id: string,
+  token: string,
+  data: UpdateServiceProfileDto,
+  profilePicture?: File,
+  images?: galleriesType
+): Promise<ServiceProfileType> => {
   try {
-    if (MODE === "developer") {
-      return servicesMock.find((s) => s.id === service.id) || null;
-    } else if (MODE === "production") {
-      const response = await fetch(`${API_URL}/services/${service.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(service),
+    // 1. Actualizar los campos base
+    const res = await fetch(`${API_URL}/service-profile/update/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'Error al actualizar el perfil');
+    }
+
+    // 2. Subir nueva foto de perfil si existe
+    if (profilePicture) {
+      const formData = new FormData();
+      formData.append('file', profilePicture);
+      const pictureRes = await fetch(`${API_URL}/media/profile-picture/${id}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
       });
 
-      return await response.json() || null;
+      if (!pictureRes.ok) {
+        throw new Error('Error al subir la nueva foto de perfil');
+      }
     }
+
+    // 3. Subir nuevos archivos multimedia si existen
+    const uploadFiles = (files: File[], type: string) => {
+      const form = new FormData();
+      files.forEach((file) => form.append('files', file));
+      return fetch(`${API_URL}/media/upload/${id}?type=${type}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      });
+    };
+
+    if (images) {
+      const entries = Object.entries(images) as [keyof galleriesType, File[]][];
+      for (const [type, files] of entries) {
+        if (files.length) {
+          const res = await uploadFiles(files, type);
+          if (!res.ok) {
+            throw new Error(`Error al subir archivos de tipo ${type}`);
+          }
+        }
+      }
+    }
+
+    return await res.json();
   } catch (error) {
-    console.error(error);
+    console.error('Error en updateServiceProfile:', error);
     throw error;
   }
-  return null;
 };
 
 export const updateServiceProfileToPremium = async (id: string, amount: number, token: string): Promise<SubscriptionType> => {
