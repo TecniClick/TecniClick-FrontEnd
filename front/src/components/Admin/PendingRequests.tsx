@@ -29,6 +29,14 @@ type User = {
   imgUrl: string
 }
 
+type Media = {
+  id: string
+  imgUrl: string
+  type: 'gallery' | 'certificate' | 'id_document'
+  publicId: string
+  resourceType: 'image' | 'video' | 'raw'
+}
+
 type Request = {
   id: string
   serviceTitle: string
@@ -38,23 +46,24 @@ type Request = {
   description: string
   appointmentPrice: string
   phone: string
-  status: 'active' | 'pending' | 'rejected' // Ajustado para coincidir con el enum del backend
+  status: 'active' | 'pending' | 'rejected'
   createdAt: string
   updatedAt: string
   deletedAt: string | null
   category: Category
-  user: User // Añadido para manejar la relación con el usuario
-  images?: {
-    id: string
-    url: string
-    type: 'DOCUMENT' | 'PROFILE'
-  }[]
+  user: User
+  images?: Media[]
 }
 
 const PendingRequests = () => {
   const [requests, setRequests] = useState<Request[]>([])
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
+  const [documents, setDocuments] = useState<{
+    idDocuments: Media[]
+    certificates: Media[]
+  }>({ idDocuments: [], certificates: [] })
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
@@ -94,6 +103,50 @@ const PendingRequests = () => {
 
     fetchPendingRequests()
   }, [router])
+
+  // Cargar documentos cuando se selecciona una solicitud
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (!selectedRequest) return
+
+      setIsLoadingDocuments(true)
+      setError(null)
+
+      try {
+        const [idDocsResponse, certsResponse] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/media/id-documents/${selectedRequest.id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/media/certificates/${selectedRequest.id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+          })
+        ])
+
+        if (!idDocsResponse.ok || !certsResponse.ok) {
+          throw new Error('Error al cargar documentos')
+        }
+
+        const idDocuments = await idDocsResponse.json()
+        const certificates = await certsResponse.json()
+
+        setDocuments({
+          idDocuments,
+          certificates
+        })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al cargar documentos')
+        console.error('Error loading documents:', err)
+      } finally {
+        setIsLoadingDocuments(false)
+      }
+    }
+
+    fetchDocuments()
+  }, [selectedRequest])
 
   // Bloquear scroll del body cuando el modal está abierto
   useEffect(() => {
@@ -152,10 +205,6 @@ const PendingRequests = () => {
     return `${address.street} ${address.extNumber}${address.intNumber ? ` Int ${address.intNumber}` : ''}, ${address.neighborhood ? `${address.neighborhood}, ` : ''}${address.city}, ${address.state}`
   }
 
-  const getDocumentImage = (request: Request) => {
-    return request.images?.find(img => img.type === 'DOCUMENT')?.url || null
-  }
-
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 flex flex-1 flex-col gap-2">
       <h2 className="text-xl font-bold pb-4 text-gray-800 dark:text-white">Solicitudes Pendientes</h2>
@@ -212,7 +261,7 @@ const PendingRequests = () => {
 
       {selectedRequest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-2xl relative transform transition-all duration-300 scale-100 opacity-100">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-white"
               onClick={() => !isLoading && setSelectedRequest(null)}
@@ -230,11 +279,14 @@ const PendingRequests = () => {
                 <Image
                   src={selectedRequest.user?.imgUrl}
                   alt={selectedRequest.user?.name || selectedRequest.userName}
-                  className="w-16 h-16 rounded-full object-cover"
+                  width={80}
+                  height={80}
+                  className="w-20 h-20 rounded-full object-cover"
                 />
                 <div>
                   <p className="font-semibold text-lg">{selectedRequest.user?.name || selectedRequest.userName}</p>
                   <p className="text-gray-600 dark:text-gray-400">{selectedRequest.user?.email}</p>
+                  <p className="text-sm mt-1">{selectedRequest.user?.phone}</p>
                 </div>
               </div>
 
@@ -251,35 +303,65 @@ const PendingRequests = () => {
                 </div>
               </div>
 
-              {selectedRequest.rating && (
-                <div className="mt-4">
-                  <p className="font-semibold">Calificación:</p>
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <span 
-                        key={i}
-                        className={`text-xl ${i < (selectedRequest.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}`}
-                      >
-                        ★
-                      </span>
-                    ))}
-                    <span className="ml-2 text-gray-600 dark:text-gray-400">
-                      ({selectedRequest.rating?.toFixed(1)})
-                    </span>
+              {/* Sección de Documentos de Identidad */}
+              <div className="mt-6">
+                <h4 className="font-bold mb-3">Documentos de Identidad</h4>
+                {isLoadingDocuments ? (
+                  <div className="flex justify-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                   </div>
-                </div>
-              )}
+                ) : documents.idDocuments.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {documents.idDocuments.map((doc) => (
+                      <div key={doc.id} className="border rounded-lg p-3">
+                        <div className="relative w-full h-48">
+                          <Image
+                            src={doc.imgUrl}
+                            alt="Documento de identidad"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <p className="text-sm text-center mt-2 text-gray-600 dark:text-gray-400">
+                          {doc.type === 'id_document' ? 'Documento de Identidad' : 'Documento'}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 dark:text-gray-400">No hay documentos de identidad cargados</p>
+                )}
+              </div>
 
-              {getDocumentImage(selectedRequest) && (
-                <div className="mt-4">
-                  <p className="font-semibold mb-2">Documento de verificación:</p>
-                  <Image
-                    src={getDocumentImage(selectedRequest) || ''}
-                    alt="Documento de verificación"
-                    className="w-full max-w-md rounded border border-gray-200 dark:border-gray-700"
-                  />
-                </div>
-              )}
+              {/* Sección de Certificados */}
+              <div className="mt-6">
+                <h4 className="font-bold mb-3">Certificados</h4>
+                {isLoadingDocuments ? (
+                  <div className="flex justify-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                  </div>
+                ) : documents.certificates.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {documents.certificates.map((cert) => (
+                      <div key={cert.id} className="border rounded-lg p-3">
+                        <div className="relative w-full h-48">
+                          <Image
+                            src={cert.imgUrl}
+                            alt="Certificado"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <p className="text-sm text-center mt-2 text-gray-600 dark:text-gray-400">
+                          Certificado profesional
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 dark:text-gray-400">No hay certificados cargados</p>
+                )}
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end space-x-4">
