@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/authContext";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import "@/styles/styles.css"
+import "@/styles/styles.css";
 import GoogleButton from "../GoogleButton/GoogleButton";
 import logoContraste from "../../../public/logoContraste.png";
 import logo from "../../../public/logo.png";
@@ -25,31 +25,31 @@ const LoginForm = () => {
         setIsLoading(true);
         setError("");
 
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signIn`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signIn`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
                 toast.error(errorData.message || "Error al iniciar sesión");
             }
 
-            const { token, userId } = await res.json();
+      const { token, userId } = await res.json();
 
-            const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+      const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            if (!userRes.ok) throw new Error("Error al obtener el usuario");
+      if (!userRes.ok) throw new Error("Error al obtener el usuario");
 
-            const user = await userRes.json();
+      const user = await userRes.json();
 
             // ✅ Validación de cuenta dada de baja
             if (user.deletedAt) {
@@ -167,5 +167,4 @@ const LoginForm = () => {
             </main>
         );
     }
-
-    export default LoginForm;
+export default LoginForm;

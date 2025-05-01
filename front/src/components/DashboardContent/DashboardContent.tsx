@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useAuth } from "@/contexts/authContext";
@@ -10,7 +11,8 @@ import ServiceButton from "./ServiceButton";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { getServiceProfileById } from "@/services/profileService";
-import { ServiceProfileType } from "@/helpers/typeMock";
+import { ServiceProfileStatus, ServiceProfileType, SubscriptionStatus } from "@/helpers/typeMock";
+import DarkMode from "../DarkMode/DarkMode";
 
 export default function DashboardContent() {
     const { user, token } = useAuth();
@@ -50,7 +52,7 @@ export default function DashboardContent() {
       }, [user, token, loadServiceProfile, refreshAppointments]);
       
     // Verificación robusta del estado premium con datos del serviceProfile
-    const isPremium = serviceProfile?.subscription.status === "active" &&
+    const isPremium = serviceProfile?.subscription.status == SubscriptionStatus.ACTIVE &&
         serviceProfile?.subscription?.expirationDate &&
         new Date(serviceProfile.subscription.expirationDate) > new Date();
 
@@ -58,11 +60,11 @@ export default function DashboardContent() {
 
     if (!serviceProfile) {
         params = ["/provider-edit", "Ofrecer un servicio"];
-    } else if (serviceProfile.status === "pending") {
+    } else if (serviceProfile.status == ServiceProfileStatus.PENDING) {
         params = ["/dashboard", "Su solicitud está en revisión"];
-    } else if (serviceProfile.status === "rejected") {
+    } else if (serviceProfile.status == ServiceProfileStatus.REJECTED) {
         params = ["/provider-edit", "Solicitud rechazada, enviar otra modificada"];
-    } else if (serviceProfile.status === "active") {
+    } else if (serviceProfile.status == ServiceProfileStatus.ACTIVE) {
         if (!isPremium) {
             params = ["/provider-premium", "Hazte Premium"];
         } else {
@@ -126,6 +128,11 @@ export default function DashboardContent() {
                             )}
                         </>
                     )}
+
+                    <div className="flex justify-center items-center py-3 md:hidden">
+                        <h3 className="pr-1">Cambiar apariencia:</h3>
+                        <DarkMode/>
+                    </div>
 
                     <div className="flex flex-wrap gap-6 w-full justify-center">
                         <div className="flex-1">

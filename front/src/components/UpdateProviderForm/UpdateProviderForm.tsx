@@ -256,7 +256,7 @@ const UpdateProviderForm = () => {
         }
     };
     return (
-        <form className="bg-quaternary/40 dark:bg-quinary/40 space-y-4 p-4">
+        <form className="mx-auto w-[96vw] md:w-[90vw] xl:w-[80vw] max-w-[64rem] shadow-2xl oscuro space-y-4 p-4">
             {/* Campos base */}
             <div>
                 <label className="block">Título del servicio</label>
@@ -264,9 +264,9 @@ const UpdateProviderForm = () => {
                     type="text"
                     value={data.title}
                     onChange={(e) => setData({ ...data, title: e.target.value })}
-                    className="w-full border p-2 dark:bg-tertiary"
+                    className="w-full impunts impunts-2"
                 />
-                {errors.title && <p className="text-red-500">{errors.title}</p>}
+                {errors.title && <p className="text-quinary">{errors.title}</p>}
             </div>
 
             <div>
@@ -275,9 +275,9 @@ const UpdateProviderForm = () => {
                     type="number"
                     value={data.phone || ""}
                     onChange={(e) => setData({ ...data, phone: Number(e.target.value) })}
-                    className="w-full border p-2 dark:bg-tertiary"
+                    className="w-full impunts impunts-2"
                 />
-                {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+                {errors.phone && <p className="text-quinary">{errors.phone}</p>}
             </div>
 
             <div>
@@ -286,9 +286,9 @@ const UpdateProviderForm = () => {
                     type="number"
                     value={data.appointmentPrice || ""}
                     onChange={(e) => setData({ ...data, appointmentPrice: Number(e.target.value) })}
-                    className="w-full border p-2 dark:bg-tertiary"
+                    className="w-full impunts impunts-2"
                 />
-                {errors.appointmentPrice && <p className="text-red-500">{errors.appointmentPrice}</p>}
+                {errors.appointmentPrice && <p className="text-quinary">{errors.appointmentPrice}</p>}
             </div>
 
             <div>
@@ -296,9 +296,9 @@ const UpdateProviderForm = () => {
                 <textarea
                     value={data.description}
                     onChange={(e) => setData({ ...data, description: e.target.value })}
-                    className="w-full border p-2 dark:bg-tertiary"
+                    className="w-full impunts impunts-2 h-[10vh] lg:h-[15vh]"
                 />
-                {errors.description && <p className="text-red-500">{errors.description}</p>}
+                {errors.description && <p className="text-quinary">{errors.description}</p>}
             </div>
 
             <div>
@@ -307,7 +307,7 @@ const UpdateProviderForm = () => {
                     type="text"
                     value={newService}
                     onChange={(e) => setNewService(e.target.value)}
-                    className="w-full border p-2 dark:bg-tertiary"
+                    className="w-full p-2 impunts impunts-2"
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 />
@@ -320,7 +320,7 @@ const UpdateProviderForm = () => {
                             .map((cat) => (
                                 <li
                                     key={cat.id}
-                                    className="cursor-pointer p-2 hover:bg-gray-100 dark:bg-tertiary"
+                                    className="cursor-pointer p-2 hover:bg-quaternary/40 hover:dark:bg-quinary/40 dark:bg-tertiary"
                                     onClick={() => setNewService(cat.name)}
                                 >
                                     {cat.name}
@@ -338,30 +338,29 @@ const UpdateProviderForm = () => {
                     accept="image/*"
                     ref={profileInputRef}
                     onChange={handleProfileImageChange}
-                    className="block w-full"
+                    className="buttons py-2 px-6 cursor-pointer"
                 />
 
                 {profilePicture ? (
-                    <div className="relative w-24 h-24 mt-2">
+                    <div className="relative w-[20vw] aspect-square bg-senary dark:bg-zinc-800">
                         <Image
                             src={typeof profilePicture === "string" ? profilePicture : URL.createObjectURL(profilePicture)}
                             alt="Imagen de perfil"
-                            width={100}
-                            height={100}
-                            className="object-cover rounded"
+                            fill
+                            style={{objectFit: "contain"}}
                         />
                         <button
-                            className="absolute top-0 right-0 p-1 text-white bg-red-600 rounded-full cursor-pointer"
+                            className="relative top-1 right-1 p-1 cursor-pointer"
                             onClick={() => setProfilePicture(null)}
                         >
-                            <FaXmark />
+                            <FaXmark size={25} color="#d31f4f"/>
                         </button>
                     </div>
                 ) : (
-                    <p className="text-gray-500">No hay imagen de perfil seleccionada</p>
+                    <p>No hay imagen de perfil seleccionada</p>
                 )}
 
-                {errors.profilePicture && <p className="text-red-500">{errors.profilePicture}</p>}
+                {errors.profilePicture && <p className="text-quinary">{errors.profilePicture}</p>}
             </div>
 
             {/* Solo certificados y galería (sin id_document) */}
@@ -373,22 +372,22 @@ const UpdateProviderForm = () => {
                         multiple
                         ref={type === "certificate" ? certificateInputRef : galleryInputRef}
                         onChange={(e) => handleGalleryUpload(e, type)}
-                        className="block w-full cursor-pointer"
+                        className="buttons py-2 px-6 cursor-pointer"
                     />
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-2 mt-2">
                         {images[type].map((file, index) => (
-                            <div key={index} className="relative w-24 h-24">
+                            <div key={index} className="relative w-full aspect-video bg-senary dark:bg-zinc-800">
                                 <Image
                                     src={URL.createObjectURL(file)}
                                     alt={`Imagen ${type}`}
                                     fill
-                                    className="object-cover rounded"
+                                    style={{objectFit: "contain"}}
                                 />
                                 <button
-                                    className="absolute top-0 right-0 p-1 text-white bg-red-600 rounded-full cursor-pointer"
+                                    className="relative top-1 right-1 p-1 cursor-pointer"
                                     onClick={(e) => removeImage(e, index, type)}
                                 >
-                                    <FaXmark />
+                                    <FaXmark size={25} color="#d31f4f"/>
                                 </button>
                             </div>
                         ))}
@@ -397,7 +396,7 @@ const UpdateProviderForm = () => {
             ))}
 
             {/* Dirección */}
-            <div>
+            <div className="border-2 rounded-md border-quaternary dark:border-quinary mx-2 p-3">
                 <h4 className="font-bold mt-4 mb-2">Dirección</h4>
                 {Object.entries(address).map(([key, value]) => (
                     <div key={key} className="mb-2">
@@ -413,7 +412,7 @@ const UpdateProviderForm = () => {
                                     [key]: e.target.value,
                                 }))
                             }
-                            className="w-full border p-2 dark:bg-tertiary"
+                            className="w-full impunts impunts-2"
                         />
                     </div>
                 ))}
@@ -422,7 +421,7 @@ const UpdateProviderForm = () => {
             {/* Botón */}
             <button
                 onClick={submitHandler}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-quinary dark:hover:bg-red-500 text-white px-4 py-2 rounded"
+                className="buttons py-2 px-6"
             >
                 Guardar Cambios
             </button>
