@@ -1,5 +1,4 @@
 import Image from "next/image";
-import logoContraste from "../../public/logoContraste.png";
 import logo from "../../public/logo.png";
 import RotatingText from "@/components/RotatingText/RotatingText";
 import click from "../../public/click.png";
@@ -11,12 +10,21 @@ import { FaFaceGrinWink } from "react-icons/fa6";
 import profesionesIconos from "../../public/profesionesIconos.png";
 import oficios from "../../public/oficios.jpg";
 import customer from "../../public/customer.jpg";
+import CarrouselPremium from "@/components/CarrouselPremium/CarrouselPremium";
+import { getServiceProfile } from "@/services/profileService";
 
 export const metadata = {
   title: "Inicio | TecniClick",
 };
 
-export default function Home() {
+export default async function Home() {
+  const allProfiles = await getServiceProfile();
+
+  const destacados = allProfiles.filter(
+    (profile) =>
+      profile.status === "active" && profile.subscription.status === "active"
+  );
+  
   return (
     <div>
       <div className="bg-gradient-banner">
@@ -149,13 +157,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center oscuro my-6 sm:my-8">
+      <section  className="oscuro my-6 sm:my-8" >
+        <CarrouselPremium serviceProfile={destacados} />
+      </section>
+
+      <section className="flex flex-col items-center bg-primary text-white my-6 sm:my-8">
         <div className="mx-4 sm:mx-36 my-6 sm:my-8 text-center">
           <div className="flex justify-center mb-6 sm:mb-8">
-            {/* Logo para modo claro */}
-            <Image src={logoContraste} alt="logo claro" loading="lazy" className="w-48 sm:w-64 block dark:hidden" />
-            {/* Logo para modo oscuro */}
-            <Image src={logo} alt="logo oscuro" loading="lazy" className="w-48 sm:w-64 hidden dark:block" />
+            <Image src={logo} alt="logo" loading="lazy" className="w-48 sm:w-64" />
           </div>
           <p className="font-semibold mb-6 sm:mb-8">
             Nuestros usuarios encuentran 10 veces más profesionales que en cualquier otro lugar.

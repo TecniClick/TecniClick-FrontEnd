@@ -13,8 +13,7 @@ export const getServiceProfile = async (): Promise<ServiceProfileType[]> => {
     if (MODE === "production") {
       const response = await fetch(`${API_URL}/service-profile`, { cache: "no-cache" });
       if (!response.ok) {
-        console.warn("Respuesta no exitosa del servidor, usando mock...");
-        return servicesMock;
+        return [];
       }
 
       const data = await response.json();

@@ -31,11 +31,11 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
     const fetchGalleryAndReviews = async () => {
       const images = await getGalleryByProfileId(id);
       setGalleryImages(images);
-  
+
       const reviews = await getReviewsByServiceProfile(id);
       setFetchedReviews(reviews);
     };
-  
+
     if (id) fetchGalleryAndReviews();
   }, [id]);
 
@@ -133,14 +133,13 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           Galería de trabajos realizados
         </h3>
         <div
-          className="grid gap-2 p-4 border rounded shadow-xl bg-primary dark:bg-quinary justify-center place-items-center"
-          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 border rounded shadow-xl bg-primary dark:bg-quinary"
         >
           {galleryImages?.length ? (
             galleryImages.map((image, index) => (
               <div
                 key={index}
-                className="relative w-56 h-56 rounded-md overflow-hidden cursor-pointer hover:scale-105 transition shadow-sm"
+                className="relative w-full aspect-square rounded-md overflow-hidden cursor-pointer hover:scale-105 transition shadow-sm"
                 onClick={() => setModalImageIndex(index)}
               >
                 <Image
@@ -148,7 +147,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                   alt={`${userName} - Imagen ${index + 1}`}
                   layout="fill"
                   priority
-                  className="object-fill bg-black"
+                  className="object-cover bg-black"
                 />
               </div>
             ))
@@ -159,6 +158,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           )}
         </div>
       </section>
+¿¿
 
 
       {/* Comentarios */}
