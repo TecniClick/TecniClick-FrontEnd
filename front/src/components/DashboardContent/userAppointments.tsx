@@ -53,14 +53,14 @@ export default function UserAppointments() {
                 })
             );
             setAppointmentsState(orderArray(enriched));
-            setEnrichedLoaded(true); // ✅ Corta el ciclo
+            setEnrichedLoaded(true); 
         };
 
         load();
     }, [appointments, getAppointmentById, enrichedLoaded]);
 
     useEffect(() => {
-        setEnrichedLoaded(false); // 🔄 Resetea si appointments cambia
+        setEnrichedLoaded(false); 
     }, [appointments]);
 
     const handleCancel = (id: string) =>
