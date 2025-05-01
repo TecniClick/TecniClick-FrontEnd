@@ -182,7 +182,7 @@ return (
                 {customerAppointments.length ? (
                     <div className="space-y-2">
                         {customerAppointments.map((appointment) => (
-                            <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
+                            <div key={appointment.id} className="p-2 oscuro bg-opacity-10 rounded shadow-sm">
                                 <div className="flex flex-row justify-between">
                                     <div>
                                         <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()} - {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
@@ -238,7 +238,7 @@ return (
                 {providerAppointments.length ? (
                     <div className="space-y-2">
                         {providerAppointments.map((appointment) => (
-                            <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
+                            <div key={appointment.id} className="p-2 oscuro bg-opacity-10 rounded shadow-sm">
                                 <div className="flex flex-row justify-between">
                                     <div>
                                         <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()} - {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
@@ -283,7 +283,7 @@ return (
                 {appointmentsState.length ? (
                     <div className="space-y-2">
                         {appointmentsState.map((appointment) => (
-                            <div key={appointment.id} className="p-2 bg-white dark:bg-black bg-opacity-10 rounded shadow-sm">
+                            <div key={appointment.id} className="p-2 oscuro bg-opacity-10 rounded shadow-sm">
                                 <div className="flex flex-row justify-between">
                                     <div>
                                         <p><strong>Fecha y Hora:</strong> {new Date(appointment.date).toLocaleDateString()} - {new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
