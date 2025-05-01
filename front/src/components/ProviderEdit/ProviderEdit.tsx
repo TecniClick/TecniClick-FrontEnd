@@ -21,8 +21,6 @@ type dataType = {
 
 const ProviderEdit = () => {
   const { user, token, updateService } = useAuth();
-
-  const [editing] = useState(true);
   const [data, setData] = useState<dataType>({
     title: "",
     phone: undefined,
@@ -65,9 +63,9 @@ const ProviderEdit = () => {
 
   const addressLabels: Record<keyof typeof address, string> = {
     extNumber: "N° de domicilio",
-    intNumber: "N° de apartamento(Opcional)",
+    intNumber: "N° de apartamento (opcional)",
     street: "Calle",
-    neighborhood: "Barrio",
+    neighborhood: "Barrio (opcional)",
     zipCode: "Código postal",
     city: "Ciudad",
     state: "Estado / Provincia",
@@ -202,14 +200,14 @@ const ProviderEdit = () => {
     }
   };
   return (
-    <form className="bg-quaternary/40 dark:bg-quinary/40 space-y-4 p-4">
+    <form className="mx-auto w-[96vw] md:w-[90vw] xl:w-[80vw] max-w-[64rem] shadow-2xl oscuro space-y-4 p-4">
       <div>
         <label className="block">Nombre del proveedor</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border p-2 dark:bg-tertiary"
+          className="w-full impunts impunts-2"
         />
       </div>
 
@@ -219,9 +217,9 @@ const ProviderEdit = () => {
           type="text"
           value={data.title}
           onChange={(e) => setData({ ...data, title: e.target.value })}
-          className="w-full border p-2 dark:bg-tertiary"
+          className="w-full impunts impunts-2"
         />
-        {errors.title && <p className="text-red-500">{errors.title}</p>}
+        {errors.title && <p className="text-bg-quinary">{errors.title}</p>}
       </div>
 
       <div>
@@ -230,9 +228,9 @@ const ProviderEdit = () => {
           type="number"
           value={data.phone || ""}
           onChange={(e) => setData({ ...data, phone: Number(e.target.value) })}
-          className="w-full border p-2 dark:bg-tertiary"
+          className="w-full impunts impunts-2"
         />
-        {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+        {errors.phone && <p className="text-bg-quinary">{errors.phone}</p>}
       </div>
 
       <div>
@@ -241,9 +239,9 @@ const ProviderEdit = () => {
           type="number"
           value={data.appointmentPrice || ""}
           onChange={(e) => setData({ ...data, appointmentPrice: Number(e.target.value) })}
-          className="w-full border p-2 dark:bg-tertiary"
+          className="w-full impunts impunts-2"
         />
-        {errors.appointmentPrice && <p className="text-red-500">{errors.appointmentPrice}</p>}
+        {errors.appointmentPrice && <p className="text-bg-quinary">{errors.appointmentPrice}</p>}
       </div>
 
       <div>
@@ -251,9 +249,9 @@ const ProviderEdit = () => {
         <textarea
           value={data.description}
           onChange={(e) => setData({ ...data, description: e.target.value })}
-          className="w-full border p-2 dark:bg-tertiary"
+          className="w-full impunts impunts-2"
         />
-        {errors.description && <p className="text-red-500">{errors.description}</p>}
+        {errors.description && <p className="text-bg-quinary h-[10wh]">{errors.description}</p>}
       </div>
 
       <div>
@@ -262,7 +260,7 @@ const ProviderEdit = () => {
           type="text"
           value={newService}
           onChange={(e) => setNewService(e.target.value)}
-          className="w-full border p-2 dark:bg-tertiary"
+          className="w-full p-2 impunts impunts-2"
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         />
@@ -292,18 +290,19 @@ const ProviderEdit = () => {
           accept="image/*"
           ref={profileInputRef}
           onChange={handleProfileImageChange}
-          className="block w-full"
+          className="buttons py-2 px-6 cursor-pointer"
         />
         {profilePicture && (
-          <Image
-            src={URL.createObjectURL(profilePicture)}
-            alt="Preview"
-            width={100}
-            height={100}
-            className="mt-2 object-cover"
-          />
+          <div className="relative w-[20vw] aspect-square bg-senary dark:bg-zinc-800">
+            <Image
+              src={URL.createObjectURL(profilePicture)}
+              alt="Preview"
+              fill
+              style={{objectFit: "contain"}}
+            />
+          </div>
         )}
-        {errors.profilePicture && <p className="text-red-500">{errors.profilePicture}</p>}
+        {errors.profilePicture && <p className="text-bg-quinary">{errors.profilePicture}</p>}
       </div>
 
       {/* Uploads por tipo */}
@@ -321,34 +320,35 @@ const ProviderEdit = () => {
                   : galleryInputRef
             }
             onChange={(e) => handleGalleryUpload(e, type)}
-            className="block w-full cursor-pointer"
+            className="buttons py-2 px-6 cursor-pointer"
           />
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-2 mt-2">
             {images[type].map((file, index) => (
-              <div key={index} className="relative w-24 h-24">
+              <div key={index} className="relative w-full aspect-video bg-senary dark:bg-zinc-800">
                 <Image
                   src={URL.createObjectURL(file)}
                   alt={`Imagen ${type}`}
                   fill
-                  className="object-cover rounded"
+                  style={{objectFit: "contain"}}
                 />
                 <button
-                  className="absolute top-0 right-0 p-1 text-white bg-red-600 rounded-full cursor-pointer"
+                  className="relative top-1 right-1 p-1 cursor-pointer"
                   onClick={(e) => removeImage(e, index, type)}
                 >
-                  <FaXmark />
+                  <FaXmark size={25} color="#d31f4f"/>
                 </button>
               </div>
             ))}
           </div>
           {type === "id_document" && errors.id_document && (
-            <p className="text-red-500">{errors.id_document}</p>
+            <p className="text-bg-quinary">{errors.id_document}</p>
           )}
         </div>
       ))}
 
-      <div>
-        <h4 className="font-bold mt-4 mb-2">Dirección</h4>
+            
+      <div className="border-2 rounded-md border-quaternary dark:border-quinary mx-2 p-3">
+        <h4 className="font-bold mx-1 text-center">Dirección</h4>
         {Object.entries(address).map(([key, value]) => (
           <div key={key} className="mb-2">
             <label className="block font-medium">
@@ -363,7 +363,7 @@ const ProviderEdit = () => {
                   [key]: e.target.value,
                 }))
               }
-              className="w-full border p-2 dark:bg-tertiary"
+              className="w-full impunts impunts-2"
             />
           </div>
         ))}
@@ -371,7 +371,7 @@ const ProviderEdit = () => {
 
       <button
         onClick={submitHandler}
-        className="bg-blue-600 hover:bg-blue-700 dark:bg-quinary dark:hover:bg-red-500 text-white px-4 py-2 rounded"
+        className="buttons py-2 px-6"
       >
         Guardar Cambios
       </button>
