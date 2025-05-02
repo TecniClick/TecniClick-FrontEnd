@@ -9,6 +9,7 @@ import { FaStar } from "react-icons/fa";
 import { ServiceProfileType } from "@/helpers/typeMock";
 import verified from "../../../public/verified.png";
 import profile from "../../../public/profile.png";
+import formatDescription from "@/helpers/formatDescription";
 
 type Props = {
     serviceProfile: ServiceProfileType[];
@@ -49,13 +50,13 @@ const CarrouselPremium = ({ serviceProfile }: Props) => {
                                         className="w-12 h-12 object-cover rounded-full border-2 border-quaternary dark:border-quinary"
                                     />
                                     <h3 className="text-lg font-semibold">{service.serviceTitle}</h3>
-                                    <Image 
-                                    src={verified}
-                                    alt="Verificado"
-                                    width={20}
-                                    height={20}
-                                    className="w-6 h-6 object-cover rounded-full"
-                                    priority
+                                    <Image
+                                        src={verified}
+                                        alt="Verificado"
+                                        width={20}
+                                        height={20}
+                                        className="w-6 h-6 object-cover rounded-full"
+                                        priority
                                     />
                                 </div>
 
@@ -63,11 +64,9 @@ const CarrouselPremium = ({ serviceProfile }: Props) => {
                                     <p>Profesional: <span className="font-bold">{service.userName}</span></p>
                                     <p>Categoría: <span className="font-bold">{service.category?.name ?? "Categoría no disponible"}</span></p>
                                     <p>Precio Base: <span className="font-bold">${service.appointmentPrice}</span></p>
-                                    <p className="break-words">
-                                        Descripción:{" "}
-                                        {service.description && service.description.length > 80
-                                            ? `${service.description.slice(0, 50)}...`
-                                            : service.description ?? "Descripción no disponible"}
+                                    <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
+                                        <span className="font-medium">Descripción:</span>{" "}
+                                        {formatDescription(service.description ?? "") || "Descripción no disponible"}
                                     </p>
                                 </div>
 
