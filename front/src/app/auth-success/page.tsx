@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/authContext';
 import { UserType } from '@/helpers/typeMock';
-import { toast } from 'sonner';
 import { useRef } from 'react';
 
 export default function AuthSuccessPage() {
