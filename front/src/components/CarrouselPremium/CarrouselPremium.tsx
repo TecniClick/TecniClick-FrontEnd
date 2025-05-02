@@ -39,9 +39,12 @@ const CarrouselPremium = ({ serviceProfile }: Props) => {
             >
                 {serviceProfile.map((service) => (
                     <SwiperSlide key={service.id} className="h-full flex">
-                        <div className="flex flex-col justify-between h-60 w-full border p-4 rounded-lg shadow-lg bg-amber-500">
-                            <Link href={`/services/${service.id}`} className="flex flex-col h-full flex-grow justify-between">
-                                <div className="flex items-center gap-2 mb-2">
+                        <div className="flex flex-col justify-between h-72 w-full border p-4 rounded-lg shadow-lg bg-amber-500">
+                            <Link href={`/services/${service.id}`} className="flex flex-col h-full">
+                                <span className="absolute bottom-3 right-2 bg-tertiary text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">
+                                    ⭐ Premium
+                                </span>
+                                <div className="flex items-center gap-2 cursor-pointer">
                                     <Image
                                         src={service.profilePicture || profile}
                                         alt="Foto de perfil"
@@ -49,33 +52,51 @@ const CarrouselPremium = ({ serviceProfile }: Props) => {
                                         height={100}
                                         className="w-12 h-12 object-cover rounded-full border-2 border-quaternary dark:border-quinary"
                                     />
-                                    <h3 className="text-lg font-semibold">{service.serviceTitle}</h3>
-                                    <Image
-                                        src={verified}
-                                        alt="Verificado"
-                                        width={20}
-                                        height={20}
-                                        className="w-6 h-6 object-cover rounded-full"
-                                        priority
-                                    />
+                                    <div className="flex justify-between items-center w-full">
+                                        <h4 className="text-lg font-semibold items-center gap-1 break-words overflow-hidden line-clamp-3">
+                                            {service.serviceTitle}
+                                        </h4>
+                                        <Image
+                                            src={verified}
+                                            alt="Verificado"
+                                            width={30}
+                                            height={18}
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="flex-grow">
-                                    <p>Profesional: <span className="font-bold">{service.userName}</span></p>
-                                    <p>Categoría: <span className="font-bold">{service.category?.name ?? "Categoría no disponible"}</span></p>
-                                    <p>Precio Base: <span className="font-bold">${service.appointmentPrice}</span></p>
-                                    <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
-                                        <span className="font-medium">Descripción:</span>{" "}
-                                        {formatDescription(service.description ?? "") || "Descripción no disponible"}
+                                <div className="p-1 flex-grow flex flex-col justify-between">
+                                    <div>
+                                        <p>
+                                            Profesional:{" "}
+                                            <span className="font-bold">{service.userName}</span>
+                                        </p>
+                                        <p>
+                                            Categoría:{" "}
+                                            <span className="font-bold">
+                                                {service.category?.name || "No disponible"}
+                                            </span>
+                                        </p>
+                                        <p>
+                                            Precio Base:{" "}
+                                            <span className="font-bold">${service.appointmentPrice}</span>
+                                        </p>
+                                        <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
+                                            <span className="font-medium">Descripción:</span>{" "}
+                                            {formatDescription(service.description ?? "") || "Descripción no disponible"}
+                                        </p>
+                                    </div>
+
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-4 flex items-center gap-1 self-start">
+                                        {service.rating
+                                            ? Array.from({ length: Math.floor(service.rating) }, (_, i) => (
+                                                <FaStar
+                                                    key={i}
+                                                    className={"text-white"}
+                                                />
+                                            ))
+                                            : <span className="text-gray-500">Sin calificaciones</span>}
                                     </p>
-                                </div>
-
-                                <div className="mt-2 text-sm text-gray-600 dark:text-gray-300 flex items-center gap-1">
-                                    {service.rating
-                                        ? Array.from({ length: Math.floor(service.rating) }, (_, i) => (
-                                            <FaStar key={i} className="text-secondary" />
-                                        ))
-                                        : <span className="text-secondary">Sin calificaciones</span>}
                                 </div>
                             </Link>
                         </div>

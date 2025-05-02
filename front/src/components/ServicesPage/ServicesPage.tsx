@@ -163,7 +163,7 @@ const ServicesPage: React.FC = () => {
                       className="w-12 h-12 object-cover rounded-full border-2 border-quaternary dark:border-quinary"
                     />
                     <div className="flex justify-between items-center w-full">
-                      <h3 className="text-lg font-semibold flex items-center gap-1">
+                      <h3 className="text-lg font-semibold flex items-center gap-1 line w-64 break-words">
                         {service.serviceTitle}
                       </h3>
                       {isPremium && (
