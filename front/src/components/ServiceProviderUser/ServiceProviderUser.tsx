@@ -11,6 +11,7 @@ import AppointmentHandler from "./AppointmentHandler";
 import { getGalleryByProfileId } from "@/services/profileService";
 import { getReviewsByServiceProfile } from "@/services/reviewServices";
 import verifiedIcon from "../../../public/verified.png";
+import formatDescription from "@/helpers/formatDescription";
 
 const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   userName,
@@ -83,15 +84,15 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
         </div>
         <div className="text-center sm:text-left">
           <div className="flex gap-2">
-          <h2 className="text-2xl font-bold">{userName}</h2>
-          {isPremium && (
-            <Image
-            src={verifiedIcon}
-            alt="Verificado"
-            width={30}
-            height={18}
-            />
-          )}
+            <h2 className="text-2xl font-bold">{userName}</h2>
+            {isPremium && (
+              <Image
+                src={verifiedIcon}
+                alt="Verificado"
+                width={30}
+                height={18}
+              />
+            )}
           </div>
           <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1 capitalize">
             {serviceTitle || "Sin servicio"} - {category.name}
@@ -135,9 +136,10 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
       {/* Sobre mí */}
       {description && (
         <section className="py-4">
-          <h3 className="text-lg font-semibold mb-2">Sobre mí</h3>
-          <p className="text-sm text-tertiary dark:text-secondary">
-            {description}
+          <h3 className="text-lg font-semibold mb-2">Descripción del proveedor</h3>
+          <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
+            <span className="font-medium">Descripción:</span>{" "}
+            {formatDescription(description ?? "") || "Descripción no disponible"}
           </p>
         </section>
       )}

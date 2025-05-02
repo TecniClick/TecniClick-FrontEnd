@@ -1,18 +1,18 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/authContext';
 import { UserType } from '@/helpers/typeMock';
+import { toast } from 'sonner';
 
 export default function AuthSuccessPage() {
     const { login } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [hasProcessed, setHasProcessed] = useState(false); // ← nuevo
+    const [hasProcessed, setHasProcessed] = useState(false);
 
     useEffect(() => {
-        if (hasProcessed) return; // ← evita repetir
+        if (hasProcessed) return;
 
         const token = searchParams.get('token');
         const userString = searchParams.get('user');
@@ -21,8 +21,9 @@ export default function AuthSuccessPage() {
             try {
                 const user: UserType = JSON.parse(decodeURIComponent(userString));
                 login(token, user).then(() => {
-                    setHasProcessed(true); // ← marca como hecho
-                    router.replace('/');
+                    toast.success(`Login exitoso, ¡bienvenido ${user.name || ''}!`);
+                    setHasProcessed(true);
+                    router.replace('/dashboard');
                 });
             } catch (err) {
                 console.error('Error procesando datos de Google:', err);
