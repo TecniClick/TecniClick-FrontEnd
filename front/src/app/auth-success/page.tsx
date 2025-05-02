@@ -23,8 +23,8 @@ export default function AuthSuccessPage() {
                 login(token, user).then(() => {
                     toast.success(`Login exitoso, ¡bienvenido ${user.name || ''}!`);
                     setHasProcessed(true);
-                    router.replace('/dashboard');
-                });
+                    setTimeout(() => router.replace('/dashboard'), 1000);
+                })
             } catch (err) {
                 console.error('Error procesando datos de Google:', err);
                 setHasProcessed(true);
