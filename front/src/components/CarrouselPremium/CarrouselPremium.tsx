@@ -63,7 +63,7 @@ const CarrouselPremium = ({ serviceProfile }: Props) => {
                                     <p>Profesional: <span className="font-bold">{service.userName}</span></p>
                                     <p>Categoría: <span className="font-bold">{service.category?.name ?? "Categoría no disponible"}</span></p>
                                     <p>Precio Base: <span className="font-bold">${service.appointmentPrice}</span></p>
-                                    <p>
+                                    <p className="break-words">
                                         Descripción:{" "}
                                         {service.description && service.description.length > 80
                                             ? `${service.description.slice(0, 50)}...`
