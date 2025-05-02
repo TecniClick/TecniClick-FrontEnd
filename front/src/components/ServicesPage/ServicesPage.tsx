@@ -142,9 +142,9 @@ const ServicesPage: React.FC = () => {
             return (
               <li
                 key={service.id}
-                className={`relative border p-4 rounded-lg shadow-lg transition duration-300 ${isPremium
-                  ? "bg-amber-500 hover:bg-amber-400 transition-colors text-secondary duration-500"
-                  : "oscuro"
+                className={`relative border p-4 rounded-lg shadow-lg transition duration-300 flex flex-col justify-between ${isPremium
+                    ? "bg-amber-500 hover:bg-amber-400 transition-colors text-secondary duration-500"
+                    : "oscuro"
                   }`}
               >
                 {isPremium && (
@@ -153,7 +153,7 @@ const ServicesPage: React.FC = () => {
                   </span>
                 )}
 
-                <Link href={`/services/${service.id}`}>
+                <Link href={`/services/${service.id}`} className="flex flex-col h-full">
                   <div className="flex items-center gap-2 cursor-pointer">
                     <Image
                       src={service.profilePicture || profile}
@@ -176,26 +176,30 @@ const ServicesPage: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="p-1">
-                    <p>
-                      Profesional:{" "}
-                      <span className="font-bold">{service.userName}</span>
-                    </p>
-                    <p>
-                      Categoría:{" "}
-                      <span className="font-bold">
-                        {service.category?.name || "No disponible"}
-                      </span>
-                    </p>
-                    <p>
-                      Precio Base:{" "}
-                      <span className="font-bold">${service.appointmentPrice}</span>
-                    </p>
-                    <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
-                      <span className="font-medium">Descripción:</span>{" "}
-                      {formatDescription(service.description ?? "") || "Descripción no disponible"}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-1 ">
+
+                  <div className="p-1 flex-grow flex flex-col justify-between">
+                    <div>
+                      <p>
+                        Profesional:{" "}
+                        <span className="font-bold">{service.userName}</span>
+                      </p>
+                      <p>
+                        Categoría:{" "}
+                        <span className="font-bold">
+                          {service.category?.name || "No disponible"}
+                        </span>
+                      </p>
+                      <p>
+                        Precio Base:{" "}
+                        <span className="font-bold">${service.appointmentPrice}</span>
+                      </p>
+                      <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
+                        <span className="font-medium">Descripción:</span>{" "}
+                        {formatDescription(service.description ?? "") || "Descripción no disponible"}
+                      </p>
+                    </div>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-4 flex items-center gap-1 self-start">
                       {service.rating
                         ? Array.from({ length: Math.floor(service.rating) }, (_, i) => (
                           <FaStar
