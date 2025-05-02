@@ -22,6 +22,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
   appointmentPrice,
   id,
   subscription,
+  address,
 }) => {
   const [modalImageIndex, setModalImageIndex] = useState<number | null>(null);
   const [fetchedReviews, setFetchedReviews] = useState<ReviewType[]>([]);
@@ -97,6 +98,9 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1 capitalize">
             {serviceTitle || "Sin servicio"} - {category.name}
           </p>
+          <p className="text-sm font-semibold text-tertiary dark:text-secondary mt-1 capitalize">
+            {address.city || "Sin ciudad"}
+          </p>
           <p className="text-lg text-secondary dark:text-secondary font-extrabold border rounded text-center bg-primary dark:bg-quinary">
             ${appointmentPrice}
           </p>
@@ -137,7 +141,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
       {description && (
         <section className="py-4">
           <h3 className="text-lg font-semibold mb-2">Descripción del proveedor</h3>
-          <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
+          <p className="text-sm leading-snug break-words overflow-hidden">
             <span className="font-medium">Descripción:</span>{" "}
             {formatDescription(description ?? "") || "Descripción no disponible"}
           </p>
