@@ -72,6 +72,8 @@ const ProviderEdit = () => {
     country: "País",
   };
 
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
   useEffect(() => {
     const fetchCategories = async () => {
       const categoriesList = await getCategories();
@@ -159,6 +161,23 @@ const ProviderEdit = () => {
 
     if (!allDocumentsValid) {
       toast.error("Uno o más archivos tienen formatos no válidos. Aceptados: jpg, png, webp, pdf, mp4, mov, avi.");
+      return;
+    }
+
+    // 🎯 Validación de tamaño (peso)
+    const profilePictureSizeOk = profilePicture ? profilePicture.size <= MAX_FILE_SIZE : true;
+
+    const allDocumentsSizeOk = [...images.id_document, ...images.gallery, ...images.certificate].every(
+      (file) => file.size <= MAX_FILE_SIZE
+    );
+
+    if (!profilePictureSizeOk) {
+      toast.error("La imagen de perfil excede el tamaño máximo permitido (5MB).");
+      return;
+    }
+
+    if (!allDocumentsSizeOk) {
+      toast.error("Uno o más archivos superan el límite de 5MB.");
       return;
     }
 
@@ -298,7 +317,7 @@ const ProviderEdit = () => {
               src={URL.createObjectURL(profilePicture)}
               alt="Preview"
               fill
-              style={{objectFit: "contain"}}
+              style={{ objectFit: "contain" }}
             />
           </div>
         )}
@@ -329,13 +348,13 @@ const ProviderEdit = () => {
                   src={URL.createObjectURL(file)}
                   alt={`Imagen ${type}`}
                   fill
-                  style={{objectFit: "contain"}}
+                  style={{ objectFit: "contain" }}
                 />
                 <button
                   className="relative top-1 right-1 p-1 cursor-pointer"
                   onClick={(e) => removeImage(e, index, type)}
                 >
-                  <FaXmark size={25} color="#d31f4f"/>
+                  <FaXmark size={25} color="#d31f4f" />
                 </button>
               </div>
             ))}
@@ -346,7 +365,7 @@ const ProviderEdit = () => {
         </div>
       ))}
 
-            
+
       <div className="border-2 rounded-md border-quaternary dark:border-quinary mx-2 p-3">
         <h4 className="font-bold mx-1 text-center">Dirección</h4>
         {Object.entries(address).map(([key, value]) => (

@@ -93,6 +93,9 @@ const UpdateProviderForm = () => {
         country: "País",
     };
 
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+
     useEffect(() => {
         if (user?.serviceProfile) {
             setData({
@@ -214,6 +217,24 @@ const UpdateProviderForm = () => {
             toast.error("Uno o más archivos tienen formatos no válidos. Aceptados: jpg, png, webp, pdf, mp4, mov, avi.");
             return;
         }
+
+        // 🎯 Validación de tamaño (peso)
+        const profilePictureSizeOk = profilePicture ? profilePicture.size <= MAX_FILE_SIZE : true;
+
+        const allDocumentsSizeOk = [...images.id_document, ...images.gallery, ...images.certificate].every(
+            (file) => file.size <= MAX_FILE_SIZE
+        );
+
+        if (!profilePictureSizeOk) {
+            toast.error("La imagen de perfil excede el tamaño máximo permitido (5MB).");
+            return;
+        }
+
+        if (!allDocumentsSizeOk) {
+            toast.error("Uno o más archivos superan el límite de 5MB.");
+            return;
+        }
+
 
         if (
             token &&
