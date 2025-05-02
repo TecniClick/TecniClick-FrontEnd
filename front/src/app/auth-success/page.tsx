@@ -27,8 +27,7 @@ export default function AuthSuccessPage() {
             try {
                 const user: UserType = JSON.parse(decodeURIComponent(userString));
                 login(token, user).then(() => {
-                    localStorage.setItem('authSuccessProcessed', 'true'); // 🔐 evita duplicados
-                    toast.success(`Login exitoso, ¡bienvenido ${user.name || ''}!`);
+                    localStorage.setItem('authSuccessProcessed', 'true');
                     hasProcessedRef.current = true;
                     router.replace('/dashboard');
                 });
