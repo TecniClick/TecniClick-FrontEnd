@@ -15,6 +15,11 @@ export default function AuthSuccessPage() {
     useEffect(() => {
         if (hasProcessedRef.current) return;
 
+        if (localStorage.getItem('authSuccessProcessed')) {
+            router.replace('/dashboard');
+            return;
+        }
+
         const token = searchParams.get('token');
         const userString = searchParams.get('user');
 
@@ -22,6 +27,7 @@ export default function AuthSuccessPage() {
             try {
                 const user: UserType = JSON.parse(decodeURIComponent(userString));
                 login(token, user).then(() => {
+                    localStorage.setItem('authSuccessProcessed', 'true'); // 🔐 evita duplicados
                     toast.success(`Login exitoso, ¡bienvenido ${user.name || ''}!`);
                     hasProcessedRef.current = true;
                     router.replace('/dashboard');
@@ -36,7 +42,6 @@ export default function AuthSuccessPage() {
             router.replace('/login');
         }
     }, [searchParams, login, router]);
-
     return (
         <div className="flex justify-center items-center h-screen">
             <p className="text-xl font-semibold">Procesando autenticación...</p>
