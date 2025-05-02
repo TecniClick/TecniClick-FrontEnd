@@ -4,15 +4,16 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/authContext';
 import { UserType } from '@/helpers/typeMock';
 import { toast } from 'sonner';
+import { useRef } from 'react';
 
 export default function AuthSuccessPage() {
     const { login } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [hasProcessed, setHasProcessed] = useState(false);
+    const hasProcessedRef = useRef(false);
 
     useEffect(() => {
-        if (hasProcessed) return;
+        if (hasProcessedRef.current) return;
 
         const token = searchParams.get('token');
         const userString = searchParams.get('user');
@@ -22,19 +23,19 @@ export default function AuthSuccessPage() {
                 const user: UserType = JSON.parse(decodeURIComponent(userString));
                 login(token, user).then(() => {
                     toast.success(`Login exitoso, ¡bienvenido ${user.name || ''}!`);
-                    setHasProcessed(true);
-                    setTimeout(() => router.replace('/dashboard'), 1000);
-                })
+                    hasProcessedRef.current = true;
+                    router.replace('/dashboard');
+                });
             } catch (err) {
                 console.error('Error procesando datos de Google:', err);
-                setHasProcessed(true);
+                hasProcessedRef.current = true;
                 router.replace('/login');
             }
         } else {
-            setHasProcessed(true);
+            hasProcessedRef.current = true;
             router.replace('/login');
         }
-    }, [searchParams, login, router, hasProcessed]);
+    }, [searchParams, login, router]);
 
     return (
         <div className="flex justify-center items-center h-screen">
