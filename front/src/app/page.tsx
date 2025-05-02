@@ -22,9 +22,10 @@ export default async function Home() {
 
   const destacados = allProfiles.filter(
     (profile) =>
-      profile.status === "active" && profile.subscription.status === "active"
+      profile?.status === "active" &&
+      profile?.subscription?.status === "active"
   );
-  
+
   return (
     <div>
       <div className="bg-gradient-banner">
@@ -157,9 +158,12 @@ export default async function Home() {
         </div>
       </section>
 
-      <section  className="oscuro my-6 sm:my-8" >
-        <CarrouselPremium serviceProfile={destacados} />
-      </section>
+      {destacados.length > 0 && (
+        <section className="oscuro my-6 sm:my-8">
+          <CarrouselPremium serviceProfile={destacados} />
+        </section>
+      )}
+
 
       <section className="flex flex-col items-center bg-primary text-white my-6 sm:my-8">
         <div className="mx-4 sm:mx-36 my-6 sm:my-8 text-center">
