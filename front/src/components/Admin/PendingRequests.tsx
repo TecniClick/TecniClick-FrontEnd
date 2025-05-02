@@ -61,7 +61,8 @@ const PendingRequests = () => {
   const [documents, setDocuments] = useState<{
     idDocuments: Media[]
     certificates: Media[]
-  }>({ idDocuments: [], certificates: [] })
+    gallery: Media[]
+  }>({ idDocuments: [], certificates: [], gallery: [] })
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -113,7 +114,7 @@ const PendingRequests = () => {
       setError(null)
 
       try {
-        const [idDocsResponse, certsResponse] = await Promise.all([
+        const [idDocsResponse, certsResponse, galleryResponse] = await Promise.all([
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/media/id-documents/${selectedRequest.id}`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -123,19 +124,26 @@ const PendingRequests = () => {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
+          }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/media/gallery/${selectedRequest.id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
           })
         ])
 
-        if (!idDocsResponse.ok || !certsResponse.ok) {
+        if (!idDocsResponse.ok || !certsResponse.ok || !galleryResponse.ok) {
           throw new Error('Error al cargar documentos')
         }
 
         const idDocuments = await idDocsResponse.json()
         const certificates = await certsResponse.json()
+        const gallery = await galleryResponse.json()
 
         setDocuments({
           idDocuments,
-          certificates
+          certificates,
+          gallery
         })
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error al cargar documentos')
@@ -159,13 +167,13 @@ const PendingRequests = () => {
 
   const handleStatusUpdate = async (status: 'active' | 'rejected') => {
     if (!selectedRequest) return
-    
+
     setIsLoading(true)
     setError(null)
 
     try {
-      const endpoint = status === 'active' 
-        ? 'status-active' 
+      const endpoint = status === 'active'
+        ? 'status-active'
         : 'status-rejected'
 
       const response = await fetch(
@@ -362,24 +370,51 @@ const PendingRequests = () => {
                   <p className="text-gray-500 dark:text-gray-400">No hay certificados cargados</p>
                 )}
               </div>
+              {/* Sección de Certificados */}
+              <div className="mt-6">
+                <h4 className="font-bold mb-3">Galería</h4>
+                {isLoadingDocuments ? (
+                  <div className="flex justify-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                  </div>
+                ) : documents.gallery.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {documents.gallery.map((gall) => (
+                      <div key={gall.id} className="border rounded-lg p-3">
+                        <div className="relative w-full h-48">
+                          <Image
+                            src={gall.imgUrl}
+                            alt="Galería"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <p className="text-sm text-center mt-2 text-gray-600 dark:text-gray-400">
+                          Galería
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 dark:text-gray-400">No hay imágenes cargadas</p>
+                )}
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end space-x-4">
               <button
                 onClick={() => handleStatusUpdate('rejected')}
                 disabled={isLoading}
-                className={`px-4 py-2 rounded-lg text-white ${
-                  isLoading ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-700'
-                }`}
+                className={`px-4 py-2 rounded-lg text-white ${isLoading ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-700'
+                  }`}
               >
                 {isLoading ? 'Procesando...' : 'Rechazar'}
               </button>
               <button
                 onClick={() => handleStatusUpdate('active')}
                 disabled={isLoading}
-                className={`px-4 py-2 rounded-lg text-white ${
-                  isLoading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
-                }`}
+                className={`px-4 py-2 rounded-lg text-white ${isLoading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
+                  }`}
               >
                 {isLoading ? 'Procesando...' : 'Aprobar'}
               </button>
