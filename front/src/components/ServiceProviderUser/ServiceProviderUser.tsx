@@ -73,7 +73,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 py-6 border-b border-senbg-senary items-center justify-center">
         <div
-          className="w-24 h-24 rounded-full overflow-hidden bg-senary relative cursor-pointer hover:scale-105 transition"
+          className="w-48 h-48 rounded-full overflow-hidden bg-senary relative cursor-pointer hover:scale-105 transition"
           onClick={() => setModalImageIndex(-1)} // -1 representa la imagen de perfil
         >
           <Image
@@ -142,7 +142,6 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
         <section className="py-4">
           <h3 className="text-lg font-semibold mb-2">Descripción del proveedor</h3>
           <p className="text-sm leading-snug break-words overflow-hidden">
-            <span className="font-medium">Descripción:</span>{" "}
             {formatDescription(description ?? "") || "Descripción no disponible"}
           </p>
         </section>
@@ -209,7 +208,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
           onClick={() => setModalImageIndex(null)}
         >
           <div
-            className="bg-secondary p-4 rounded-lg max-w-sm w-full relative"
+            className="bg-primary dark:bg-quinary p-4 rounded-md max-w-sm w-full relative"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-square bg-gray-300 rounded-md overflow-hidden">
@@ -221,6 +220,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
                 }
                 alt="Imagen ampliada"
                 fill
+                className="object-cover"
               />
             </div>
 
@@ -228,7 +228,7 @@ const ServiceProviderUser: React.FC<ServiceProfileType> = ({
             {modalImageIndex !== -1 && galleryImages?.length > 1 && (
               <div className="flex justify-between mt-4">
                 <button
-                  className="text-sm text-blue-600 hover:underline disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium bg-white text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 disabled:opacity-50 transition"
                   onClick={showPrevImage}
                   disabled={modalImageIndex === 0}
                 >
