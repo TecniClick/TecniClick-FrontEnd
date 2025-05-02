@@ -13,6 +13,7 @@ import verifiedIcon from "../../../public/verified.png";
 import Link from "next/link";
 import { useServiceContext } from "@/contexts/serviceContext";
 import { FaStar } from "react-icons/fa";
+import formatDescription from "@/helpers/formatDescription";
 
 const ServicesPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -190,11 +191,9 @@ const ServicesPage: React.FC = () => {
                       Precio Base:{" "}
                       <span className="font-bold">${service.appointmentPrice}</span>
                     </p>
-                    <p>
-                      Descripción:{" "}
-                      {service.description?.length ?? 0 > 80
-                        ? `${service.description?.slice(0, 80)}...`
-                        : service.description ?? "Descripción no disponible"}
+                    <p className="text-sm leading-snug break-words overflow-hidden line-clamp-3">
+                      <span className="font-medium">Descripción:</span>{" "}
+                      {formatDescription(service.description ?? "") || "Descripción no disponible"}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-1 ">
                       {service.rating
