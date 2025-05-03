@@ -37,7 +37,7 @@ const UpgradeUserToAdminBlock = () => {
 
       const normalizedEmail = email.toLowerCase().trim()
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users?email=${encodeURIComponent(normalizedEmail)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/email/${encodeURIComponent(normalizedEmail)}`,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -57,25 +57,18 @@ const UpgradeUserToAdminBlock = () => {
         throw new Error(data.message || 'Error al buscar usuario')
       }
 
-      const eligibleUsers = data.filter((user: User) => 
-        ['customer', 'provider'].includes(user.role)
-      )
-
-      if (eligibleUsers.length === 0) {
-        throw new Error(
-          data.length > 0 
-            ? 'Este usuario ya es administrador o superadmin' 
-            : 'Usuario no encontrado'
-        )
+      if (!['customer', 'provider'].includes(data.role)) {
+        throw new Error('Este usuario ya es administrador o superadmin')
       }
 
-      setSearchResults(eligibleUsers)
+      setSearchResults([data]) // Ponemos el usuario en un array
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
       setIsLoading(false)
     }
   }
+
 
   const handleUpgradeToAdmin = async () => {
     if (!selectedUser) return
@@ -115,7 +108,7 @@ const UpgradeUserToAdminBlock = () => {
       setSearchResults([])
       setEmail('')
       setSelectedUser(null)
-      
+
       // Notificar a toda la aplicación sobre el cambio
       triggerUsersUpdate()
 
@@ -129,26 +122,26 @@ const UpgradeUserToAdminBlock = () => {
 
   const getRoleBadge = (role: string) => {
     const roles = {
-      customer: { 
-        text: 'Cliente', 
-        class: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+      customer: {
+        text: 'Cliente',
+        class: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
       },
-      provider: { 
-        text: 'Prestador', 
-        class: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' 
+      provider: {
+        text: 'Prestador',
+        class: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
       },
-      admin: { 
-        text: 'Admin', 
-        class: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' 
+      admin: {
+        text: 'Admin',
+        class: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
       },
-      superadmin: { 
-        text: 'SuperAdmin', 
-        class: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' 
+      superadmin: {
+        text: 'SuperAdmin',
+        class: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
       }
     }
-    return roles[role as keyof typeof roles] || { 
-      text: role, 
-      class: 'bg-gray-100 text-gray-800' 
+    return roles[role as keyof typeof roles] || {
+      text: role,
+      class: 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -177,11 +170,10 @@ const UpgradeUserToAdminBlock = () => {
         <button
           type="submit"
           disabled={isLoading || !email.trim()}
-          className={`w-full px-4 py-2 rounded-lg text-white ${
-            isLoading || !email.trim()
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+          className={`w-full px-4 py-2 rounded-lg text-white ${isLoading || !email.trim()
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
+            }`}
         >
           {isLoading ? 'Buscando...' : 'Buscar Usuario'}
         </button>
@@ -250,7 +242,7 @@ const UpgradeUserToAdminBlock = () => {
             <p className="mb-4 text-gray-600 dark:text-gray-300">
               ¿Estás seguro de promover a <strong>{selectedUser.name}</strong> ({selectedUser.email}) a administrador?
             </p>
-            
+
             <div className="bg-yellow-50 dark:bg-gray-700 p-3 rounded mb-4">
               <p className="text-sm"><strong>Rol actual:</strong> <span className={`px-2 py-1 text-xs rounded-full ${getRoleBadge(selectedUser.role).class}`}>
                 {getRoleBadge(selectedUser.role).text}
@@ -268,9 +260,8 @@ const UpgradeUserToAdminBlock = () => {
               <button
                 onClick={handleUpgradeToAdmin}
                 disabled={isLoading}
-                className={`px-4 py-2 rounded-lg text-white ${
-                  isLoading ? 'bg-gray-400' : 'bg-purple-600 hover:bg-purple-700'
-                }`}
+                className={`px-4 py-2 rounded-lg text-white ${isLoading ? 'bg-gray-400' : 'bg-purple-600 hover:bg-purple-700'
+                  }`}
               >
                 {isLoading ? 'Procesando...' : 'Confirmar'}
               </button>
